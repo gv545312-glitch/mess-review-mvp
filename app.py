@@ -93,6 +93,7 @@ def index():
     return render_template("index.html", reviews=get_all_reviews(), errors=[], form={})
 
 
+init_db()
+
 if __name__ == "__main__":
-    init_db()
     app.run(debug=True)
