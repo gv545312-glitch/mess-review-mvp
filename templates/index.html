@@ -60,42 +60,25 @@
     <input type="text" id="searchInput" placeholder="Search university...">
 
     <div class="card-container" id="cardContainer">
+        
+        {% for university in universities %}
 
         <div class="card">
-            <h2>Amity University</h2>
+        
+            <img src="{{ university.image }}" width="100%" style="border-radius:10px; height:180px; object-fit:cover;">
+        
+            <h2>{{ university.name }}</h2>
+        
             <p class="stars">⭐⭐⭐⭐</p>
-            <p>120 Reviews</p>
+        
+            <p>0 Reviews</p>
+        
             <button>Give Review</button>
+        
         </div>
-
-        <div class="card">
-            <h2>Galgotias University</h2>
-            <p class="stars">⭐⭐⭐</p>
-            <p>90 Reviews</p>
-            <button>Give Review</button>
-        </div>
-
-        <div class="card">
-            <h2>Sharda University</h2>
-            <p class="stars">⭐⭐⭐⭐⭐</p>
-            <p>200 Reviews</p>
-            <button>Give Review</button>
-        </div>
-
-        <div class="card">
-            <h2>Bennett University</h2>
-            <p class="stars">⭐⭐⭐⭐</p>
-            <p>70 Reviews</p>
-            <button>Give Review</button>
-        </div>
-
-        <div class="card">
-            <h2>JIMS Noida</h2>
-            <p class="stars">⭐⭐⭐</p>
-            <p>50 Reviews</p>
-            <button>Give Review</button>
-        </div>
-
+        
+        {% endfor %}
+        
     </div>
 
 <script>
