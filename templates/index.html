@@ -1,140 +1,128 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>University Mess Review</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Mess Reviews</title>
+
+    <style>
+
+        body{
+            font-family: Arial;
+            background:#f5f5f5;
+            padding:20px;
+        }
+
+        h1{
+            text-align:center;
+        }
+
+        #searchInput{
+            width:100%;
+            padding:12px;
+            margin-bottom:20px;
+            border-radius:10px;
+            border:1px solid gray;
+        }
+
+        .card-container{
+            display:grid;
+            grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+            gap:20px;
+        }
+
+        .card{
+            background:white;
+            padding:20px;
+            border-radius:15px;
+            box-shadow:0 0 10px rgba(0,0,0,0.1);
+        }
+
+        .stars{
+            color:gold;
+            font-size:20px;
+        }
+
+        button{
+            padding:10px 15px;
+            border:none;
+            background:#007bff;
+            color:white;
+            border-radius:8px;
+            cursor:pointer;
+        }
+
+    </style>
 </head>
+
 <body>
-    <header class="hero">
-        <div class="hero-inner">
-            <span class="hero-badge">Student Reviews</span>
-            <h1>University Mess Review</h1>
-            <p>Rate your campus mess and help other students choose better meals.</p>
-            <div class="hero-stats">
-                <div class="stat-pill">
-                    <span class="stat-value">{{ reviews|length }}</span>
-                    <span class="stat-label">Total reviews</span>
-                </div>
-            </div>
+
+    <h1>Noida University Mess Reviews</h1>
+
+    <input type="text" id="searchInput" placeholder="Search university...">
+
+    <div class="card-container" id="cardContainer">
+
+        <div class="card">
+            <h2>Amity University</h2>
+            <p class="stars">⭐⭐⭐⭐</p>
+            <p>120 Reviews</p>
+            <button>Give Review</button>
         </div>
-    </header>
 
-    <main class="page">
-        <section class="panel">
-            <div class="panel-head">
-                <span class="panel-icon" aria-hidden="true">✍️</span>
-                <div>
-                    <h2>Submit a Review</h2>
-                    <p class="panel-sub">Takes less than a minute</p>
-                </div>
-            </div>
+        <div class="card">
+            <h2>Galgotias University</h2>
+            <p class="stars">⭐⭐⭐</p>
+            <p>90 Reviews</p>
+            <button>Give Review</button>
+        </div>
 
-            {% if errors %}
-            <div class="alert" role="alert">
-                <ul>
-                    {% for error in errors %}
-                    <li>{{ error }}</li>
-                    {% endfor %}
-                </ul>
-            </div>
-            {% endif %}
+        <div class="card">
+            <h2>Sharda University</h2>
+            <p class="stars">⭐⭐⭐⭐⭐</p>
+            <p>200 Reviews</p>
+            <button>Give Review</button>
+        </div>
 
-            <form method="post" action="/" class="review-form">
-                <div class="field">
-                    <label for="university_name">University name</label>
-                    <input
-                        type="text"
-                        id="university_name"
-                        name="university_name"
-                        placeholder="e.g. Delhi University"
-                        value="{{ form.get('university_name', '') }}"
-                        required
-                    >
-                </div>
+        <div class="card">
+            <h2>Bennett University</h2>
+            <p class="stars">⭐⭐⭐⭐</p>
+            <p>70 Reviews</p>
+            <button>Give Review</button>
+        </div>
 
-                <fieldset class="field rating-field">
-                    <legend>Food rating</legend>
-                    <div class="rating-options">
-                        {% for i in range(1, 6) %}
-                        <label class="rating-option">
-                            <input
-                                type="radio"
-                                name="rating"
-                                value="{{ i }}"
-                                {% if form.get('rating') == i|string %}checked{% endif %}
-                                {% if i == 1 %}required{% endif %}
-                            >
-                            <span class="rating-btn">
-                                <span class="rating-num">{{ i }}</span>
-                                <span class="rating-star">★</span>
-                            </span>
-                        </label>
-                        {% endfor %}
-                    </div>
-                    <p class="hint">1 = Poor · 5 = Excellent</p>
-                </fieldset>
+        <div class="card">
+            <h2>JIMS Noida</h2>
+            <p class="stars">⭐⭐⭐</p>
+            <p>50 Reviews</p>
+            <button>Give Review</button>
+        </div>
 
-                <div class="field">
-                    <label for="feedback">Your feedback</label>
-                    <textarea
-                        id="feedback"
-                        name="feedback"
-                        rows="4"
-                        placeholder="Food quality, hygiene, variety, price..."
-                        required
-                    >{{ form.get('feedback', '') }}</textarea>
-                </div>
+    </div>
 
-                <button type="submit" class="btn-primary">Submit review</button>
-            </form>
-        </section>
+<script>
 
-        <section class="panel">
-            <div class="panel-head">
-                <span class="panel-icon" aria-hidden="true">📋</span>
-                <div>
-                    <h2>All reviews</h2>
-                    <p class="panel-sub">{{ reviews|length }} shared so far</p>
-                </div>
-            </div>
+const searchInput = document.getElementById("searchInput");
 
-            {% if reviews %}
-            <div class="reviews">
-                {% for review in reviews %}
-                <article class="review-card rating-{{ review['rating'] }}">
-                    <div class="review-top">
-                        <div>
-                            <h3>{{ review["university_name"] }}</h3>
-                            <p class="date">{{ review["created_at"] }}</p>
-                        </div>
-                        <span class="rating-badge">{{ review["rating"] }}/5</span>
-                    </div>
-                    <div class="stars" aria-label="Rating {{ review['rating'] }} out of 5">
-                        {% for i in range(1, 6) %}
-                        <span class="star {% if i <= review['rating'] %}filled{% endif %}">★</span>
-                        {% endfor %}
-                    </div>
-                    <p class="feedback">{{ review["feedback"] }}</p>
-                </article>
-                {% endfor %}
-            </div>
-            {% else %}
-            <div class="empty-state">
-                <span class="empty-icon" aria-hidden="true">🍽️</span>
-                <h3>No reviews yet</h3>
-                <p>Be the first student to share your mess experience.</p>
-            </div>
-            {% endif %}
-        </section>
-    </main>
+searchInput.addEventListener("keyup", function() {
 
-    <footer class="footer">
-        <p>University Mess Review · MVP</p>
-    </footer>
+    let filter = searchInput.value.toLowerCase();
+
+    let cards = document.querySelectorAll(".card");
+
+    cards.forEach(function(card){
+
+        let text = card.innerText.toLowerCase();
+
+        if(text.includes(filter)){
+            card.style.display = "block";
+        } else {
+            card.style.display = "none";
+        }
+
+    });
+
+});
+
+</script>
+
 </body>
 </html>
