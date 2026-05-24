@@ -50,26 +50,25 @@ def get_all_reviews():
 universities = [
     {
         "name": "Amity University",
-        "image": "https://picsum.photos/600/300?random=1"
+        "image": "https://upload.wikimedia.org/wikipedia/commons/0/0e/Amity_University%2C_Noisda.jpg"
     },
     {
         "name": "Galgotias University",
-        "image": "https://picsum.photos/600/300?random=2"
+        "image": "https://cache.careers360.mobi/media/presets/720X480/colleges/social-media/media-gallery/2488/2018/11/27/Campus%20View%20of%20Galgotias%20University%20Greater%20Noida_Campus-View.jpg"
     },
     {
         "name": "Sharda University",
-        "image": "https://picsum.photos/600/300?random=3"
+        "image": "https://images.shiksha.com/mediadata/images/1535364511phpq5vA9M.jpeg"
     },
     {
         "name": "Bennett University",
-        "image": "https://picsum.photos/600/300?random=4"
+        "image": "https://www.bennett.edu.in/wp-content/uploads/2021/04/Campus-View.jpg"
     },
     {
         "name": "JIMS Noida",
-        "image": "https://picsum.photos/600/300?random=5"
+        "image": "https://www.jimsindia.org/images/building.jpg"
     }
 ]
-
 # ---------------- ROUTES ---------------- #
 
 @app.route("/", methods=["GET", "POST"])
