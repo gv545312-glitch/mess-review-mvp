@@ -53,8 +53,8 @@ universities = [
         "image": "https://images.unsplash.com/photo-1562774053-701939374585?w=600"
     },
     {
-        "name": "Galgotias University",
-        "image": "https://images.unsplash.com/photo-1562774053-701939374585?w=600"
+    "name": "Galgotias University",
+    "image": "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=600"
     },
     {
         "name": "Sharda University",
