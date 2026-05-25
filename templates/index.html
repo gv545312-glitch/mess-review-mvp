@@ -1,9 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
     <title>Mess Review MVP</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
 
@@ -11,138 +14,105 @@
             margin:0;
             padding:0;
             box-sizing:border-box;
+        }
+
+        html{
             scroll-behavior:smooth;
-            font-family:Arial, sans-serif;
         }
 
         body{
-            background:#0f172a;
+            font-family:'Poppins',sans-serif;
+            background: linear-gradient(-45deg,#0f172a,#111827,#312e81,#7c3aed);
+            background-size:400% 400%;
+            animation: gradientBG 12s ease infinite;
             color:white;
-            overflow-x:hidden;
+            min-height:100vh;
+            padding:30px;
         }
 
-        .bg-blur{
-            position:fixed;
-            width:500px;
-            height:500px;
-            background:#7c3aed;
-            filter:blur(180px);
-            top:-100px;
-            right:-100px;
-            z-index:-1;
-            opacity:0.5;
+        @keyframes gradientBG{
+            0%{background-position:0% 50%;}
+            50%{background-position:100% 50%;}
+            100%{background-position:0% 50%;}
         }
-
-        .container{
-            width:90%;
-            max-width:1300px;
-            margin:auto;
-        }
-
-        /* HERO */
 
         .hero{
-            min-height:90vh;
-            display:flex;
-            flex-direction:column;
-            justify-content:center;
-            align-items:center;
             text-align:center;
+            margin-bottom:50px;
+            padding:50px 20px;
         }
 
         .hero h1{
-            font-size:5rem;
-            line-height:1.1;
-            margin-bottom:20px;
-            background:linear-gradient(to right,#ffffff,#c4b5fd);
-            -webkit-background-clip:text;
-            -webkit-text-fill-color:transparent;
+            font-size:4rem;
+            margin-bottom:15px;
+            font-weight:700;
         }
 
         .hero p{
-            font-size:1.3rem;
-            color:#d1d5db;
-            margin-bottom:30px;
+            font-size:1.2rem;
+            opacity:0.9;
         }
 
-        .hero-btn{
-            padding:18px 40px;
-            border:none;
-            border-radius:50px;
-            background:white;
-            color:black;
-            font-weight:bold;
-            font-size:1rem;
-            cursor:pointer;
-            transition:0.3s;
+        .container{
+            max-width:1200px;
+            margin:auto;
         }
 
-        .hero-btn:hover{
-            transform:scale(1.08);
-        }
-
-        /* UNIVERSITY SECTION */
-
-        .section-title{
-            font-size:2.5rem;
-            margin-bottom:40px;
-            text-align:center;
-        }
-
-        .card-grid{
+        .university-grid{
             display:grid;
             grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-            gap:30px;
-            margin-bottom:80px;
+            gap:25px;
+            margin-bottom:60px;
         }
 
         .card{
-            position:relative;
-            overflow:hidden;
+            background:rgba(255,255,255,0.1);
+            border:1px solid rgba(255,255,255,0.2);
             border-radius:25px;
-            transition:0.5s;
-            cursor:pointer;
-            height:320px;
+            overflow:hidden;
+            backdrop-filter:blur(12px);
+            transition:0.4s;
+            box-shadow:0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .card:hover{
+            transform:translateY(-10px) scale(1.03);
+            box-shadow:0 20px 40px rgba(0,0,0,0.5);
         }
 
         .card img{
             width:100%;
-            height:100%;
+            height:200px;
             object-fit:cover;
-            transition:0.5s;
-        }
-
-        .card:hover img{
-            transform:scale(1.1);
         }
 
         .card-content{
-            position:absolute;
-            bottom:0;
-            width:100%;
-            padding:25px;
-            background:linear-gradient(to top,rgba(0,0,0,0.9),transparent);
+            padding:20px;
         }
 
-        .card-content h3{
+        .card h2{
             font-size:1.4rem;
+            margin-bottom:10px;
         }
 
-        /* FORM */
+        .stars{
+            color:#ffd700;
+            margin-top:8px;
+            font-size:1.1rem;
+        }
 
         .form-section{
-            background:rgba(255,255,255,0.06);
-            border:1px solid rgba(255,255,255,0.1);
-            border-radius:35px;
-            padding:50px;
-            backdrop-filter:blur(20px);
-            box-shadow:0 20px 60px rgba(0,0,0,0.4);
-            margin-bottom:80px;
+            background:rgba(255,255,255,0.08);
+            padding:40px;
+            border-radius:30px;
+            backdrop-filter:blur(12px);
+            margin-bottom:60px;
+            box-shadow:0 10px 30px rgba(0,0,0,0.3);
         }
 
         .form-section h2{
-            margin-bottom:30px;
             text-align:center;
+            margin-bottom:25px;
             font-size:2rem;
         }
 
@@ -153,215 +123,185 @@
         }
 
         input, textarea, select{
-            padding:18px;
+            padding:15px;
             border:none;
             border-radius:15px;
             font-size:1rem;
-            background:#1e293b;
+            outline:none;
+            background:rgba(255,255,255,0.15);
             color:white;
         }
 
         textarea{
-            min-height:140px;
+            min-height:120px;
             resize:none;
         }
 
+        input::placeholder,
+        textarea::placeholder{
+            color:#ddd;
+        }
+
         button{
-            background:linear-gradient(to right,#7c3aed,#9333ea);
+            padding:15px;
             border:none;
-            padding:18px;
             border-radius:15px;
-            font-weight:bold;
-            font-size:1rem;
+            background:#8b5cf6;
             color:white;
+            font-size:1rem;
+            font-weight:600;
             cursor:pointer;
             transition:0.3s;
         }
 
         button:hover{
-            transform:translateY(-3px);
+            background:#a855f7;
+            box-shadow:0 0 20px #a855f7;
+            transform:scale(1.02);
         }
 
-        /* REVIEWS */
+        .reviews{
+            margin-top:50px;
+        }
 
-        .review-box{
-            background:#1e293b;
+        .review-card{
+            background:rgba(255,255,255,0.08);
             padding:25px;
             border-radius:20px;
             margin-bottom:20px;
-            transition:0.3s;
+            backdrop-filter:blur(10px);
+            border:1px solid rgba(255,255,255,0.15);
         }
 
-        .review-box:hover{
-            transform:translateY(-5px);
-        }
-
-        .review-box h3{
+        .review-card h3{
             margin-bottom:10px;
         }
 
-        .stars{
-            color:gold;
-            margin-bottom:10px;
-        }
-
-        .date{
+        .review-card p{
             margin-top:10px;
-            color:#94a3b8;
-            font-size:0.9rem;
+            line-height:1.6;
         }
 
-        footer{
-            text-align:center;
-            padding:40px;
-            color:#94a3b8;
+        .review-date{
+            margin-top:10px;
+            font-size:0.9rem;
+            opacity:0.7;
         }
 
         @media(max-width:768px){
 
             .hero h1{
-                font-size:3rem;
+                font-size:2.5rem;
             }
 
-            .hero p{
-                font-size:1rem;
+            .form-section{
+                padding:25px;
             }
 
         }
 
     </style>
 </head>
-
 <body>
 
-<div class="bg-blur"></div>
+    <div class="hero">
+        <h1>Mess Review MVP 🍽️</h1>
+        <p>Honest Reviews By Real Students</p>
+    </div>
 
-<div class="container">
+    <div class="container">
 
-    <!-- HERO -->
+        <div class="university-grid">
 
-    <section class="hero">
+            {% for uni in universities %}
 
-        <h1>Rate Your University Mess 🍽️</h1>
+            <div class="card">
 
-        <p>
-            India's Most Honest Student Mess Review Platform
-        </p>
+                <img src="{{ uni.image }}" alt="{{ uni.name }}">
 
-        <a href="#review-form">
-            <button class="hero-btn">
-                Explore Reviews 🚀
-            </button>
-        </a>
+                <div class="card-content">
 
-    </section>
+                    <h2>{{ uni.name }}</h2>
 
-    <!-- UNIVERSITIES -->
+                    <div class="stars">
+                        ⭐⭐⭐⭐⭐
+                    </div>
 
-    <h2 class="section-title">Top Universities</h2>
+                </div>
 
-    <div class="card-grid">
-
-        {% for uni in universities %}
-
-        <div class="card">
-
-            <img src="{{ uni.image }}" alt="{{ uni.name }}">
-
-            <div class="card-content">
-                <h3>{{ uni.name }}</h3>
             </div>
 
-        </div>
-
-        {% endfor %}
-
-    </div>
-
-    <!-- FORM -->
-
-    <section class="form-section" id="review-form">
-
-        <h2>Submit Your Review ✍️</h2>
-
-        {% if errors %}
-
-            {% for error in errors %}
-                <p style="color:#f87171; margin-bottom:10px;">
-                    {{ error }}
-                </p>
-            {% endfor %}
-
-        {% endif %}
-
-        <form method="POST">
-
-            <input
-                type="text"
-                name="university_name"
-                placeholder="University Name"
-                required
-            >
-
-            <select name="rating" required>
-
-                <option value="">Select Rating</option>
-
-                <option value="1">1 Star</option>
-                <option value="2">2 Star</option>
-                <option value="3">3 Star</option>
-                <option value="4">4 Star</option>
-                <option value="5">5 Star</option>
-
-            </select>
-
-            <textarea
-                name="feedback"
-                placeholder="Write your honest mess review..."
-                required
-            ></textarea>
-
-            <button type="submit">
-                Submit Review 🚀
-            </button>
-
-        </form>
-
-    </section>
-
-    <!-- REVIEWS -->
-
-    <h2 class="section-title">Student Reviews 💬</h2>
-
-    {% for review in reviews %}
-
-    <div class="review-box">
-
-        <h3>{{ review.university_name }}</h3>
-
-        <div class="stars">
-
-            {% for i in range(review.rating) %}
-                ⭐
             {% endfor %}
 
         </div>
 
-        <p>{{ review.feedback }}</p>
+        <div class="form-section">
 
-        <div class="date">
-            {{ review.created_at }}
+            <h2>Submit Your Review ✨</h2>
+
+            <form method="POST">
+
+                <input
+                    type="text"
+                    name="university_name"
+                    placeholder="Enter University Name"
+                    required
+                >
+
+                <select name="rating" required>
+                    <option value="">Select Rating</option>
+                    <option value="1">1 Star</option>
+                    <option value="2">2 Stars</option>
+                    <option value="3">3 Stars</option>
+                    <option value="4">4 Stars</option>
+                    <option value="5">5 Stars</option>
+                </select>
+
+                <textarea
+                    name="feedback"
+                    placeholder="Write your honest feedback..."
+                    required
+                ></textarea>
+
+                <button type="submit">
+                    Submit Review 🚀
+                </button>
+
+            </form>
+
+        </div>
+
+        <div class="reviews">
+
+            <h2 style="margin-bottom:25px; text-align:center;">
+                Latest Reviews 💬
+            </h2>
+
+            {% for review in reviews %}
+
+            <div class="review-card">
+
+                <h3>{{ review.university_name }}</h3>
+
+                <div class="stars">
+                    {% for i in range(review.rating) %}
+                        ⭐
+                    {% endfor %}
+                </div>
+
+                <p>{{ review.feedback }}</p>
+
+                <div class="review-date">
+                    {{ review.created_at }}
+                </div>
+
+            </div>
+
+            {% endfor %}
+
         </div>
 
     </div>
-
-    {% endfor %}
-
-</div>
-
-<footer>
-    Made with ❤️ by Students
-</footer>
 
 </body>
 </html>
