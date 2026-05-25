@@ -1,367 +1,199 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mess Review MVP</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>University Mess Reviews</title>
 
-    <style>
+<style>
 
-        *{
-            margin:0;
-            padding:0;
-            box-sizing:border-box;
-            scroll-behavior:smooth;
-            font-family:Arial, sans-serif;
-        }
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, sans-serif;
+}
 
-        body{
-            background:#0f172a;
-            color:white;
-            overflow-x:hidden;
-        }
+body{
+    background:#0f172a;
+    color:white;
+    padding:20px;
+}
 
-        .bg-blur{
-            position:fixed;
-            width:500px;
-            height:500px;
-            background:#7c3aed;
-            filter:blur(180px);
-            top:-100px;
-            right:-100px;
-            z-index:-1;
-            opacity:0.5;
-        }
+.heading{
+    text-align:center;
+    margin-bottom:40px;
+}
 
-        .container{
-            width:90%;
-            max-width:1300px;
-            margin:auto;
-        }
+.heading h1{
+    font-size:3rem;
+    margin-bottom:10px;
+}
 
-        /* HERO */
+.heading p{
+    color:#94a3b8;
+}
 
-        .hero{
-            min-height:90vh;
-            display:flex;
-            flex-direction:column;
-            justify-content:center;
-            align-items:center;
-            text-align:center;
-        }
+/* GRID */
 
-        .hero h1{
-            font-size:5rem;
-            line-height:1.1;
-            margin-bottom:20px;
-            background:linear-gradient(to right,#ffffff,#c4b5fd);
-            -webkit-background-clip:text;
-            -webkit-text-fill-color:transparent;
-        }
+.grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:25px;
+}
 
-        .hero p{
-            font-size:1.3rem;
-            color:#d1d5db;
-            margin-bottom:30px;
-        }
+/* CARD */
 
-        .hero-btn{
-            padding:18px 40px;
-            border:none;
-            border-radius:50px;
-            background:white;
-            color:black;
-            font-weight:bold;
-            font-size:1rem;
-            cursor:pointer;
-            transition:0.3s;
-        }
+.card{
+    background:#111827;
+    border-radius:22px;
+    overflow:hidden;
+    border:1px solid rgba(255,255,255,0.08);
+    transition:0.3s;
+}
 
-        .hero-btn:hover{
-            transform:scale(1.08);
-        }
+.card:hover{
+    transform:translateY(-5px);
+}
 
-        /* UNIVERSITY SECTION */
+.card img{
+    width:100%;
+    height:220px;
+    object-fit:cover;
+}
 
-        .section-title{
-            font-size:2.5rem;
-            margin-bottom:40px;
-            text-align:center;
-        }
+/* CONTENT */
 
-        .card-grid{
-            display:grid;
-            grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-            gap:30px;
-            margin-bottom:80px;
-        }
+.content{
+    padding:20px;
+}
 
-        .card{
-            position:relative;
-            overflow:hidden;
-            border-radius:25px;
-            transition:0.5s;
-            cursor:pointer;
-            height:320px;
-        }
+.uni-name{
+    font-size:1.4rem;
+    margin-bottom:20px;
+}
 
-        .card img{
-            width:100%;
-            height:100%;
-            object-fit:cover;
-            transition:0.5s;
-        }
+/* TABLE STYLE */
 
-        .card:hover img{
-            transform:scale(1.1);
-        }
+.info-box{
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:14px;
+    overflow:hidden;
+}
 
-        .card-content{
-            position:absolute;
-            bottom:0;
-            width:100%;
-            padding:25px;
-            background:linear-gradient(to top,rgba(0,0,0,0.9),transparent);
-        }
+.row{
+    display:flex;
+    justify-content:space-between;
+    padding:14px 16px;
+    border-bottom:1px solid rgba(255,255,255,0.08);
+}
 
-        .card-content h3{
-            font-size:1.4rem;
-        }
+.row:last-child{
+    border-bottom:none;
+}
 
-        /* FORM */
+.label{
+    color:#cbd5e1;
+}
 
-        .form-section{
-            background:rgba(255,255,255,0.06);
-            border:1px solid rgba(255,255,255,0.1);
-            border-radius:35px;
-            padding:50px;
-            backdrop-filter:blur(20px);
-            box-shadow:0 20px 60px rgba(0,0,0,0.4);
-            margin-bottom:80px;
-        }
+.value{
+    color:#facc15;
+    font-weight:bold;
+}
 
-        .form-section h2{
-            margin-bottom:30px;
-            text-align:center;
-            font-size:2rem;
-        }
+/* BUTTON */
 
-        form{
-            display:flex;
-            flex-direction:column;
-            gap:20px;
-        }
+.btn{
+    width:100%;
+    margin-top:18px;
+    padding:14px;
+    border:none;
+    border-radius:14px;
+    background:#7c3aed;
+    color:white;
+    font-size:1rem;
+    font-weight:bold;
+    cursor:pointer;
+}
 
-        input, textarea, select{
-            padding:18px;
-            border:none;
-            border-radius:15px;
-            font-size:1rem;
-            background:#1e293b;
-            color:white;
-        }
+/* MOBILE */
 
-        textarea{
-            min-height:140px;
-            resize:none;
-        }
+@media(max-width:768px){
 
-        button{
-            background:linear-gradient(to right,#7c3aed,#9333ea);
-            border:none;
-            padding:18px;
-            border-radius:15px;
-            font-weight:bold;
-            font-size:1rem;
-            color:white;
-            cursor:pointer;
-            transition:0.3s;
-        }
+    .grid{
+        grid-template-columns:1fr;
+    }
 
-        button:hover{
-            transform:translateY(-3px);
-        }
+    .heading h1{
+        font-size:2rem;
+    }
 
-        /* REVIEWS */
+}
 
-        .review-box{
-            background:#1e293b;
-            padding:25px;
-            border-radius:20px;
-            margin-bottom:20px;
-            transition:0.3s;
-        }
-
-        .review-box:hover{
-            transform:translateY(-5px);
-        }
-
-        .review-box h3{
-            margin-bottom:10px;
-        }
-
-        .stars{
-            color:gold;
-            margin-bottom:10px;
-        }
-
-        .date{
-            margin-top:10px;
-            color:#94a3b8;
-            font-size:0.9rem;
-        }
-
-        footer{
-            text-align:center;
-            padding:40px;
-            color:#94a3b8;
-        }
-
-        @media(max-width:768px){
-
-            .hero h1{
-                font-size:3rem;
-            }
-
-            .hero p{
-                font-size:1rem;
-            }
-
-        }
-
-    </style>
+</style>
 </head>
 
 <body>
 
-<div class="bg-blur"></div>
+<div class="heading">
 
-<div class="container">
+    <h1>🍽️ Mess Review Platform</h1>
 
-    <!-- HERO -->
+    <p>
+        Compare mess quality across top universities
+    </p>
 
-    <section class="hero">
+</div>
 
-        <h1>Rate Your University Mess 🍽️</h1>
+<div class="grid">
 
-        <p>
-            India's Most Honest Student Mess Review Platform
-        </p>
+{% for uni in universities %}
 
-        <a href="#review-form">
-            <button class="hero-btn">
-                Explore Reviews 🚀
-            </button>
-        </a>
+<div class="card">
 
-    </section>
+    <img src="{{ uni.image }}" alt="{{ uni.name }}">
 
-    <!-- UNIVERSITIES -->
+    <div class="content">
 
-    <h2 class="section-title">Top Universities</h2>
+        <h2 class="uni-name">
+            {{ uni.name }}
+        </h2>
 
-    <div class="card-grid">
+        <div class="info-box">
 
-        {% for uni in universities %}
+            <div class="row">
+                <span class="label">Food Quality</span>
+                <span class="value">⭐ 4.2</span>
+            </div>
 
-        <div class="card">
+            <div class="row">
+                <span class="label">Hygiene</span>
+                <span class="value">⭐ 4.0</span>
+            </div>
 
-            <img src="{{ uni.image }}" alt="{{ uni.name }}">
+            <div class="row">
+                <span class="label">Taste</span>
+                <span class="value">⭐ 4.3</span>
+            </div>
 
-            <div class="card-content">
-                <h3>{{ uni.name }}</h3>
+            <div class="row">
+                <span class="label">Overall</span>
+                <span class="value">⭐ 4.1</span>
             </div>
 
         </div>
 
-        {% endfor %}
+        <button class="btn">
+            View Reviews
+        </button>
 
     </div>
-
-    <!-- FORM -->
-
-    <section class="form-section" id="review-form">
-
-        <h2>Submit Your Review ✍️</h2>
-
-        {% if errors %}
-
-            {% for error in errors %}
-                <p style="color:#f87171; margin-bottom:10px;">
-                    {{ error }}
-                </p>
-            {% endfor %}
-
-        {% endif %}
-
-        <form method="POST">
-
-            <input
-                type="text"
-                name="university_name"
-                placeholder="University Name"
-                required
-            >
-
-            <select name="rating" required>
-
-                <option value="">Select Rating</option>
-
-                <option value="1">1 Star</option>
-                <option value="2">2 Star</option>
-                <option value="3">3 Star</option>
-                <option value="4">4 Star</option>
-                <option value="5">5 Star</option>
-
-            </select>
-
-            <textarea
-                name="feedback"
-                placeholder="Write your honest mess review..."
-                required
-            ></textarea>
-
-            <button type="submit">
-                Submit Review 🚀
-            </button>
-
-        </form>
-
-    </section>
-
-    <!-- REVIEWS -->
-
-    <h2 class="section-title">Student Reviews 💬</h2>
-
-    {% for review in reviews %}
-
-    <div class="review-box">
-
-        <h3>{{ review.university_name }}</h3>
-
-        <div class="stars">
-
-            {% for i in range(review.rating) %}
-                ⭐
-            {% endfor %}
-
-        </div>
-
-        <p>{{ review.feedback }}</p>
-
-        <div class="date">
-            {{ review.created_at }}
-        </div>
-
-    </div>
-
-    {% endfor %}
 
 </div>
 
-<footer>
-    Made with ❤️ by Students
-</footer>
+{% endfor %}
+
+</div>
 
 </body>
 </html>
