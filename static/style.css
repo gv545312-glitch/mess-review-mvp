@@ -2,57 +2,80 @@
     margin:0;
     padding:0;
     box-sizing:border-box;
-    font-family: 'Poppins', sans-serif;
+    font-family:'Poppins',sans-serif;
 }
 
 body{
-    background:#f4f7ff;
-    color:#1e293b;
-    padding:20px;
+    background:#f4f7fb;
+    color:#111827;
 }
 
 /* HERO */
 
 .hero{
-    background:linear-gradient(135deg,#8b5cf6,#6366f1);
-    border-radius:30px;
-    padding:40px 20px;
+    height:320px;
+    background:linear-gradient(135deg,#6d5dfc,#8b5cf6);
+    position:relative;
+    display:flex;
+    align-items:center;
+    justify-content:center;
     text-align:center;
+    overflow:hidden;
+}
+
+.overlay{
+    position:absolute;
+    inset:0;
+    background:rgba(0,0,0,0.15);
+}
+
+.hero-content{
+    position:relative;
+    z-index:2;
     color:white;
-    margin-bottom:30px;
-    box-shadow:0 10px 30px rgba(99,102,241,0.25);
+    width:90%;
+    max-width:700px;
 }
 
 .hero h1{
-    font-size:42px;
-    margin-bottom:10px;
+    font-size:52px;
+    font-weight:700;
+    margin-bottom:15px;
 }
 
 .hero p{
     font-size:18px;
-    opacity:0.9;
+    opacity:0.95;
+    margin-bottom:30px;
 }
-
-/* SEARCH */
 
 .search-box{
     width:100%;
-    padding:16px;
+    padding:18px;
     border:none;
-    border-radius:18px;
-    margin-bottom:28px;
+    border-radius:16px;
     font-size:16px;
-    background:white;
-    box-shadow:0 4px 12px rgba(0,0,0,0.08);
     outline:none;
+    box-shadow:0 8px 20px rgba(0,0,0,0.15);
+}
+
+/* MAIN */
+
+.container{
+    width:92%;
+    max-width:1300px;
+    margin:auto;
+    margin-top:-70px;
+    position:relative;
+    z-index:10;
 }
 
 /* GRID */
 
 .university-grid{
     display:grid;
-    grid-template-columns:repeat(5,1fr);
-    gap:20px;
+    grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+    gap:28px;
 }
 
 /* CARD */
@@ -61,141 +84,87 @@ body{
     background:white;
     border-radius:24px;
     overflow:hidden;
-    box-shadow:0 8px 20px rgba(0,0,0,0.08);
+    box-shadow:0 10px 30px rgba(0,0,0,0.08);
     transition:0.3s;
-    border:1px solid #e5e7eb;
 }
 
 .card:hover{
-    transform:translateY(-5px);
+    transform:translateY(-8px);
 }
 
 .card img{
     width:100%;
-    height:170px;
+    height:220px;
     object-fit:cover;
 }
 
 .card-content{
-    padding:16px;
-}
-
-.card h3{
-    font-size:18px;
+    padding:22px;
     text-align:center;
-    font-weight:700;
-    line-height:1.4;
 }
 
-/* REVIEW BOX */
-
-.review-box{
-    background:white;
-    margin-top:35px;
-    padding:25px;
-    border-radius:25px;
-    box-shadow:0 8px 20px rgba(0,0,0,0.08);
+.card-content h2{
+    font-size:22px;
+    margin-bottom:18px;
 }
 
-.review-box h2{
-    margin-bottom:20px;
-}
-
-form{
-    display:flex;
-    flex-direction:column;
-    gap:15px;
-}
-
-input,
-select,
-textarea{
-    padding:15px;
-    border-radius:15px;
-    border:1px solid #dbe4ff;
-    font-size:15px;
-    background:#f8faff;
-    outline:none;
-}
-
-textarea{
-    resize:none;
-    height:120px;
-}
-
-button{
-    background:linear-gradient(135deg,#8b5cf6,#6366f1);
-    color:white;
+.card-content button{
     border:none;
-    padding:15px;
-    border-radius:15px;
-    font-size:16px;
+    background:linear-gradient(135deg,#6d5dfc,#8b5cf6);
+    color:white;
+    padding:12px 24px;
+    border-radius:14px;
+    font-size:15px;
     font-weight:600;
     cursor:pointer;
     transition:0.3s;
 }
 
-button:hover{
-    transform:scale(1.02);
-}
-
-/* REVIEWS */
-
-.review-section{
-    margin-top:40px;
-}
-
-.review-card{
-    background:white;
-    padding:20px;
-    border-radius:20px;
-    margin-bottom:16px;
-    box-shadow:0 8px 20px rgba(0,0,0,0.08);
-    border-left:5px solid #8b5cf6;
-}
-
-.review-card h3{
-    margin-bottom:8px;
-}
-
-.stars{
-    color:#f59e0b;
-    margin-bottom:10px;
+.card-content button:hover{
+    transform:scale(1.05);
 }
 
 /* FOOTER */
 
 .footer{
     text-align:center;
-    margin-top:35px;
-    color:#64748b;
-    font-weight:600;
+    padding:40px 20px;
+    color:#6b7280;
+    font-size:16px;
+    font-weight:500;
 }
 
 /* MOBILE */
 
 @media(max-width:768px){
 
-    body{
-        padding:14px;
-    }
-
     .hero{
-        padding:28px 16px;
-        border-radius:24px;
+        height:280px;
+        padding:20px;
     }
 
     .hero h1{
-        font-size:28px;
+        font-size:34px;
+        line-height:1.2;
     }
 
     .hero p{
+        font-size:15px;
+    }
+
+    .search-box{
+        padding:15px;
         font-size:14px;
+    }
+
+    .container{
+        width:92%;
+        margin-top:-40px;
     }
 
     .university-grid{
         grid-template-columns:repeat(2,1fr);
-        gap:14px;
+        gap:16px;
     }
 
     .card{
@@ -203,35 +172,26 @@ button:hover{
     }
 
     .card img{
-        height:100px;
+        height:120px;
     }
 
     .card-content{
-        padding:10px;
+        padding:12px;
     }
 
-    .card h3{
-        font-size:13px;
-    }
-
-    .review-box{
-        padding:18px;
-        border-radius:20px;
-    }
-
-    input,
-    select,
-    textarea{
-        padding:13px;
+    .card-content h2{
         font-size:14px;
+        margin-bottom:10px;
     }
 
-    button{
-        font-size:15px;
+    .card-content button{
+        width:100%;
+        padding:10px;
+        font-size:13px;
+        border-radius:10px;
     }
 
-    .review-card{
-        padding:16px;
-        border-radius:16px;
+    .footer{
+        font-size:14px;
     }
 }
