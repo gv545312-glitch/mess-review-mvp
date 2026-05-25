@@ -3,288 +3,106 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>University Mess Reviews</title>
 
-    <title>Mess Review MVP</title>
-
-    <style>
-
-        *{
-            margin:0;
-            padding:0;
-            box-sizing:border-box;
-            font-family: Arial, sans-serif;
-        }
-
-        body{
-            background:#0f172a;
-            color:white;
-            min-height:100vh;
-        }
-
-        .container{
-            width:95%;
-            max-width:1200px;
-            margin:auto;
-            padding:20px 0;
-        }
-
-        .hero{
-            background:linear-gradient(135deg,#4f46e5,#7c3aed);
-            padding:40px 20px;
-            border-radius:25px;
-            text-align:center;
-            margin-bottom:30px;
-            box-shadow:0 10px 30px rgba(0,0,0,0.3);
-        }
-
-        .hero h1{
-            font-size:42px;
-            margin-bottom:10px;
-        }
-
-        .hero p{
-            color:#ddd;
-            font-size:18px;
-        }
-
-        .section-title{
-            margin:25px 0 15px;
-            font-size:28px;
-        }
-
-        .university-grid{
-            display:grid;
-            grid-template-columns:repeat(2,1fr);
-            gap:18px;
-        }
-
-        .card{
-            background:rgba(255,255,255,0.08);
-            border-radius:20px;
-            overflow:hidden;
-            border:1px solid rgba(255,255,255,0.1);
-            backdrop-filter:blur(10px);
-            transition:0.3s;
-        }
-
-        .card:hover{
-            transform:translateY(-5px);
-            box-shadow:0 10px 25px rgba(0,0,0,0.4);
-        }
-
-        .card img{
-            width:100%;
-            height:150px;
-            object-fit:cover;
-        }
-
-        .card h3{
-            padding:15px;
-            text-align:center;
-            font-size:18px;
-        }
-
-        .review-box{
-            margin-top:40px;
-            background:rgba(255,255,255,0.08);
-            padding:25px;
-            border-radius:25px;
-            border:1px solid rgba(255,255,255,0.1);
-        }
-
-        form{
-            display:flex;
-            flex-direction:column;
-            gap:15px;
-        }
-
-        input,
-        select,
-        textarea{
-            padding:14px;
-            border:none;
-            border-radius:15px;
-            background:#1e293b;
-            color:white;
-            font-size:16px;
-        }
-
-        textarea{
-            resize:none;
-            height:120px;
-        }
-
-        button{
-            padding:15px;
-            border:none;
-            border-radius:15px;
-            background:linear-gradient(135deg,#4f46e5,#7c3aed);
-            color:white;
-            font-size:18px;
-            cursor:pointer;
-            transition:0.3s;
-        }
-
-        button:hover{
-            opacity:0.9;
-            transform:scale(1.02);
-        }
-
-        .reviews{
-            margin-top:40px;
-        }
-
-        .review-card{
-            background:#1e293b;
-            padding:20px;
-            border-radius:20px;
-            margin-bottom:15px;
-            border-left:5px solid #7c3aed;
-        }
-
-        .review-card h3{
-            margin-bottom:10px;
-        }
-
-        .stars{
-            color:gold;
-            margin-bottom:10px;
-        }
-
-        .date{
-            margin-top:10px;
-            color:#aaa;
-            font-size:14px;
-        }
-
-        @media(max-width:768px){
-
-            .hero h1{
-                font-size:30px;
-            }
-
-            .hero p{
-                font-size:15px;
-            }
-
-            .university-grid{
-                grid-template-columns:repeat(2,1fr);
-                gap:12px;
-            }
-
-            .card img{
-                height:110px;
-            }
-
-            .card h3{
-                font-size:14px;
-                padding:10px;
-            }
-
-            .review-box{
-                padding:18px;
-            }
-
-            input,
-            select,
-            textarea{
-                font-size:14px;
-            }
-
-            button{
-                font-size:16px;
-            }
-        }
-
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
 <body>
 
-    <div class="container">
+    <div class="hero">
+        <h1>🍽️ University Mess Reviews</h1>
+        <p>Rate your university mess experience</p>
+    </div>
 
-        <div class="hero">
-            <h1>Rate Your University Mess 🍽️</h1>
-            <p>Share honest reviews about your university food experience</p>
-        </div>
+    <input 
+        type="text"
+        class="search-box"
+        placeholder="Search university..."
+    >
 
-        <h2 class="section-title">Top Universities</h2>
+    <div class="university-grid">
 
-        <div class="university-grid">
+        {% for uni in universities %}
 
-            {% for uni in universities %}
+        <div class="card">
 
-            <div class="card">
-                <img src="{{ uni.image }}" alt="{{ uni.name }}">
+            <img src="{{ uni.image }}" alt="{{ uni.name }}">
+
+            <div class="card-content">
                 <h3>{{ uni.name }}</h3>
             </div>
 
-            {% endfor %}
-
         </div>
 
-        <div class="review-box">
+        {% endfor %}
 
-            <h2 class="section-title">Submit Review</h2>
+    </div>
 
-            <form method="POST">
+    <div class="review-box">
 
-                <input 
-                    type="text"
-                    name="university_name"
-                    placeholder="Enter University Name"
-                    required
-                >
+        <h2>Submit Review ✨</h2>
 
-                <select name="rating" required>
-                    <option value="">Select Rating</option>
-                    <option value="1">1 Star</option>
-                    <option value="2">2 Stars</option>
-                    <option value="3">3 Stars</option>
-                    <option value="4">4 Stars</option>
-                    <option value="5">5 Stars</option>
-                </select>
+        <form method="POST">
 
-                <textarea
-                    name="feedback"
-                    placeholder="Write your review..."
-                    required
-                ></textarea>
+            <input 
+                type="text"
+                name="university_name"
+                placeholder="University Name"
+                required
+            >
 
-                <button type="submit">
-                    Submit Review
-                </button>
+            <select name="rating" required>
+                <option value="">Select Rating</option>
+                <option value="1">⭐ 1 Star</option>
+                <option value="2">⭐⭐ 2 Stars</option>
+                <option value="3">⭐⭐⭐ 3 Stars</option>
+                <option value="4">⭐⭐⭐⭐ 4 Stars</option>
+                <option value="5">⭐⭐⭐⭐⭐ 5 Stars</option>
+            </select>
 
-            </form>
+            <textarea
+                name="feedback"
+                placeholder="Write your review..."
+                required
+            ></textarea>
 
-        </div>
+            <button type="submit">
+                Submit Review
+            </button>
 
-        <div class="reviews">
+        </form>
 
-            <h2 class="section-title">Latest Reviews</h2>
+    </div>
 
-            {% for review in reviews %}
+    <div class="review-section">
 
-            <div class="review-card">
+        <h2 style="margin-bottom:20px;">Latest Reviews 💬</h2>
 
-                <h3>{{ review.university_name }}</h3>
+        {% for review in reviews %}
 
-                <div class="stars">
-                    ⭐ {{ review.rating }}/5
-                </div>
+        <div class="review-card">
 
-                <p>{{ review.feedback }}</p>
+            <h3>{{ review.university_name }}</h3>
 
-                <div class="date">
-                    {{ review.created_at }}
-                </div>
-
+            <div class="stars">
+                ⭐ {{ review.rating }}/5
             </div>
 
-            {% endfor %}
+            <p>{{ review.feedback }}</p>
+
+            <p style="margin-top:10px; color:gray; font-size:13px;">
+                {{ review.created_at }}
+            </p>
 
         </div>
 
+        {% endfor %}
+
+    </div>
+
+    <div class="footer">
+        Made by Garima 💜
     </div>
 
 </body>
