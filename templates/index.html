@@ -3,19 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mess Review System</title>
+    <title>University Mess Reviews</title>
 
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
 
+    <!-- HERO SECTION -->
+
     <section class="hero">
 
+        <div class="overlay"></div>
+
         <nav>
-            <div class="logo">🍴 MESS REVIEW SYSTEM</div>
+            <div class="logo">
+                🍴 MESS REVIEW SYSTEM
+            </div>
 
             <div class="nav-links">
                 <a href="#">Explore</a>
@@ -26,7 +31,7 @@
 
         <div class="hero-content">
 
-            <div class="left">
+            <div class="hero-left">
 
                 <h1>
                     Rate Your <br>
@@ -58,15 +63,19 @@
 
             </div>
 
-            <div class="right">
-                <img src="https://images.unsplash.com/photo-1552566626-52f8b828add9?q=80&w=1200&auto=format&fit=crop" alt="">
+            <div class="hero-right">
+
+                <img src="https://images.unsplash.com/photo-1552566626-52f8b828add9?q=80&w=1200&auto=format&fit=crop" alt="Mess">
+
             </div>
 
         </div>
 
     </section>
 
-    <section class="search-section">
+    <!-- SEARCH -->
+
+    <section class="search-box">
 
         <input type="text" placeholder="Search university by name or city...">
 
@@ -74,14 +83,21 @@
 
     </section>
 
-    <section class="cards-section">
+    <!-- UNIVERSITIES -->
 
-        <h2>Universities</h2>
+    <section class="universities">
 
-        <div class="cards">
+        <div class="section-title">
+            <h2>Top Universities</h2>
+            <p>Explore and review the best university mess experiences</p>
+        </div>
+
+        <div class="university-grid">
+
+            <!-- CARD -->
 
             <div class="card">
-                <img src="https://images.unsplash.com/photo-1562774053-701939374585?w=800" alt="">
+                <img src="https://images.unsplash.com/photo-1562774053-701939374585?w=1000" alt="">
                 <div class="card-content">
                     <h3>Amity University</h3>
                     <button>View Reviews</button>
@@ -89,7 +105,7 @@
             </div>
 
             <div class="card">
-                <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800" alt="">
+                <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=1000" alt="">
                 <div class="card-content">
                     <h3>Galgotias University</h3>
                     <button>View Reviews</button>
@@ -97,7 +113,7 @@
             </div>
 
             <div class="card">
-                <img src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=800" alt="">
+                <img src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=1000" alt="">
                 <div class="card-content">
                     <h3>Sharda University</h3>
                     <button>View Reviews</button>
@@ -105,9 +121,17 @@
             </div>
 
             <div class="card">
-                <img src="https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?w=800" alt="">
+                <img src="https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?w=1000" alt="">
                 <div class="card-content">
                     <h3>Bennett University</h3>
+                    <button>View Reviews</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1519452575417-564c1401ecc0?w=1000" alt="">
+                <div class="card-content">
+                    <h3>JIMS Noida</h3>
                     <button>View Reviews</button>
                 </div>
             </div>
@@ -116,8 +140,12 @@
 
     </section>
 
+    <!-- FOOTER -->
+
     <footer>
-        Made with ❤️ by Garima
+
+        <p>Made with ❤️ by Garima</p>
+
     </footer>
 
 </body>
