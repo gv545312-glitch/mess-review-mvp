@@ -6,9 +6,8 @@
     <title>University Mess Reviews</title>
 
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
+
 <body>
 
     <!-- HERO SECTION -->
@@ -17,55 +16,44 @@
 
         <div class="overlay"></div>
 
-        <nav>
-            <div class="logo">
-                🍴 MESS REVIEW SYSTEM
-            </div>
-
-            <div class="nav-links">
-                <a href="#">Explore</a>
-                <a href="#">Write Review</a>
-                <a href="#">Dashboard</a>
-            </div>
-        </nav>
-
         <div class="hero-content">
 
-            <div class="hero-left">
+            <p class="tag">🍽 MESS REVIEW SYSTEM</p>
 
-                <h1>
-                    Rate Your <br>
-                    <span>University Mess</span>
-                </h1>
+            <h1>
+                Rate Your <span>University Mess</span>
+            </h1>
 
-                <p>
-                    Honest student reviews on campus dining across India
-                </p>
+            <p class="subtitle">
+                Honest student reviews on campus dining across India
+            </p>
 
-                <div class="stats">
+            <!-- SEARCH -->
 
-                    <div class="stat-box">
-                        <h2>12</h2>
-                        <span>Universities</span>
-                    </div>
+            <div class="search-box">
 
-                    <div class="stat-box">
-                        <h2>847</h2>
-                        <span>Reviews</span>
-                    </div>
+                <input
+                    type="text"
+                    id="searchInput"
+                    placeholder="Search university by name..."
+                    onkeyup="searchUniversity()"
+                >
 
-                    <div class="stat-box">
-                        <h2>3.8</h2>
-                        <span>Avg Rating</span>
-                    </div>
-
-                </div>
+                <button>
+                    Search
+                </button>
 
             </div>
 
-            <div class="hero-right">
+            <!-- REQUEST -->
 
-                <img src="https://images.unsplash.com/photo-1552566626-52f8b828add9?q=80&w=1200&auto=format&fit=crop" alt="Mess">
+            <div class="request-box">
+
+                <p>Can't find your university?</p>
+
+                <button onclick="showPopup()">
+                    Request to Add University
+                </button>
 
             </div>
 
@@ -73,80 +61,201 @@
 
     </section>
 
-    <!-- SEARCH -->
+    <!-- UNIVERSITY SECTION -->
 
-    <section class="search-box">
-
-        <input type="text" placeholder="Search university by name or city...">
-
-        <button>Search</button>
-
-    </section>
-
-    <!-- UNIVERSITIES -->
-
-    <section class="universities">
+    <section class="universities-section">
 
         <div class="section-title">
+
             <h2>Top Universities</h2>
-            <p>Explore and review the best university mess experiences</p>
+
+            <p>Select your university and explore mess reviews</p>
+
         </div>
 
-        <div class="university-grid">
+        <div class="universities-grid" id="universityGrid">
 
             <!-- CARD -->
 
-            <div class="card">
-                <img src="https://images.unsplash.com/photo-1562774053-701939374585?w=1000" alt="">
+            <div class="uni-card">
+
+                <img src="https://images.unsplash.com/photo-1562774053-701939374585?q=80&w=1200&auto=format&fit=crop" alt="Amity">
+
                 <div class="card-content">
+
                     <h3>Amity University</h3>
-                    <button>View Reviews</button>
+
+                    <p>Noida, Uttar Pradesh</p>
+
+                    <div class="rating">
+                        ⭐ 4.2
+                    </div>
+
+                    <button>Explore</button>
+
                 </div>
+
             </div>
 
-            <div class="card">
-                <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=1000" alt="">
+            <!-- CARD -->
+
+            <div class="uni-card">
+
+                <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=1200&auto=format&fit=crop" alt="Galgotias">
+
                 <div class="card-content">
+
                     <h3>Galgotias University</h3>
-                    <button>View Reviews</button>
+
+                    <p>Greater Noida</p>
+
+                    <div class="rating">
+                        ⭐ 4.0
+                    </div>
+
+                    <button>Explore</button>
+
                 </div>
+
             </div>
 
-            <div class="card">
-                <img src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=1000" alt="">
+            <!-- CARD -->
+
+            <div class="uni-card">
+
+                <img src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=1200&auto=format&fit=crop" alt="Sharda">
+
                 <div class="card-content">
+
                     <h3>Sharda University</h3>
-                    <button>View Reviews</button>
+
+                    <p>Greater Noida</p>
+
+                    <div class="rating">
+                        ⭐ 4.3
+                    </div>
+
+                    <button>Explore</button>
+
                 </div>
+
             </div>
 
-            <div class="card">
-                <img src="https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?w=1000" alt="">
+            <!-- CARD -->
+
+            <div class="uni-card">
+
+                <img src="https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?q=80&w=1200&auto=format&fit=crop" alt="Bennett">
+
                 <div class="card-content">
+
                     <h3>Bennett University</h3>
-                    <button>View Reviews</button>
+
+                    <p>Greater Noida</p>
+
+                    <div class="rating">
+                        ⭐ 4.1
+                    </div>
+
+                    <button>Explore</button>
+
                 </div>
+
             </div>
 
-            <div class="card">
-                <img src="https://images.unsplash.com/photo-1519452575417-564c1401ecc0?w=1000" alt="">
+            <!-- CARD -->
+
+            <div class="uni-card">
+
+                <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1200&auto=format&fit=crop" alt="JIMS">
+
                 <div class="card-content">
+
                     <h3>JIMS Noida</h3>
-                    <button>View Reviews</button>
+
+                    <p>Noida</p>
+
+                    <div class="rating">
+                        ⭐ 3.9
+                    </div>
+
+                    <button>Explore</button>
+
                 </div>
+
             </div>
 
         </div>
 
     </section>
+
+    <!-- POPUP -->
+
+    <div class="popup" id="popup">
+
+        <div class="popup-content">
+
+            <span class="close-btn" onclick="closePopup()">×</span>
+
+            <h2>Request University</h2>
+
+            <input type="text" placeholder="University Name">
+
+            <input type="text" placeholder="City">
+
+            <textarea placeholder="Why should we add it?"></textarea>
+
+            <button>
+                Submit Request
+            </button>
+
+        </div>
+
+    </div>
 
     <!-- FOOTER -->
 
     <footer>
 
-        <p>Made with ❤️ by Garima</p>
+        <p>
+            Made with ❤️ by Garima
+        </p>
 
     </footer>
+
+    <!-- SCRIPT -->
+
+    <script>
+
+        function searchUniversity() {
+
+            let input = document.getElementById("searchInput").value.toLowerCase();
+
+            let cards = document.querySelectorAll(".uni-card");
+
+            cards.forEach(card => {
+
+                let text = card.innerText.toLowerCase();
+
+                if (text.includes(input)) {
+                    card.style.display = "block";
+                } else {
+                    card.style.display = "none";
+                }
+
+            });
+
+        }
+
+        function showPopup() {
+            document.getElementById("popup").style.display = "flex";
+        }
+
+        function closePopup() {
+            document.getElementById("popup").style.display = "none";
+        }
+
+    </script>
 
 </body>
 </html>
