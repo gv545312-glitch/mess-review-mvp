@@ -1,14 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>University Mess Reviews</title>
+
+    <title>Mess Review</title>
 
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
+
 <body>
 
     <!-- HERO SECTION -->
@@ -17,136 +20,233 @@
 
         <div class="overlay"></div>
 
-        <nav>
-            <div class="logo">
-                🍴 MESS REVIEW SYSTEM
-            </div>
-
-            <div class="nav-links">
-                <a href="#">Explore</a>
-                <a href="#">Write Review</a>
-                <a href="#">Dashboard</a>
-            </div>
-        </nav>
-
         <div class="hero-content">
 
-            <div class="hero-left">
+            <h1>
+                🍽️ Rate Your University Mess
+            </h1>
 
-                <h1>
-                    Rate Your <br>
-                    <span>University Mess</span>
-                </h1>
+            <p>
+                Discover honest reviews from students across India
+            </p>
+
+            <div class="search-wrapper">
+
+                <input
+                    type="text"
+                    id="searchInput"
+                    placeholder="Search university..."
+                >
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- MAIN -->
+
+    <div class="container">
+
+        <!-- STATS -->
+
+        <div class="stats">
+
+            <div class="stat-box">
+                <h2>120+</h2>
+                <p>Reviews</p>
+            </div>
+
+            <div class="stat-box">
+                <h2>25+</h2>
+                <p>Universities</p>
+            </div>
+
+            <div class="stat-box">
+                <h2>4.3★</h2>
+                <p>Average Rating</p>
+            </div>
+
+        </div>
+
+
+        <!-- UNIVERSITY GRID -->
+
+        <div class="section-header">
+            <h2>Top Universities</h2>
+        </div>
+
+        <div class="university-grid" id="universityGrid">
+
+            {% for uni in universities %}
+
+            <div class="card">
+
+                <img src="{{ uni.image }}" alt="{{ uni.name }}">
+
+                <div class="card-content">
+
+                    <h3>{{ uni.name }}</h3>
+
+                    <div class="card-buttons">
+
+                        <button class="explore-btn">
+                            Explore
+                        </button>
+
+                        <button class="review-btn">
+                            Review
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+
+        <!-- REVIEW FORM -->
+
+        <div class="review-box">
+
+            <div class="section-header">
+                <h2>Write a Review ✨</h2>
+            </div>
+
+            <form method="POST">
+
+                <input
+                    type="text"
+                    name="university_name"
+                    placeholder="University Name"
+                    required
+                >
+
+                <select name="rating" required>
+
+                    <option value="">
+                        Select Rating
+                    </option>
+
+                    <option value="1">
+                        ⭐ 1 Star
+                    </option>
+
+                    <option value="2">
+                        ⭐⭐ 2 Stars
+                    </option>
+
+                    <option value="3">
+                        ⭐⭐⭐ 3 Stars
+                    </option>
+
+                    <option value="4">
+                        ⭐⭐⭐⭐ 4 Stars
+                    </option>
+
+                    <option value="5">
+                        ⭐⭐⭐⭐⭐ 5 Stars
+                    </option>
+
+                </select>
+
+                <textarea
+                    name="feedback"
+                    placeholder="Share your experience..."
+                    required
+                ></textarea>
+
+                <button type="submit" class="submit-btn">
+                    Submit Review
+                </button>
+
+            </form>
+
+        </div>
+
+
+        <!-- REVIEWS -->
+
+        <div class="reviews-section">
+
+            <div class="section-header">
+                <h2>Latest Reviews 💬</h2>
+            </div>
+
+            {% for review in reviews %}
+
+            <div class="review-card">
+
+                <div class="review-top">
+
+                    <h3>
+                        {{ review.university_name }}
+                    </h3>
+
+                    <span>
+                        ⭐ {{ review.rating }}/5
+                    </span>
+
+                </div>
 
                 <p>
-                    Honest student reviews on campus dining across India
+                    {{ review.feedback }}
                 </p>
 
-                <div class="stats">
-
-                    <div class="stat-box">
-                        <h2>12</h2>
-                        <span>Universities</span>
-                    </div>
-
-                    <div class="stat-box">
-                        <h2>847</h2>
-                        <span>Reviews</span>
-                    </div>
-
-                    <div class="stat-box">
-                        <h2>3.8</h2>
-                        <span>Avg Rating</span>
-                    </div>
-
-                </div>
+                <small>
+                    {{ review.created_at }}
+                </small>
 
             </div>
 
-            <div class="hero-right">
-
-                <img src="https://images.unsplash.com/photo-1552566626-52f8b828add9?q=80&w=1200&auto=format&fit=crop" alt="Mess">
-
-            </div>
+            {% endfor %}
 
         </div>
 
-    </section>
+    </div>
 
-    <!-- SEARCH -->
-
-    <section class="search-box">
-
-        <input type="text" placeholder="Search university by name or city...">
-
-        <button>Search</button>
-
-    </section>
-
-    <!-- UNIVERSITIES -->
-
-    <section class="universities">
-
-        <div class="section-title">
-            <h2>Top Universities</h2>
-            <p>Explore and review the best university mess experiences</p>
-        </div>
-
-        <div class="university-grid">
-
-            <!-- CARD -->
-
-            <div class="card">
-                <img src="https://images.unsplash.com/photo-1562774053-701939374585?w=1000" alt="">
-                <div class="card-content">
-                    <h3>Amity University</h3>
-                    <button>View Reviews</button>
-                </div>
-            </div>
-
-            <div class="card">
-                <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=1000" alt="">
-                <div class="card-content">
-                    <h3>Galgotias University</h3>
-                    <button>View Reviews</button>
-                </div>
-            </div>
-
-            <div class="card">
-                <img src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=1000" alt="">
-                <div class="card-content">
-                    <h3>Sharda University</h3>
-                    <button>View Reviews</button>
-                </div>
-            </div>
-
-            <div class="card">
-                <img src="https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?w=1000" alt="">
-                <div class="card-content">
-                    <h3>Bennett University</h3>
-                    <button>View Reviews</button>
-                </div>
-            </div>
-
-            <div class="card">
-                <img src="https://images.unsplash.com/photo-1519452575417-564c1401ecc0?w=1000" alt="">
-                <div class="card-content">
-                    <h3>JIMS Noida</h3>
-                    <button>View Reviews</button>
-                </div>
-            </div>
-
-        </div>
-
-    </section>
 
     <!-- FOOTER -->
 
     <footer>
-
-        <p>Made with ❤️ by Garima</p>
-
+        Made with 💜 by Garima
     </footer>
+
+
+    <!-- SEARCH SCRIPT -->
+
+    <script>
+
+        const searchInput = document.getElementById("searchInput");
+
+        searchInput.addEventListener("keyup", function () {
+
+            let filter = searchInput.value.toLowerCase();
+
+            let cards = document.querySelectorAll(".card");
+
+            cards.forEach(card => {
+
+                let text = card.innerText.toLowerCase();
+
+                if (text.includes(filter)) {
+                    card.style.display = "block";
+                }
+
+                else {
+                    card.style.display = "none";
+                }
+
+            });
+
+        });
+
+    </script>
 
 </body>
 </html>
