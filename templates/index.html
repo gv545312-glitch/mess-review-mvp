@@ -2,41 +2,55 @@
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Mess Review</title>
+    <title>University Mess Review</title>
 
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
 </head>
 
 <body>
 
-    <!-- HERO SECTION -->
+    <!-- HERO -->
 
     <section class="hero">
 
-        <div class="overlay"></div>
-
         <div class="hero-content">
 
+            <span class="badge">
+                🍽️ MESS REVIEW SYSTEM
+            </span>
+
             <h1>
-                🍽️ Rate Your University Mess
+                Rate Your <span>University Mess</span>
             </h1>
 
             <p>
-                Discover honest reviews from students across India
+                Honest student reviews on campus dining across India
             </p>
 
-            <div class="search-wrapper">
+            <div class="hero-stats">
 
-                <input
-                    type="text"
-                    id="searchInput"
-                    placeholder="Search university..."
-                >
+                <div>
+                    <h2>12+</h2>
+                    <span>UNIVERSITIES</span>
+                </div>
+
+                <div>
+                    <h2>847+</h2>
+                    <span>REVIEWS</span>
+                </div>
+
+                <div>
+                    <h2>4.2</h2>
+                    <span>AVG RATING</span>
+                </div>
 
             </div>
 
@@ -45,39 +59,90 @@
     </section>
 
 
+    <!-- SEARCH -->
+
+    <section class="search-section">
+
+        <div class="search-box">
+
+            <input
+                type="text"
+                id="searchInput"
+                placeholder="Search university by name or city..."
+            >
+
+            <button>
+                🔍 Search
+            </button>
+
+        </div>
+
+    </section>
+
+
     <!-- MAIN -->
 
-    <div class="container">
+    <main class="container">
 
-        <!-- STATS -->
 
-        <div class="stats">
+        <!-- TOP BUTTONS -->
 
-            <div class="stat-box">
-                <h2>120+</h2>
-                <p>Reviews</p>
-            </div>
+        <div class="top-buttons">
 
-            <div class="stat-box">
-                <h2>25+</h2>
-                <p>Universities</p>
-            </div>
+            <button>🏫 Explore</button>
 
-            <div class="stat-box">
-                <h2>4.3★</h2>
-                <p>Average Rating</p>
-            </div>
+            <button>✍️ Write Review</button>
+
+            <button>📊 Dashboard</button>
+
+        </div>
+
+
+        <!-- HEADING -->
+
+        <div class="heading">
+
+            <h2>
+                Universities
+            </h2>
+
+            <p>
+                Tap any university card to explore reviews
+            </p>
+
+        </div>
+
+
+        <!-- FILTERS -->
+
+        <div class="filters">
+
+            <button class="active">
+                All
+            </button>
+
+            <button>
+                Top Rated ⭐
+            </button>
+
+            <button>
+                Veg Friendly
+            </button>
+
+            <button>
+                North India
+            </button>
+
+            <button>
+                South India
+            </button>
 
         </div>
 
 
         <!-- UNIVERSITY GRID -->
 
-        <div class="section-header">
-            <h2>Top Universities</h2>
-        </div>
-
-        <div class="university-grid" id="universityGrid">
+        <div class="grid" id="universityGrid">
 
             {% for uni in universities %}
 
@@ -87,19 +152,24 @@
 
                 <div class="card-content">
 
-                    <h3>{{ uni.name }}</h3>
+                    <h3>
+                        {{ uni.name }}
+                    </h3>
 
-                    <div class="card-buttons">
+                    <p>
+                        📍 Greater Noida
+                    </p>
 
-                        <button class="explore-btn">
-                            Explore
-                        </button>
+                    <div class="rating">
 
-                        <button class="review-btn">
-                            Review
-                        </button>
+                        ⭐⭐⭐⭐☆
+                        <span>4.2</span>
 
                     </div>
+
+                    <button class="view-btn">
+                        📖 View Reviews
+                    </button>
 
                 </div>
 
@@ -110,13 +180,13 @@
         </div>
 
 
-        <!-- REVIEW FORM -->
+        <!-- REVIEW SECTION -->
 
-        <div class="review-box">
+        <section class="review-section">
 
-            <div class="section-header">
-                <h2>Write a Review ✨</h2>
-            </div>
+            <h2>
+                Write a Review ✨
+            </h2>
 
             <form method="POST">
 
@@ -161,22 +231,22 @@
                     required
                 ></textarea>
 
-                <button type="submit" class="submit-btn">
+                <button type="submit">
                     Submit Review
                 </button>
 
             </form>
 
-        </div>
+        </section>
 
 
         <!-- REVIEWS -->
 
-        <div class="reviews-section">
+        <section class="latest-reviews">
 
-            <div class="section-header">
-                <h2>Latest Reviews 💬</h2>
-            </div>
+            <h2>
+                Latest Reviews 💬
+            </h2>
 
             {% for review in reviews %}
 
@@ -198,33 +268,33 @@
                     {{ review.feedback }}
                 </p>
 
-                <small>
-                    {{ review.created_at }}
-                </small>
-
             </div>
 
             {% endfor %}
 
-        </div>
+        </section>
 
-    </div>
+    </main>
 
 
     <!-- FOOTER -->
 
     <footer>
-        Made with 💜 by Garima
+
+        Made with 💜 by Garima Verma
+
     </footer>
 
 
-    <!-- SEARCH SCRIPT -->
+    <!-- SCRIPT -->
 
     <script>
 
+        // LIVE SEARCH
+
         const searchInput = document.getElementById("searchInput");
 
-        searchInput.addEventListener("keyup", function () {
+        searchInput.addEventListener("keyup", function(){
 
             let filter = searchInput.value.toLowerCase();
 
@@ -234,13 +304,49 @@
 
                 let text = card.innerText.toLowerCase();
 
-                if (text.includes(filter)) {
+                if(text.includes(filter)){
                     card.style.display = "block";
                 }
 
-                else {
+                else{
                     card.style.display = "none";
                 }
+
+            });
+
+        });
+
+
+        // CARD EFFECT
+
+        const allCards = document.querySelectorAll(".card");
+
+        allCards.forEach(card => {
+
+            card.addEventListener("click", () => {
+
+                card.classList.toggle("active-card");
+
+            });
+
+        });
+
+
+        // BUTTON EFFECT
+
+        const buttons = document.querySelectorAll("button");
+
+        buttons.forEach(btn => {
+
+            btn.addEventListener("mouseenter", () => {
+
+                btn.style.transform = "scale(1.03)";
+
+            });
+
+            btn.addEventListener("mouseleave", () => {
+
+                btn.style.transform = "scale(1)";
 
             });
 
@@ -249,4 +355,5 @@
     </script>
 
 </body>
+
 </html>
