@@ -5,122 +5,195 @@
 
     <meta charset="UTF-8">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-    <title>{{ university_name }}</title>
+    <title>
+        Universities
+    </title>
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
 
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
 
 </head>
 
 <body>
 
-    <section class="hero">
 
-        <div class="hero-content">
+    <!-- NAVBAR -->
 
-            <span class="badge">
-                UNIVERSITY REVIEWS
-            </span>
+    <nav class="navbar">
 
-            <h1>
-                {{ university_name }}
-            </h1>
+        <div class="logo">
+            MessReview
+        </div>
 
-            <p>
-                Read and submit student mess reviews
-            </p>
+        <div class="nav-links">
+
+            <a href="/">
+                Home
+            </a>
+
+            <a href="/universities">
+                Universities
+            </a>
+
+        </div>
+
+    </nav>
+
+
+
+    <!-- PAGE HEADING -->
+
+    <section class="page-heading">
+
+        <h1>
+            Explore Universities
+        </h1>
+
+        <p>
+            Browse university mess reviews across India
+        </p>
+
+    </section>
+
+
+
+    <!-- SEARCH -->
+
+    <section class="search-section">
+
+        <div class="hero-search">
+
+            <input
+                type="text"
+                id="searchInput"
+                placeholder="Search university..."
+            >
+
+            <button>
+                Search
+            </button>
 
         </div>
 
     </section>
 
 
-    <main class="container">
 
-        <!-- REVIEW FORM -->
+    <!-- UNIVERSITIES GRID -->
 
-        <section class="review-section">
+    <section class="universities-section">
 
-            <h2>
-                Write a Review ✨
-            </h2>
+        <div class="grid" id="universityGrid">
 
-            <form method="POST" action="/">
+            {% for uni in universities %}
 
-                <input
-                    type="hidden"
-                    name="university_name"
-                    value="{{ university_name }}"
+            <div class="card">
+
+                <img
+                    src="{{ uni.image }}"
+                    alt="{{ uni.name }}"
                 >
 
-                <select name="rating" required>
-
-                    <option value="">
-                        Select Rating
-                    </option>
-
-                    <option value="1">⭐ 1 Star</option>
-                    <option value="2">⭐⭐ 2 Stars</option>
-                    <option value="3">⭐⭐⭐ 3 Stars</option>
-                    <option value="4">⭐⭐⭐⭐ 4 Stars</option>
-                    <option value="5">⭐⭐⭐⭐⭐ 5 Stars</option>
-
-                </select>
-
-                <textarea
-                    name="feedback"
-                    placeholder="Write your experience..."
-                    required
-                ></textarea>
-
-                <button type="submit">
-                    Submit Review
-                </button>
-
-            </form>
-
-        </section>
-
-
-        <!-- REVIEWS -->
-
-        <section class="latest-reviews">
-
-            <h2>
-                Student Reviews 💬
-            </h2>
-
-            {% for review in reviews %}
-
-            <div class="review-card">
-
-                <div class="review-top">
+                <div class="card-content">
 
                     <h3>
-                        {{ university_name }}
+                        {{ uni.name }}
                     </h3>
 
-                    <span>
-                        ⭐ {{ review.rating }}/5
-                    </span>
+                    <p>
+                        📍 Greater Noida, UP
+                    </p>
+
+                    <div class="rating">
+
+                        ⭐⭐⭐⭐☆ 4.2 Rating
+
+                    </div>
+
+                    <a
+                        href="/university/{{ uni.name }}"
+                        class="view-btn"
+                    >
+                        View Details →
+                    </a>
 
                 </div>
-
-                <p>
-                    {{ review.feedback }}
-                </p>
 
             </div>
 
             {% endfor %}
 
-        </section>
+        </div>
 
-    </main>
+    </section>
+
+
+
+    <!-- FOOTER -->
+
+    <footer>
+
+        <div class="footer-logo">
+            MessReview
+        </div>
+
+        <p>
+            © 2026 MessReview · Made with 💜 by Garima Verma
+        </p>
+
+    </footer>
+
+
+
+    <!-- SEARCH JS -->
+
+    <script>
+
+        const searchInput =
+        document.getElementById("searchInput");
+
+        searchInput.addEventListener("keyup", function(){
+
+            let filter =
+            searchInput.value.toLowerCase();
+
+            let cards =
+            document.querySelectorAll(".card");
+
+            cards.forEach(card => {
+
+                let text =
+                card.innerText.toLowerCase();
+
+                if(text.includes(filter)){
+
+                    card.style.display = "block";
+
+                }
+
+                else{
+
+                    card.style.display = "none";
+
+                }
+
+            });
+
+        });
+
+    </script>
 
 </body>
-
 </html>

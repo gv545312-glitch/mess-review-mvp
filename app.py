@@ -1,19 +1,15 @@
 from flask import Flask, render_template, request, redirect
 import sqlite3
 from datetime import datetime
-from pathlib import Path
 
 app = Flask(__name__)
 
-DATABASE = Path(__file__).parent / "reviews.db"
 
-
-# DATABASE CONNECTION
+# DATABASE
 
 def get_db_connection():
 
-    conn = sqlite3.connect(DATABASE)
-
+    conn = sqlite3.connect("reviews.db")
     conn.row_factory = sqlite3.Row
 
     return conn
@@ -21,63 +17,62 @@ def get_db_connection():
 
 # CREATE TABLE
 
-def init_db():
+conn = get_db_connection()
 
-    conn = get_db_connection()
+conn.execute("""
 
-    conn.execute("""
+CREATE TABLE IF NOT EXISTS reviews (
 
-        CREATE TABLE IF NOT EXISTS reviews (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
 
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+    university_name TEXT,
 
-            university_name TEXT NOT NULL,
+    rating INTEGER,
 
-            rating INTEGER NOT NULL,
+    feedback TEXT,
 
-            feedback TEXT NOT NULL,
+    created_at TEXT
 
-            created_at TEXT NOT NULL
+)
 
-        )
+""")
 
-    """)
-
-    conn.commit()
-
-    conn.close()
+conn.commit()
+conn.close()
 
 
-init_db()
-
-
-# UNIVERSITY DATA
+# UNIVERSITIES DATA
 
 universities = [
 
     {
-        "name": "Amity University",
-        "image": "https://images.unsplash.com/photo-1562774053-701939374585"
+        "name":"Amity University",
+        "image":"https://images.unsplash.com/photo-1562774053-701939374585"
     },
 
     {
-        "name": "Galgotias University",
-        "image": "https://images.unsplash.com/photo-1523050854058-8df90110c9f1"
+        "name":"LPU",
+        "image":"https://images.unsplash.com/photo-1523050854058-8df90110c9f1"
     },
 
     {
-        "name": "Sharda University",
-        "image": "https://images.unsplash.com/photo-1541339907198-e08756dedf3f"
+        "name":"Chandigarh University",
+        "image":"https://images.unsplash.com/photo-1541339907198-e08756dedf3f"
     },
 
     {
-        "name": "Bennett University",
-        "image": "https://images.unsplash.com/photo-1607237138185-eedd9c632b0b"
+        "name":"Galgotias University",
+        "image":"https://images.unsplash.com/photo-1607237138185-eedd9c632b0b"
     },
 
     {
-        "name": "JIMS Noida",
-        "image": "https://images.unsplash.com/photo-1592280771190-3e2e4d571952"
+        "name":"SRM University",
+        "image":"https://images.unsplash.com/photo-1571260899304-425eee4c7efc"
+    },
+
+    {
+        "name":"Lovely Professional University",
+        "image":"https://images.unsplash.com/photo-1564981797816-1043664bf78d"
     }
 
 ]
@@ -85,84 +80,109 @@ universities = [
 
 # HOME PAGE
 
-@app.route("/", methods=["GET", "POST"])
+@app.route("/")
+
 def home():
 
     conn = get_db_connection()
 
-    if request.method == "POST":
+    reviews = conn.execute("""
 
-        university_name = request.form["university_name"]
+        SELECT * FROM reviews
+        ORDER BY id DESC
 
-        rating = request.form["rating"]
-
-        feedback = request.form["feedback"]
-
-        conn.execute(
-            "INSERT INTO reviews (university_name, rating, feedback, created_at) VALUES (?, ?, ?, ?)",
-            (
-                university_name,
-                rating,
-                feedback,
-                datetime.now().strftime("%d %b %Y %I:%M %p")
-            )
-        )
-
-        conn.commit()
-
-        return redirect("/")
-
-    reviews = conn.execute(
-        "SELECT * FROM reviews ORDER BY id DESC"
-    ).fetchall()
+    """).fetchall()
 
     conn.close()
 
     return render_template(
+
         "index.html",
+
         universities=universities,
         reviews=reviews
+
     )
 
 
 # UNIVERSITY PAGE
 
 @app.route("/university/<name>", methods=["GET", "POST"])
-def university_page(name):
+
+def university(name):
 
     conn = get_db_connection()
 
     if request.method == "POST":
 
         rating = request.form["rating"]
-
         feedback = request.form["feedback"]
 
-        conn.execute(
-            "INSERT INTO reviews (university_name, rating, feedback, created_at) VALUES (?, ?, ?, ?)",
+        conn.execute("""
+
+            INSERT INTO reviews
             (
-                name,
+                university_name,
                 rating,
                 feedback,
-                datetime.now().strftime("%d %b %Y %I:%M %p")
+                created_at
             )
-        )
+
+            VALUES (?, ?, ?, ?)
+
+        """, (
+
+            name,
+            rating,
+            feedback,
+            datetime.now().strftime("%d %b %Y")
+
+        ))
 
         conn.commit()
 
-    reviews = conn.execute(
-        "SELECT * FROM reviews WHERE university_name = ? ORDER BY id DESC",
-        (name,)
-    ).fetchall()
+        return redirect(f"/university/{name}")
+
+
+
+    reviews = conn.execute("""
+
+        SELECT * FROM reviews
+
+        WHERE university_name = ?
+
+        ORDER BY id DESC
+
+    """, (name,)).fetchall()
 
     conn.close()
 
     return render_template(
+
         "university.html",
+
         university_name=name,
         reviews=reviews
+
     )
 
+
+# UNIVERSITIES PAGE
+
+@app.route("/universities")
+
+def universities_page():
+
+    return render_template(
+
+        "universities.html",
+
+        universities=universities
+
+    )
+
+
+# RUN
 
 if __name__ == "__main__":
 
