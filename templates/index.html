@@ -5,11 +5,17 @@
 
     <meta charset="UTF-8">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>University Mess Review</title>
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
@@ -38,17 +44,17 @@
             <div class="hero-stats">
 
                 <div>
-                    <h2>12+</h2>
+                    <h2>12</h2>
                     <span>UNIVERSITIES</span>
                 </div>
 
                 <div>
-                    <h2>847+</h2>
+                    <h2>847</h2>
                     <span>REVIEWS</span>
                 </div>
 
                 <div>
-                    <h2>4.2</h2>
+                    <h2>3.8</h2>
                     <span>AVG RATING</span>
                 </div>
 
@@ -84,15 +90,12 @@
 
     <main class="container">
 
-
-        <!-- TOP BUTTONS -->
+        <!-- BUTTONS -->
 
         <div class="top-buttons">
 
             <button>🏫 Explore</button>
-
             <button>✍️ Write Review</button>
-
             <button>📊 Dashboard</button>
 
         </div>
@@ -102,12 +105,10 @@
 
         <div class="heading">
 
-            <h2>
-                Universities
-            </h2>
+            <h2>Universities</h2>
 
             <p>
-                Tap any university card to explore reviews
+                Tap a card to read or write reviews
             </p>
 
         </div>
@@ -152,9 +153,7 @@
 
                 <div class="card-content">
 
-                    <h3>
-                        {{ uni.name }}
-                    </h3>
+                    <h3>{{ uni.name }}</h3>
 
                     <p>
                         📍 Greater Noida
@@ -167,9 +166,11 @@
 
                     </div>
 
-                    <button class="view-btn">
+                    <!-- CLICKABLE BUTTON -->
+
+                    <a href="/university/{{ uni.name }}" class="view-btn">
                         📖 View Reviews
-                    </button>
+                    </a>
 
                 </div>
 
@@ -180,7 +181,7 @@
         </div>
 
 
-        <!-- REVIEW SECTION -->
+        <!-- REVIEW FORM -->
 
         <section class="review-section">
 
@@ -286,15 +287,13 @@
     </footer>
 
 
-    <!-- SCRIPT -->
+    <!-- SEARCH JS -->
 
     <script>
 
-        // LIVE SEARCH
-
         const searchInput = document.getElementById("searchInput");
 
-        searchInput.addEventListener("keyup", function(){
+        searchInput.addEventListener("keyup", function () {
 
             let filter = searchInput.value.toLowerCase();
 
@@ -316,44 +315,7 @@
 
         });
 
-
-        // CARD EFFECT
-
-        const allCards = document.querySelectorAll(".card");
-
-        allCards.forEach(card => {
-
-            card.addEventListener("click", () => {
-
-                card.classList.toggle("active-card");
-
-            });
-
-        });
-
-
-        // BUTTON EFFECT
-
-        const buttons = document.querySelectorAll("button");
-
-        buttons.forEach(btn => {
-
-            btn.addEventListener("mouseenter", () => {
-
-                btn.style.transform = "scale(1.03)";
-
-            });
-
-            btn.addEventListener("mouseleave", () => {
-
-                btn.style.transform = "scale(1)";
-
-            });
-
-        });
-
     </script>
 
 </body>
-
 </html>
