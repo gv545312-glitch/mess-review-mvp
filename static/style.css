@@ -11,11 +11,11 @@ body{
 }
 
 
-/* HERO */
+/* HERO SECTION */
 
 .hero{
     width:100%;
-    min-height:420px;
+    min-height:260px;
 
     background:linear-gradient(
         135deg,
@@ -27,7 +27,7 @@ body{
     align-items:center;
     justify-content:center;
 
-    padding:60px 20px;
+    padding:40px 20px 90px;
 
     border-bottom-left-radius:30px;
     border-bottom-right-radius:30px;
@@ -67,7 +67,7 @@ body{
 
     border-radius:40px;
 
-    margin-bottom:20px;
+    margin-bottom:18px;
 
     font-size:14px;
 
@@ -75,9 +75,9 @@ body{
 }
 
 .hero h1{
-    font-size:60px;
+    font-size:52px;
     line-height:1.1;
-    margin-bottom:15px;
+    margin-bottom:12px;
 }
 
 .hero h1 span{
@@ -85,15 +85,15 @@ body{
 }
 
 .hero p{
-    font-size:18px;
+    font-size:17px;
     opacity:0.9;
 }
 
 .hero-stats{
-    margin-top:40px;
+    margin-top:30px;
 
     display:flex;
-    gap:20px;
+    gap:18px;
     justify-content:center;
     flex-wrap:wrap;
 }
@@ -101,25 +101,28 @@ body{
 .hero-stats div{
     background:rgba(255,255,255,0.12);
 
-    padding:20px 35px;
+    padding:16px 28px;
 
-    border-radius:20px;
+    border-radius:18px;
 }
 
 .hero-stats h2{
-    font-size:35px;
+    font-size:30px;
 }
 
 .hero-stats span{
-    font-size:14px;
+    font-size:13px;
 }
 
 
-/* SEARCH */
+/* SEARCH SECTION */
 
 .search-section{
-    margin-top:-45px;
+    margin-top:-40px;
     padding:0 20px;
+
+    position:relative;
+    z-index:100;
 }
 
 .search-box{
@@ -170,7 +173,7 @@ body{
 }
 
 
-/* MAIN */
+/* MAIN CONTAINER */
 
 .container{
     width:95%;
@@ -258,7 +261,7 @@ body{
 }
 
 
-/* GRID */
+/* UNIVERSITY GRID */
 
 .grid{
     display:grid;
@@ -315,7 +318,7 @@ body{
 }
 
 
-/* BUTTON */
+/* VIEW BUTTON */
 
 .view-btn{
     display:flex;
@@ -342,7 +345,7 @@ body{
 }
 
 
-/* REVIEW */
+/* REVIEW SECTION */
 
 .review-section{
     background:white;
@@ -451,12 +454,12 @@ footer{
 }
 
 
-/* MOBILE */
+/* MOBILE RESPONSIVE */
 
 @media(max-width:768px){
 
     .hero{
-        min-height:500px;
+        min-height:420px;
     }
 
     .hero h1{
