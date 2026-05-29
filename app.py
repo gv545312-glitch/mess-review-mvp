@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect
 import sqlite3
 from datetime import datetime
 from pathlib import Path
@@ -8,33 +8,109 @@ app = Flask(__name__)
 DATABASE = Path(__file__).parent / "reviews.db"
 
 
-# ---------------- DATABASE ---------------- #
+# DATABASE CONNECTION
 
 def get_db_connection():
+
     conn = sqlite3.connect(DATABASE)
+
     conn.row_factory = sqlite3.Row
+
     return conn
 
 
+# CREATE TABLE
+
 def init_db():
+
     conn = get_db_connection()
 
     conn.execute("""
+
         CREATE TABLE IF NOT EXISTS reviews (
+
             id INTEGER PRIMARY KEY AUTOINCREMENT,
+
             university_name TEXT NOT NULL,
+
             rating INTEGER NOT NULL,
+
             feedback TEXT NOT NULL,
+
             created_at TEXT NOT NULL
+
         )
+
     """)
 
     conn.commit()
+
     conn.close()
 
 
-def get_all_reviews():
+init_db()
+
+
+# UNIVERSITY DATA
+
+universities = [
+
+    {
+        "name": "Amity University",
+        "image": "https://images.unsplash.com/photo-1562774053-701939374585"
+    },
+
+    {
+        "name": "Galgotias University",
+        "image": "https://images.unsplash.com/photo-1523050854058-8df90110c9f1"
+    },
+
+    {
+        "name": "Sharda University",
+        "image": "https://images.unsplash.com/photo-1541339907198-e08756dedf3f"
+    },
+
+    {
+        "name": "Bennett University",
+        "image": "https://images.unsplash.com/photo-1607237138185-eedd9c632b0b"
+    },
+
+    {
+        "name": "JIMS Noida",
+        "image": "https://images.unsplash.com/photo-1592280771190-3e2e4d571952"
+    }
+
+]
+
+
+# HOME PAGE
+
+@app.route("/", methods=["GET", "POST"])
+def home():
+
     conn = get_db_connection()
+
+    if request.method == "POST":
+
+        university_name = request.form["university_name"]
+
+        rating = request.form["rating"]
+
+        feedback = request.form["feedback"]
+
+        conn.execute(
+            "INSERT INTO reviews (university_name, rating, feedback, created_at) VALUES (?, ?, ?, ?)",
+            (
+                university_name,
+                rating,
+                feedback,
+                datetime.now().strftime("%d %b %Y %I:%M %p")
+            )
+        )
+
+        conn.commit()
+
+        return redirect("/")
 
     reviews = conn.execute(
         "SELECT * FROM reviews ORDER BY id DESC"
@@ -42,101 +118,52 @@ def get_all_reviews():
 
     conn.close()
 
-    return reviews
+    return render_template(
+        "index.html",
+        universities=universities,
+        reviews=reviews
+    )
 
 
-# ---------------- UNIVERSITIES ---------------- #
+# UNIVERSITY PAGE
 
-universities = [
-    {
-        "name": "Amity University",
-        "image": "https://upload.wikimedia.org/wikipedia/commons/0/0e/Amity_University%2C_Noisda.jpg"
-    },
-    {
-        "name": "Galgotias University",
-        "image": "https://cache.careers360.mobi/media/presets/720X480/colleges/social-media/media-gallery/2488/2018/11/27/Campus%20View%20of%20Galgotias%20University%20Greater%20Noida_Campus-View.jpg"
-    },
-    {
-        "name": "Sharda University",
-        "image": "https://images.shiksha.com/mediadata/images/1535364511phpq5vA9M.jpeg"
-    },
-    {
-        "name": "Bennett University",
-        "image": "https://www.bennett.edu.in/wp-content/uploads/2021/04/Campus-View.jpg"
-    },
-    {
-        "name": "JIMS Noida",
-        "image": "https://www.jimsindia.org/images/building.jpg"
-    }
-]
-# ---------------- ROUTES ---------------- #
+@app.route("/university/<name>", methods=["GET", "POST"])
+def university_page(name):
 
-@app.route("/", methods=["GET", "POST"])
-def index():
+    conn = get_db_connection()
 
     if request.method == "POST":
 
-        university_name = request.form.get("university_name", "").strip()
-        rating = request.form.get("rating", "").strip()
-        feedback = request.form.get("feedback", "").strip()
+        rating = request.form["rating"]
 
-        errors = []
-
-        if not university_name:
-            errors.append("Please enter your university name.")
-
-        if rating not in {"1", "2", "3", "4", "5"}:
-            errors.append("Please select rating.")
-
-        if not feedback:
-            errors.append("Please enter feedback.")
-
-        if errors:
-            return render_template(
-                "index.html",
-                reviews=get_all_reviews(),
-                errors=errors,
-                form={
-                    "university_name": university_name,
-                    "rating": rating,
-                    "feedback": feedback,
-                },
-                universities=universities
-            )
-
-        conn = get_db_connection()
+        feedback = request.form["feedback"]
 
         conn.execute(
-            """
-            INSERT INTO reviews
-            (university_name, rating, feedback, created_at)
-            VALUES (?, ?, ?, ?)
-            """,
+            "INSERT INTO reviews (university_name, rating, feedback, created_at) VALUES (?, ?, ?, ?)",
             (
-                university_name,
-                int(rating),
+                name,
+                rating,
                 feedback,
-                datetime.now().strftime("%Y-%m-%d %H:%M")
+                datetime.now().strftime("%d %b %Y %I:%M %p")
             )
         )
 
         conn.commit()
-        conn.close()
 
-        return redirect(url_for("index"))
+    reviews = conn.execute(
+        "SELECT * FROM reviews WHERE university_name = ? ORDER BY id DESC",
+        (name,)
+    ).fetchall()
+
+    conn.close()
 
     return render_template(
-        "index.html",
-        reviews=get_all_reviews(),
-        errors=[],
-        form={},
-        universities=universities
+        "university.html",
+        university_name=name,
+        reviews=reviews
     )
 
 
-# ---------------- START ---------------- #
-
-init_db()
-
 if __name__ == "__main__":
+
     app.run(debug=True)

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{{ university_name }}</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+
+    <section class="hero">
+
+        <div class="hero-content">
+
+            <span class="badge">
+                UNIVERSITY REVIEWS
+            </span>
+
+            <h1>
+                {{ university_name }}
+            </h1>
+
+            <p>
+                Read and submit student mess reviews
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <main class="container">
+
+        <!-- REVIEW FORM -->
+
+        <section class="review-section">
+
+            <h2>
+                Write a Review ✨
+            </h2>
+
+            <form method="POST" action="/">
+
+                <input
+                    type="hidden"
+                    name="university_name"
+                    value="{{ university_name }}"
+                >
+
+                <select name="rating" required>
+
+                    <option value="">
+                        Select Rating
+                    </option>
+
+                    <option value="1">⭐ 1 Star</option>
+                    <option value="2">⭐⭐ 2 Stars</option>
+                    <option value="3">⭐⭐⭐ 3 Stars</option>
+                    <option value="4">⭐⭐⭐⭐ 4 Stars</option>
+                    <option value="5">⭐⭐⭐⭐⭐ 5 Stars</option>
+
+                </select>
+
+                <textarea
+                    name="feedback"
+                    placeholder="Write your experience..."
+                    required
+                ></textarea>
+
+                <button type="submit">
+                    Submit Review
+                </button>
+
+            </form>
+
+        </section>
+
+
+        <!-- REVIEWS -->
+
+        <section class="latest-reviews">
+
+            <h2>
+                Student Reviews 💬
+            </h2>
+
+            {% for review in reviews %}
+
+            <div class="review-card">
+
+                <div class="review-top">
+
+                    <h3>
+                        {{ university_name }}
+                    </h3>
+
+                    <span>
+                        ⭐ {{ review.rating }}/5
+                    </span>
+
+                </div>
+
+                <p>
+                    {{ review.feedback }}
+                </p>
+
+            </div>
+
+            {% endfor %}
+
+        </section>
+
+    </main>
+
+</body>
+
+</html>
