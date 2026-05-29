@@ -185,8 +185,8 @@ body{
 /* MAIN */
 
 .container{
-    width:90%;
-    max-width:1200px;
+    width:95%;
+    max-width:1400px;
 
     margin:70px auto;
 }
@@ -276,9 +276,11 @@ body{
     display:grid;
 
     grid-template-columns:
-    repeat(auto-fit,minmax(260px,1fr));
+    repeat(auto-fit,minmax(260px,260px));
 
     gap:28px;
+
+    justify-content:center;
 }
 
 
