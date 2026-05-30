@@ -16,10 +16,9 @@
     <a href="#universities" class="tnav-link">Universities</a>
     <a href="#reviews-section" class="tnav-link">Reviews</a>
     <a href="#rankings" class="tnav-link">Rankings</a>
-    <a href="#write-review" class="tnav-link">Write Review</a>
   </nav>
   <div class="topbar-right">
-    <a href="#write-review" class="btn-review">+ Write Review</a>
+    <a href="#universities" class="btn-review">Explore Universities</a>
   </div>
 </header>
 
@@ -69,22 +68,6 @@
   <div class="sstat"><span class="snum">100%</span><span class="slbl">Student Verified</span></div>
 </div>
 
-<!-- ───── CATEGORIES ───── -->
-<section class="section">
-  <div class="sec-head">
-    <h2 class="sec-title">Browse by <span>Category</span></h2>
-  </div>
-  <div class="cat-grid">
-    <div class="cat-card" onclick="setFilter('All')"><div class="cat-ic">🏛️</div><div class="cat-nm">All Universities</div><div class="cat-cnt">{{ universities|length }} colleges</div></div>
-    <div class="cat-card" onclick="setFilter('Top Rated')"><div class="cat-ic">⭐</div><div class="cat-nm">Top Rated</div><div class="cat-cnt">Best reviewed</div></div>
-    <div class="cat-card" onclick="setFilter('Veg')"><div class="cat-ic">🥗</div><div class="cat-nm">Pure Veg</div><div class="cat-cnt">Veg friendly</div></div>
-    <div class="cat-card"><div class="cat-ic">💰</div><div class="cat-nm">Budget Mess</div><div class="cat-cnt">Under ₹80/meal</div></div>
-    <div class="cat-card"><div class="cat-ic">🌿</div><div class="cat-nm">North India</div><div class="cat-cnt">UP, Delhi, HR</div></div>
-    <div class="cat-card"><div class="cat-ic">🌊</div><div class="cat-nm">South India</div><div class="cat-cnt">TN, KA, AP</div></div>
-  </div>
-</section>
-
-<div class="divider"></div>
 
 <!-- ───── UNIVERSITIES ───── -->
 <section class="section" id="universities">
@@ -174,7 +157,7 @@
 <section class="section" id="reviews-section">
   <div class="sec-head">
     <h2 class="sec-title">Recent <span>Student Reviews</span></h2>
-    <a href="#write-review" class="see-all">Write Yours →</a>
+    <a href="#universities" class="see-all">View All Universities →</a>
   </div>
   <div class="reviews-grid">
     {% for review in reviews[:6] %}
@@ -195,46 +178,7 @@
   </div>
 </section>
 
-<div class="divider"></div>
 
-<!-- ───── WRITE REVIEW ───── -->
-<section class="section" id="write-review">
-  <div class="sec-head">
-    <h2 class="sec-title">Write a <span>Review</span></h2>
-    <p class="sec-sub">Share your mess experience with fellow students</p>
-  </div>
-  <div class="form-card">
-    <form method="POST" action="/">
-      <div class="form-grid">
-        <div class="form-group">
-          <label>University Name</label>
-          <select name="university_name" required>
-            <option value="">— Select University —</option>
-            {% for uni in universities %}
-            <option value="{{ uni.name }}">{{ uni.name }}</option>
-            {% endfor %}
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Overall Rating</label>
-          <select name="rating" required>
-            <option value="">Select Rating</option>
-            <option value="5">⭐⭐⭐⭐⭐ Excellent (5)</option>
-            <option value="4">⭐⭐⭐⭐ Good (4)</option>
-            <option value="3">⭐⭐⭐ Average (3)</option>
-            <option value="2">⭐⭐ Poor (2)</option>
-            <option value="1">⭐ Very Bad (1)</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-group">
-        <label>Your Review</label>
-        <textarea name="feedback" placeholder="Describe the food quality, hygiene, variety, value for money..." required></textarea>
-      </div>
-      <button type="submit" class="submit-btn">Submit Review →</button>
-    </form>
-  </div>
-</section>
 
 <!-- ───── CTA ───── -->
 <div class="section">
@@ -242,7 +186,7 @@
     <h3>Is your university missing?</h3>
     <p>Request us to add it — it takes 2 minutes</p>
     <div class="cta-btns">
-      <a href="#write-review" class="cta-main">Write a Review</a>
+      <a href="#universities" class="cta-main">Explore Universities</a>
       <button class="cta-sec" onclick="alert('Request submitted! We will add it soon.')">+ Add University</button>
     </div>
   </div>
