@@ -1,199 +1,206 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
-    <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>
-        Universities
-    </title>
-
-    <link
-        rel="stylesheet"
-        href="{{ url_for('static', filename='style.css') }}"
-    >
-
-    <link
-        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet"
-    >
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ university_name }} Mess Review — MessReview</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
 </head>
-
 <body>
 
+<!-- TOPBAR -->
+<header class="topbar">
+  <a href="/" class="logo">Mess<span>Review</span></a>
+  <nav class="topnav">
+    <a href="/" class="tnav-link">Home</a>
+    <a href="/universities" class="tnav-link">Universities</a>
+    <a href="/#reviews-section" class="tnav-link">Reviews</a>
+    <a href="/#rankings" class="tnav-link">Rankings</a>
+  </nav>
+  <div class="topbar-right">
+    <a href="/universities" class="btn-review">← All Universities</a>
+  </div>
+</header>
 
-    <!-- NAVBAR -->
+<!-- UNI HERO -->
+<section class="uni-detail-hero">
+  <div class="udh-inner">
+    <div class="breadcrumb"><a href="/">Home</a> → <a href="/universities">Universities</a> → {{ university_name }}</div>
+    <h1>{{ university_name }}</h1>
+    <div class="udh-meta">
+      <span>📍 Greater Noida, UP</span>
+      <span class="dot">·</span>
+      <span>⭐ 4.2 Rating</span>
+      <span class="dot">·</span>
+      <span>{{ reviews|length }} Reviews</span>
+    </div>
+    <div class="udh-tags">
+      <span class="utag veg">Veg Friendly</span>
+      <span class="utag top">Top Rated</span>
+    </div>
+  </div>
+</section>
 
-    <nav class="navbar">
+<!-- MAIN CONTENT -->
+<main class="udet-main">
 
-        <div class="logo">
-            MessReview
+  <!-- LEFT: INFO + REVIEWS -->
+  <div class="udet-left">
+
+    <!-- MESS INFO CARDS -->
+    <div class="info-strip">
+      <div class="istrip-card">
+        <div class="isc-icon">🍽️</div>
+        <div class="isc-label">Mess Type</div>
+        <div class="isc-val">Veg & Non-Veg</div>
+      </div>
+      <div class="istrip-card">
+        <div class="isc-icon">💰</div>
+        <div class="isc-label">Meal Cost</div>
+        <div class="isc-val">₹80–120/meal</div>
+      </div>
+      <div class="istrip-card">
+        <div class="isc-icon">🕐</div>
+        <div class="isc-label">Timings</div>
+        <div class="isc-val">7am – 10pm</div>
+      </div>
+      <div class="istrip-card">
+        <div class="isc-icon">👥</div>
+        <div class="isc-label">Capacity</div>
+        <div class="isc-val">2,000+ students</div>
+      </div>
+    </div>
+
+    <!-- RATING BREAKDOWN -->
+    <div class="det-card">
+      <h2 class="det-card-title">Rating Breakdown</h2>
+      <div class="rating-bars">
+        <div class="rbar-row">
+          <span class="rbar-label">Food Quality</span>
+          <div class="rbar-track"><div class="rbar-fill" style="width:82%"></div></div>
+          <span class="rbar-val">4.1</span>
         </div>
-
-        <div class="nav-links">
-
-            <a href="/">
-                Home
-            </a>
-
-            <a href="/universities">
-                Universities
-            </a>
-
+        <div class="rbar-row">
+          <span class="rbar-label">Hygiene</span>
+          <div class="rbar-track"><div class="rbar-fill" style="width:86%;background:#27AE60"></div></div>
+          <span class="rbar-val">4.3</span>
         </div>
-
-    </nav>
-
-
-
-    <!-- PAGE HEADING -->
-
-    <section class="page-heading">
-
-        <h1>
-            Explore Universities
-        </h1>
-
-        <p>
-            Browse university mess reviews across India
-        </p>
-
-    </section>
-
-
-
-    <!-- SEARCH -->
-
-    <section class="search-section">
-
-        <div class="hero-search">
-
-            <input
-                type="text"
-                id="searchInput"
-                placeholder="Search university..."
-            >
-
-            <button>
-                Search
-            </button>
-
+        <div class="rbar-row">
+          <span class="rbar-label">Value for Money</span>
+          <div class="rbar-track"><div class="rbar-fill" style="width:78%;background:#E67E22"></div></div>
+          <span class="rbar-val">3.9</span>
         </div>
-
-    </section>
-
-
-
-    <!-- UNIVERSITIES GRID -->
-
-    <section class="universities-section">
-
-        <div class="grid" id="universityGrid">
-
-            {% for uni in universities %}
-
-            <div class="card">
-
-                <img
-                    src="{{ uni.image }}"
-                    alt="{{ uni.name }}"
-                >
-
-                <div class="card-content">
-
-                    <h3>
-                        {{ uni.name }}
-                    </h3>
-
-                    <p>
-                        📍 Greater Noida, UP
-                    </p>
-
-                    <div class="rating">
-
-                        ⭐⭐⭐⭐☆ 4.2 Rating
-
-                    </div>
-
-                    <a
-                        href="/university/{{ uni.name }}"
-                        class="view-btn"
-                    >
-                        View Details →
-                    </a>
-
-                </div>
-
-            </div>
-
-            {% endfor %}
-
+        <div class="rbar-row">
+          <span class="rbar-label">Menu Variety</span>
+          <div class="rbar-track"><div class="rbar-fill" style="width:80%"></div></div>
+          <span class="rbar-val">4.0</span>
         </div>
+      </div>
+    </div>
 
-    </section>
+    <!-- REVIEWS LIST -->
+    <div class="det-card">
+      <h2 class="det-card-title">Student Reviews <span style="font-size:14px;color:#999;font-weight:400;">({{ reviews|length }})</span></h2>
 
-
-
-    <!-- FOOTER -->
-
-    <footer>
-
-        <div class="footer-logo">
-            MessReview
+      {% for review in reviews %}
+      <div class="review-card" style="margin-bottom:12px;">
+        <div class="rv-head">
+          <div class="rv-avatar">{{ review.university_name[:2]|upper }}</div>
+          <div>
+            <div class="rv-uname">Student</div>
+            <div class="rv-date">{{ review.created_at }}</div>
+          </div>
+          <div class="rv-stars">{% for i in range(review.rating|int) %}⭐{% endfor %}</div>
         </div>
+        <p class="rv-text">{{ review.feedback }}</p>
+      </div>
+      {% else %}
+      <div style="text-align:center; padding:2rem; color:#999;">
+        <div style="font-size:2rem; margin-bottom:0.5rem;">💬</div>
+        <div>No reviews yet — be the first to review!</div>
+      </div>
+      {% endfor %}
+    </div>
 
-        <p>
-            © 2026 MessReview · Made with 💜 by Garima Verma
-        </p>
+  </div>
 
-    </footer>
+  <!-- RIGHT: WRITE REVIEW -->
+  <div class="udet-right">
+    <div class="det-card write-review-card">
+      <h2 class="det-card-title">Write a Review</h2>
+      <p style="font-size:12px;color:#999;margin-bottom:1rem;">Share your mess experience at {{ university_name }}</p>
 
+      <form method="POST">
+        <div class="form-group">
+          <label>Your Rating</label>
+          <select name="rating" required>
+            <option value="">Select Rating</option>
+            <option value="5">⭐⭐⭐⭐⭐ Excellent (5)</option>
+            <option value="4">⭐⭐⭐⭐ Good (4)</option>
+            <option value="3">⭐⭐⭐ Average (3)</option>
+            <option value="2">⭐⭐ Poor (2)</option>
+            <option value="1">⭐ Very Bad (1)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Your Review</label>
+          <textarea name="feedback" placeholder="How was the food quality, hygiene, variety, value for money?" required></textarea>
+        </div>
+        <button type="submit" class="submit-btn" style="width:100%;">Submit Review →</button>
+      </form>
+    </div>
 
+    <!-- QUICK INFO -->
+    <div class="det-card" style="margin-top:14px;">
+      <h3 style="font-size:14px;font-weight:600;margin-bottom:12px;color:#1a1a1a;">Quick Info</h3>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div style="display:flex;justify-content:space-between;font-size:13px;">
+          <span style="color:#999;">University</span>
+          <span style="font-weight:500;">{{ university_name }}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:13px;">
+          <span style="color:#999;">Location</span>
+          <span style="font-weight:500;">Greater Noida, UP</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:13px;">
+          <span style="color:#999;">Overall Rating</span>
+          <span style="font-weight:500;color:#B03A2E;">4.2 ★</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:13px;">
+          <span style="color:#999;">Total Reviews</span>
+          <span style="font-weight:500;">{{ reviews|length }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
 
-    <!-- SEARCH JS -->
+</main>
 
-    <script>
-
-        const searchInput =
-        document.getElementById("searchInput");
-
-        searchInput.addEventListener("keyup", function(){
-
-            let filter =
-            searchInput.value.toLowerCase();
-
-            let cards =
-            document.querySelectorAll(".card");
-
-            cards.forEach(card => {
-
-                let text =
-                card.innerText.toLowerCase();
-
-                if(text.includes(filter)){
-
-                    card.style.display = "block";
-
-                }
-
-                else{
-
-                    card.style.display = "none";
-
-                }
-
-            });
-
-        });
-
-    </script>
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-grid">
+    <div>
+      <div class="foot-logo">Mess<span>Review</span></div>
+      <p class="foot-sub">Honest student reviews on university mess facilities across India.</p>
+    </div>
+    <div>
+      <div class="foot-title">Quick Links</div>
+      <a href="/" class="foot-link">Home</a>
+      <a href="/universities" class="foot-link">All Universities</a>
+      <a href="/#rankings" class="foot-link">Rankings</a>
+    </div>
+    <div>
+      <div class="foot-title">About</div>
+      <a class="foot-link">About Us</a>
+      <a class="foot-link">Contact</a>
+      <a class="foot-link">Privacy Policy</a>
+    </div>
+  </div>
+  <div class="foot-bottom">
+    <span>© 2026 MessReview · Made with 💜 by Garima Verma</span>
+  </div>
+</footer>
 
 </body>
 </html>
