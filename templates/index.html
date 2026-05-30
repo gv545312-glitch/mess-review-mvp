@@ -1,461 +1,335 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
-    <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>
-        MessReview
-    </title>
-
-    <link
-        rel="stylesheet"
-        href="{{ url_for('static', filename='style.css') }}"
-    >
-
-    <link
-        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet"
-    >
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MessReview — University Mess Ratings India</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
 </head>
-
 <body>
 
+<!-- ───── TOPBAR ───── -->
+<header class="topbar">
+  <a href="/" class="logo">Mess<span>Review</span></a>
+  <nav class="topnav">
+    <a href="#universities" class="tnav-link">Universities</a>
+    <a href="#reviews-section" class="tnav-link">Reviews</a>
+    <a href="#rankings" class="tnav-link">Rankings</a>
+    <a href="#write-review" class="tnav-link">Write Review</a>
+  </nav>
+  <div class="topbar-right">
+    <a href="#write-review" class="btn-review">+ Write Review</a>
+  </div>
+</header>
 
-    <!-- NAVBAR -->
+<!-- ───── HERO ───── -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">🍽️ MESS REVIEW SYSTEM</div>
+    <h1>Find & Review<br><span>University Mess</span> Facilities</h1>
+    <p>Honest student reviews on campus dining across India</p>
 
-    <nav class="navbar">
+    <div class="search-wrap">
+      <div class="search-box">
+        <span class="s-icon">🔍</span>
+        <input type="text" id="searchInput" placeholder="Search university by name or city...">
+        <select id="stateFilter" onchange="filterCards()">
+          <option value="">All States</option>
+          <option value="uttar pradesh">Uttar Pradesh</option>
+          <option value="delhi">Delhi</option>
+          <option value="maharashtra">Maharashtra</option>
+          <option value="rajasthan">Rajasthan</option>
+          <option value="tamil nadu">Tamil Nadu</option>
+        </select>
+        <button class="s-btn" onclick="filterCards()">Search</button>
+      </div>
+      <div id="noResults" class="no-results" style="display:none;">
+        <span>No university found for "<strong id="searchedTerm"></strong>" — is it missing?</span>
+        <button class="req-btn" onclick="sendRequest()">+ Request to Add</button>
+        <span class="req-sent" id="reqSent" style="display:none;">✅ Request sent!</span>
+      </div>
+    </div>
 
-        <div class="logo">
-            MessReview
+    <div class="quick-links">
+      <span class="ql" onclick="document.getElementById('searchInput').value='IIT';filterCards()">IIT Mess</span>
+      <span class="ql" onclick="document.getElementById('searchInput').value='Amity';filterCards()">Amity</span>
+      <span class="ql">Veg Friendly</span>
+      <span class="ql">Best Rated</span>
+      <span class="ql">Budget Mess</span>
+    </div>
+  </div>
+</section>
+
+<!-- ───── STATS STRIP ───── -->
+<div class="stats-strip">
+  <div class="sstat"><span class="snum">{{ universities|length }}</span><span class="slbl">Universities</span></div>
+  <div class="sstat"><span class="snum">{{ reviews|length }}</span><span class="slbl">Reviews</span></div>
+  <div class="sstat"><span class="snum">3.8★</span><span class="slbl">Avg Rating</span></div>
+  <div class="sstat"><span class="snum">100%</span><span class="slbl">Student Verified</span></div>
+</div>
+
+<!-- ───── CATEGORIES ───── -->
+<section class="section">
+  <div class="sec-head">
+    <h2 class="sec-title">Browse by <span>Category</span></h2>
+  </div>
+  <div class="cat-grid">
+    <div class="cat-card" onclick="setFilter('All')"><div class="cat-ic">🏛️</div><div class="cat-nm">All Universities</div><div class="cat-cnt">{{ universities|length }} colleges</div></div>
+    <div class="cat-card" onclick="setFilter('Top Rated')"><div class="cat-ic">⭐</div><div class="cat-nm">Top Rated</div><div class="cat-cnt">Best reviewed</div></div>
+    <div class="cat-card" onclick="setFilter('Veg')"><div class="cat-ic">🥗</div><div class="cat-nm">Pure Veg</div><div class="cat-cnt">Veg friendly</div></div>
+    <div class="cat-card"><div class="cat-ic">💰</div><div class="cat-nm">Budget Mess</div><div class="cat-cnt">Under ₹80/meal</div></div>
+    <div class="cat-card"><div class="cat-ic">🌿</div><div class="cat-nm">North India</div><div class="cat-cnt">UP, Delhi, HR</div></div>
+    <div class="cat-card"><div class="cat-ic">🌊</div><div class="cat-nm">South India</div><div class="cat-cnt">TN, KA, AP</div></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ───── UNIVERSITIES ───── -->
+<section class="section" id="universities">
+  <div class="sec-head">
+    <h2 class="sec-title">Explore <span>Universities</span></h2>
+    <span class="see-all" onclick="document.getElementById('searchInput').value='';filterCards()">View All →</span>
+  </div>
+
+  <div class="filter-bar">
+    <button class="fchip active" onclick="setFilter('All',this)">All</button>
+    <button class="fchip" onclick="setFilter('Top Rated',this)">Top Rated ⭐</button>
+    <button class="fchip" onclick="setFilter('Veg',this)">Veg Friendly</button>
+    <button class="fchip" onclick="setFilter('North',this)">North India</button>
+    <button class="fchip" onclick="setFilter('South',this)">South India</button>
+  </div>
+
+  <div class="uni-grid" id="universityGrid">
+    {% for uni in universities %}
+    <div class="uni-card" data-name="{{ uni.name|lower }}">
+      <div class="uni-banner">
+        <img src="{{ uni.image }}" alt="{{ uni.name }}">
+        <div class="uni-banner-overlay"></div>
+      </div>
+      <div class="uni-body">
+        <h3 class="uni-name">{{ uni.name }}</h3>
+        <p class="uni-loc">📍 Greater Noida, UP</p>
+        <div class="uni-rating">
+          <span class="stars">⭐⭐⭐⭐☆</span>
+          <span class="rval">4.2</span>
+          <span class="rcnt">(24 reviews)</span>
         </div>
-
-        <div class="nav-links">
-
-            <a href="/">
-                Home
-            </a>
-
-            <a href="/universities">
-                Universities
-            </a>
-
-            <a href="#">
-                Top Rated
-            </a>
-
-            <a href="#">
-                About
-            </a>
-
+        <div class="uni-tags">
+          <span class="utag veg">Veg</span>
+          <span class="utag top">Top Rated</span>
         </div>
+        <a href="/university/{{ uni.name }}" class="view-btn">View Details →</a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
 
-    </nav>
+<div class="divider"></div>
 
+<!-- ───── RANKINGS + COMPARE ───── -->
+<section class="two-col-section">
 
-
-    <!-- HERO -->
-
-    <section class="hero">
-
-        <div class="hero-content">
-
-            <span class="badge">
-                🍽️ STUDENT VERIFIED REVIEWS
-            </span>
-
-            <h1>
-                Find & Review
-                <span>
-                    University Mess Facilities
-                </span>
-            </h1>
-
-            <p>
-                Honest student reviews on campus dining across India
-            </p>
-
-            <div class="hero-search">
-
-                <input
-                    type="text"
-                    placeholder="Search university by name or city..."
-                >
-
-                <button>
-                    Search
-                </button>
-
-            </div>
-
+  <div class="section half-sec" id="rankings">
+    <div class="sec-head">
+      <h2 class="sec-title"><span>Top Ranked</span> Mess</h2>
+    </div>
+    <div class="rank-list">
+      {% for uni in universities[:5] %}
+      <div class="rank-item">
+        <span class="rank-num {% if loop.index == 1 %}gold{% endif %}">{{ loop.index }}</span>
+        <div class="rank-info">
+          <div class="rank-name">{{ uni.name }}</div>
+          <div class="rank-sub">Greater Noida</div>
         </div>
+        <span class="rank-score">4.{{ 9 - loop.index }}★</span>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
 
-    </section>
+  <div class="section half-sec">
+    <div class="sec-head">
+      <h2 class="sec-title"><span>Compare</span> Ratings</h2>
+    </div>
+    <div class="cmp-grid">
+      {% for uni in universities[:3] %}
+      <div class="cmp-card">
+        <div class="cmp-emoji">🏛️</div>
+        <div class="cmp-name">{{ uni.name.split()[0] }}</div>
+        <div class="cmp-val">4.{{ 5 - loop.index }}★</div>
+        <div class="cmp-bar"><div class="cmp-fill" style="width:{{ 95 - loop.index * 8 }}%"></div></div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
 
+</section>
 
+<div class="divider"></div>
 
-    <!-- STATS -->
-
-    <section class="stats-section">
-
-        <div class="stat-box">
-
-            <h2>
-                {{ universities|length }}
-            </h2>
-
-            <span>
-                Universities
-            </span>
-
+<!-- ───── LATEST REVIEWS ───── -->
+<section class="section" id="reviews-section">
+  <div class="sec-head">
+    <h2 class="sec-title">Recent <span>Student Reviews</span></h2>
+    <a href="#write-review" class="see-all">Write Yours →</a>
+  </div>
+  <div class="reviews-grid">
+    {% for review in reviews[:6] %}
+    <div class="review-card">
+      <div class="rv-head">
+        <div class="rv-avatar">{{ review.university_name[:2]|upper }}</div>
+        <div>
+          <div class="rv-uname">{{ review.university_name }}</div>
+          <div class="rv-date">{{ review.created_at }}</div>
         </div>
+        <div class="rv-stars">{% for i in range(review.rating|int) %}⭐{% endfor %}</div>
+      </div>
+      <p class="rv-text">{{ review.feedback }}</p>
+    </div>
+    {% else %}
+    <div class="empty-state">No reviews yet. Be the first to review!</div>
+    {% endfor %}
+  </div>
+</section>
 
-        <div class="stat-box">
+<div class="divider"></div>
 
-            <h2>
-                {{ reviews|length }}
-            </h2>
-
-            <span>
-                Reviews
-            </span>
-
-        </div>
-
-        <div class="stat-box">
-
-            <h2>
-                3.8★
-            </h2>
-
-            <span>
-                Avg Rating
-            </span>
-
-        </div>
-
-        <div class="stat-box">
-
-            <h2>
-                100%
-            </h2>
-
-            <span>
-                Student Verified
-            </span>
-
-        </div>
-
-    </section>
-
-
-
-    <!-- CATEGORIES -->
-
-    <section class="categories">
-
-        <h2>
-            Browse by Category
-        </h2>
-
-        <div class="category-grid">
-
-            <div class="category-card">
-
-                🏛️
-
-                <h3>
-                    All Universities
-                </h3>
-
-                <p>
-                    {{ universities|length }} colleges
-                </p>
-
-            </div>
-
-            <div class="category-card">
-
-                ⭐
-
-                <h3>
-                    Top Rated
-                </h3>
-
-                <p>
-                    Best reviewed
-                </p>
-
-            </div>
-
-            <div class="category-card">
-
-                🥗
-
-                <h3>
-                    Pure Veg
-                </h3>
-
-                <p>
-                    Veg friendly
-                </p>
-
-            </div>
-
-            <div class="category-card">
-
-                💰
-
-                <h3>
-                    Budget Mess
-                </h3>
-
-                <p>
-                    Under ₹80/meal
-                </p>
-
-            </div>
-
-            <div class="category-card">
-
-                🌿
-
-                <h3>
-                    North India
-                </h3>
-
-                <p>
-                    UP, Delhi, HR
-                </p>
-
-            </div>
-
-            <div class="category-card">
-
-                🌊
-
-                <h3>
-                    South India
-                </h3>
-
-                <p>
-                    TN, KA, AP
-                </p>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-
-    <!-- UNIVERSITIES -->
-
-    <section class="universities-section">
-
-        <div class="section-top">
-
-            <h2>
-                Explore Universities
-            </h2>
-
-            <a href="#">
-                View All →
-            </a>
-
-        </div>
-
-
-        <div class="grid">
-
+<!-- ───── WRITE REVIEW ───── -->
+<section class="section" id="write-review">
+  <div class="sec-head">
+    <h2 class="sec-title">Write a <span>Review</span></h2>
+    <p class="sec-sub">Share your mess experience with fellow students</p>
+  </div>
+  <div class="form-card">
+    <form method="POST" action="/">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>University Name</label>
+          <select name="university_name" required>
+            <option value="">— Select University —</option>
             {% for uni in universities %}
-
-            <div class="card">
-
-                <img
-                    src="{{ uni.image }}"
-                    alt="{{ uni.name }}"
-                >
-
-                <div class="card-content">
-
-                    <h3>
-                        {{ uni.name }}
-                    </h3>
-
-                    <p>
-                        📍 Greater Noida, UP
-                    </p>
-
-                    <div class="rating">
-
-                        ⭐⭐⭐⭐☆ 4.2 (24 reviews)
-
-                    </div>
-
-                    <div class="tags">
-
-                        <span>
-                            Veg
-                        </span>
-
-                        <span>
-                            Top Rated
-                        </span>
-
-                    </div>
-
-                    <a
-                        href="/university/{{ uni.name }}"
-                        class="view-btn"
-                    >
-                        View Details →
-                    </a>
-
-                </div>
-
-            </div>
-
+            <option value="{{ uni.name }}">{{ uni.name }}</option>
             {% endfor %}
-
+          </select>
         </div>
-
-    </section>
-
-
-
-    <!-- TOP RANKED -->
-
-    <section class="top-ranked">
-
-        <h2>
-            Top Ranked Mess
-        </h2>
-
-        <div class="rank-grid">
-
-            {% for uni in universities[:5] %}
-
-            <div class="rank-card">
-
-                <h3>
-                    #{{ loop.index }}
-                </h3>
-
-                <h4>
-                    {{ uni.name }}
-                </h4>
-
-                <p>
-                    Greater Noida
-                </p>
-
-                <span>
-                    4.{{ 9 - loop.index }}★
-                </span>
-
-            </div>
-
-            {% endfor %}
-
+        <div class="form-group">
+          <label>Overall Rating</label>
+          <select name="rating" required>
+            <option value="">Select Rating</option>
+            <option value="5">⭐⭐⭐⭐⭐ Excellent (5)</option>
+            <option value="4">⭐⭐⭐⭐ Good (4)</option>
+            <option value="3">⭐⭐⭐ Average (3)</option>
+            <option value="2">⭐⭐ Poor (2)</option>
+            <option value="1">⭐ Very Bad (1)</option>
+          </select>
         </div>
+      </div>
+      <div class="form-group">
+        <label>Your Review</label>
+        <textarea name="feedback" placeholder="Describe the food quality, hygiene, variety, value for money..." required></textarea>
+      </div>
+      <button type="submit" class="submit-btn">Submit Review →</button>
+    </form>
+  </div>
+</section>
 
-    </section>
+<!-- ───── CTA ───── -->
+<div class="section">
+  <div class="cta-card">
+    <h3>Is your university missing?</h3>
+    <p>Request us to add it — it takes 2 minutes</p>
+    <div class="cta-btns">
+      <a href="#write-review" class="cta-main">Write a Review</a>
+      <button class="cta-sec" onclick="alert('Request submitted! We will add it soon.')">+ Add University</button>
+    </div>
+  </div>
+</div>
 
+<!-- ───── FOOTER ───── -->
+<footer class="footer">
+  <div class="footer-grid">
+    <div>
+      <div class="foot-logo">Mess<span>Review</span></div>
+      <p class="foot-sub">Honest student reviews on university mess facilities across India.</p>
+    </div>
+    <div>
+      <div class="foot-title">Universities</div>
+      {% for uni in universities %}
+      <a href="/university/{{ uni.name }}" class="foot-link">{{ uni.name }}</a>
+      {% endfor %}
+    </div>
+    <div>
+      <div class="foot-title">Browse</div>
+      <a class="foot-link">Top Rated Mess</a>
+      <a class="foot-link">Pure Veg</a>
+      <a class="foot-link">Budget Friendly</a>
+      <a class="foot-link">Rankings</a>
+    </div>
+    <div>
+      <div class="foot-title">About</div>
+      <a class="foot-link">About Us</a>
+      <a class="foot-link">Contact</a>
+      <a class="foot-link">Privacy Policy</a>
+    </div>
+  </div>
+  <div class="foot-bottom">
+    <span>© 2026 MessReview · Made with 💜 by Garima Verma</span>
+  </div>
+</footer>
 
+<script>
+const searchInput = document.getElementById("searchInput");
+searchInput.addEventListener("keyup", filterCards);
 
-    <!-- RECENT REVIEWS -->
+function filterCards() {
+  const q = searchInput.value.toLowerCase().trim();
+  const state = document.getElementById("stateFilter").value.toLowerCase();
+  const cards = document.querySelectorAll(".uni-card");
+  let visible = 0;
+  cards.forEach(card => {
+    const name = card.dataset.name || "";
+    const matchQ = !q || name.includes(q);
+    const matchS = !state || name.includes(state);
+    if (matchQ && matchS) { card.style.display = ""; visible++; }
+    else card.style.display = "none";
+  });
+  const nr = document.getElementById("noResults");
+  if (q && visible === 0) {
+    nr.style.display = "flex";
+    document.getElementById("searchedTerm").textContent = q;
+    document.getElementById("reqSent").style.display = "none";
+    document.querySelector(".req-btn").style.display = "inline-block";
+  } else {
+    nr.style.display = "none";
+  }
+}
 
-    <section class="latest-reviews">
+function sendRequest() {
+  document.querySelector(".req-btn").style.display = "none";
+  document.getElementById("reqSent").style.display = "inline";
+}
 
-        <div class="section-top">
+function setFilter(type, el) {
+  if (el) {
+    document.querySelectorAll(".fchip").forEach(c => c.classList.remove("active"));
+    el.classList.add("active");
+  }
+  const cards = document.querySelectorAll(".uni-card");
+  cards.forEach(card => { card.style.display = ""; });
+  searchInput.value = "";
+  document.getElementById("noResults").style.display = "none";
+}
 
-            <h2>
-                Recent Student Reviews
-            </h2>
-
-            <a href="#">
-                Write Yours →
-            </a>
-
-        </div>
-
-        {% for review in reviews[:6] %}
-
-        <div class="review-card">
-
-            <div class="review-top">
-
-                <div>
-
-                    <h3>
-                        {{ review.university_name }}
-                    </h3>
-
-                    <small>
-                        {{ review.created_at }}
-                    </small>
-
-                </div>
-
-                <div class="review-rating">
-
-                    {% for i in range(review.rating|int) %}
-                    ⭐
-                    {% endfor %}
-
-                </div>
-
-            </div>
-
-            <p>
-                {{ review.feedback }}
-            </p>
-
-        </div>
-
-        {% else %}
-
-        <div class="review-card">
-
-            No reviews yet. Be the first to review!
-
-        </div>
-
-        {% endfor %}
-
-    </section>
-
-
-
-    <!-- FOOTER -->
-
-    <footer>
-
-        <div class="footer-logo">
-            MessReview
-        </div>
-
-        <p>
-            Honest student reviews on university mess facilities across India.
-        </p>
-
-        <br>
-
-        <p>
-            © 2026 MessReview · Made with 💜 by Garima Verma
-        </p>
-
-    </footer>
-
-
+// Smooth scroll for nav
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener("click", e => {
+    const target = document.querySelector(a.getAttribute("href"));
+    if (target) { e.preventDefault(); target.scrollIntoView({ behavior: "smooth" }); }
+  });
+});
+</script>
 </body>
 </html>
