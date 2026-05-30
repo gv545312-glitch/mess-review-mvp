@@ -47,32 +47,32 @@ universities = [
 
     {
         "name":"Amity University",
-        "image":"https://images.unsplash.com/photo-1562774053-701939374585"
-    },
-
-    {
-        "name":"LPU",
-        "image":"https://images.unsplash.com/photo-1523050854058-8df90110c9f1"
-    },
-
-    {
-        "name":"Chandigarh University",
-        "image":"https://images.unsplash.com/photo-1541339907198-e08756dedf3f"
-    },
-
-    {
-        "name":"Galgotias University",
-        "image":"https://images.unsplash.com/photo-1607237138185-eedd9c632b0b"
-    },
-
-    {
-        "name":"SRM University",
-        "image":"https://images.unsplash.com/photo-1571260899304-425eee4c7efc"
+        "image":"https://images.unsplash.com/photo-1562774053-701939374585?w=800"
     },
 
     {
         "name":"Lovely Professional University",
-        "image":"https://images.unsplash.com/photo-1564981797816-1043664bf78d"
+        "image":"https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800"
+    },
+
+    {
+        "name":"Chandigarh University",
+        "image":"https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=800"
+    },
+
+    {
+        "name":"Galgotias University",
+        "image":"https://images.unsplash.com/photo-1607237138185-eedd9c632b0b?w=800"
+    },
+
+    {
+        "name":"SRM University",
+        "image":"https://images.unsplash.com/photo-1571260899304-425eee4c7efc?w=800"
+    },
+
+    {
+        "name":"Bennett University",
+        "image":"https://images.unsplash.com/photo-1564981797816-1043664bf78d?w=800"
     }
 
 ]
