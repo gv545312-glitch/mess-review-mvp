@@ -208,8 +208,20 @@ universities = [
 def home():
     conn = get_db_connection()
     reviews = conn.execute("SELECT * FROM reviews ORDER BY id DESC").fetchall()
+
+    # Real rating + review count per university
+    uni_stats = {}
+    for uni in universities:
+        name = uni["name"]
+        uni_reviews = conn.execute(
+            "SELECT rating FROM reviews WHERE university_name = ?", (name,)
+        ).fetchall()
+        count = len(uni_reviews)
+        avg = round(sum(r["rating"] for r in uni_reviews) / count, 1) if count > 0 else None
+        uni_stats[name] = {"count": count, "avg": avg}
+
     conn.close()
-    return render_template("index.html", universities=universities, reviews=reviews)
+    return render_template("index.html", universities=universities, reviews=reviews, uni_stats=uni_stats)
 
 
 # UNIVERSITY PAGE
