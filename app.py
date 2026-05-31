@@ -305,9 +305,22 @@ def universities_page():
     start = (page - 1) * per_page
     end = start + per_page
     paginated = universities[start:end]
+
+    conn = get_db_connection()
+    uni_stats = {}
+    for uni in paginated:
+        name = uni["name"]
+        uni_reviews = conn.execute(
+            "SELECT rating FROM reviews WHERE university_name = ?", (name,)
+        ).fetchall()
+        count = len(uni_reviews)
+        avg = round(sum(r["rating"] for r in uni_reviews) / count, 1) if count > 0 else None
+        uni_stats[name] = {"count": count, "avg": avg}
+    conn.close()
+
     return render_template("universities.html",
         universities=paginated,
-        all_universities=universities,
+        uni_stats=uni_stats,
         page=page,
         total_pages=total_pages,
         total=total

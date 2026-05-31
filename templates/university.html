@@ -63,7 +63,13 @@
         <h3 class="uni-name">{{ uni.name }}</h3>
         <p class="uni-loc">📍 {{ uni.city }}</p>
         <div class="uni-rating">
+          {% if uni_stats[uni.name].avg %}
+          <span class="stars">{% for i in range(uni_stats[uni.name].avg|int) %}⭐{% endfor %}</span>
+          <span class="rval">{{ uni_stats[uni.name].avg }}</span>
+          <span class="rcnt">({{ uni_stats[uni.name].count }} reviews)</span>
+          {% else %}
           <span class="rcnt" style="color:#999;font-size:11px;">No reviews yet</span>
+          {% endif %}
         </div>
         <a href="/university/{{ uni.name }}" class="view-btn">View Details →</a>
       </div>
