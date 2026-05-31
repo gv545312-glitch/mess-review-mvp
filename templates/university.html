@@ -29,7 +29,7 @@
     <div class="breadcrumb"><a href="/">Home</a> → <a href="/universities">Universities</a> → {{ university_name }}</div>
     <h1>{{ university_name }}</h1>
     <div class="udh-meta">
-      <span>📍 Greater Noida, UP</span>
+      <span>📍 {{ city }}</span>
       <span class="dot">·</span>
       <span>⭐ {{ avg_rating }} Rating</span>
       <span class="dot">·</span>
@@ -211,7 +211,7 @@
         </div>
         <div style="display:flex;justify-content:space-between;font-size:13px;">
           <span style="color:#999;">Location</span>
-          <span style="font-weight:500;">Greater Noida, UP</span>
+          <span style="font-weight:500;">{{ city }}</span>
         </div>
         <div style="display:flex;justify-content:space-between;font-size:13px;">
           <span style="color:#999;">Overall Rating</span>
