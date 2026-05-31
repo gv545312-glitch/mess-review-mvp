@@ -75,28 +75,34 @@
     <!-- RATING BREAKDOWN -->
     <div class="det-card">
       <h2 class="det-card-title">Rating Breakdown</h2>
+      {% if reviews %}
       <div class="rating-bars">
         <div class="rbar-row">
           <span class="rbar-label">Food Quality</span>
-          <div class="rbar-track"><div class="rbar-fill" style="width:82%"></div></div>
-          <span class="rbar-val">4.1</span>
+          <div class="rbar-track"><div class="rbar-fill" style="width:{{ (avg_food / 5 * 100)|int }}%"></div></div>
+          <span class="rbar-val">{{ avg_food }}</span>
         </div>
         <div class="rbar-row">
           <span class="rbar-label">Hygiene</span>
-          <div class="rbar-track"><div class="rbar-fill" style="width:86%;background:#27AE60"></div></div>
-          <span class="rbar-val">4.3</span>
+          <div class="rbar-track"><div class="rbar-fill" style="width:{{ (avg_hygiene / 5 * 100)|int }}%;background:#27AE60"></div></div>
+          <span class="rbar-val">{{ avg_hygiene }}</span>
         </div>
         <div class="rbar-row">
           <span class="rbar-label">Value for Money</span>
-          <div class="rbar-track"><div class="rbar-fill" style="width:78%;background:#E67E22"></div></div>
-          <span class="rbar-val">3.9</span>
+          <div class="rbar-track"><div class="rbar-fill" style="width:{{ (avg_value / 5 * 100)|int }}%;background:#E67E22"></div></div>
+          <span class="rbar-val">{{ avg_value }}</span>
         </div>
         <div class="rbar-row">
           <span class="rbar-label">Menu Variety</span>
-          <div class="rbar-track"><div class="rbar-fill" style="width:80%"></div></div>
-          <span class="rbar-val">4.0</span>
+          <div class="rbar-track"><div class="rbar-fill" style="width:{{ (avg_variety / 5 * 100)|int }}%"></div></div>
+          <span class="rbar-val">{{ avg_variety }}</span>
         </div>
       </div>
+      {% else %}
+      <div style="text-align:center;padding:1.5rem;color:#999;font-size:13px;">
+        No ratings yet — be the first to review!
+      </div>
+      {% endif %}
     </div>
 
     <!-- REVIEWS LIST -->
@@ -133,7 +139,7 @@
 
       <form method="POST">
         <div class="form-group">
-          <label>Your Rating</label>
+          <label>Overall Rating</label>
           <select name="rating" required>
             <option value="">Select Rating</option>
             <option value="5">⭐⭐⭐⭐⭐ Excellent (5)</option>
@@ -141,6 +147,50 @@
             <option value="3">⭐⭐⭐ Average (3)</option>
             <option value="2">⭐⭐ Poor (2)</option>
             <option value="1">⭐ Very Bad (1)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Food Quality</label>
+          <select name="food_quality" required>
+            <option value="">Select</option>
+            <option value="5">⭐⭐⭐⭐⭐ Excellent</option>
+            <option value="4">⭐⭐⭐⭐ Good</option>
+            <option value="3">⭐⭐⭐ Average</option>
+            <option value="2">⭐⭐ Poor</option>
+            <option value="1">⭐ Very Bad</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Hygiene</label>
+          <select name="hygiene" required>
+            <option value="">Select</option>
+            <option value="5">⭐⭐⭐⭐⭐ Excellent</option>
+            <option value="4">⭐⭐⭐⭐ Good</option>
+            <option value="3">⭐⭐⭐ Average</option>
+            <option value="2">⭐⭐ Poor</option>
+            <option value="1">⭐ Very Bad</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Value for Money</label>
+          <select name="value_for_money" required>
+            <option value="">Select</option>
+            <option value="5">⭐⭐⭐⭐⭐ Excellent</option>
+            <option value="4">⭐⭐⭐⭐ Good</option>
+            <option value="3">⭐⭐⭐ Average</option>
+            <option value="2">⭐⭐ Poor</option>
+            <option value="1">⭐ Very Bad</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Menu Variety</label>
+          <select name="menu_variety" required>
+            <option value="">Select</option>
+            <option value="5">⭐⭐⭐⭐⭐ Excellent</option>
+            <option value="4">⭐⭐⭐⭐ Good</option>
+            <option value="3">⭐⭐⭐ Average</option>
+            <option value="2">⭐⭐ Poor</option>
+            <option value="1">⭐ Very Bad</option>
           </select>
         </div>
         <div class="form-group">
