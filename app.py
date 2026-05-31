@@ -221,8 +221,25 @@ def home():
         avg = round(sum(r["rating"] for r in uni_reviews) / count, 1) if count > 0 else None
         uni_stats[name] = {"count": count, "avg": avg}
 
+    # Top ranked — universities with reviews, sorted by avg rating
+    ranked = [
+        {"name": u["name"], "city": u["city"], "avg": uni_stats[u["name"]]["avg"], "count": uni_stats[u["name"]]["count"]}
+        for u in universities if uni_stats[u["name"]]["avg"] is not None
+    ]
+    ranked.sort(key=lambda x: x["avg"], reverse=True)
+    top_ranked = ranked[:5]
+
+    # Compare top 3
+    compare_unis = ranked[:3]
+
     conn.close()
-    return render_template("index.html", universities=universities, reviews=reviews, uni_stats=uni_stats)
+    return render_template("index.html",
+        universities=universities,
+        reviews=reviews,
+        uni_stats=uni_stats,
+        top_ranked=top_ranked,
+        compare_unis=compare_unis
+    )
 
 
 # UNIVERSITY PAGE

@@ -116,16 +116,20 @@
       <h2 class="sec-title"><span>Top Ranked</span> Mess</h2>
     </div>
     <div class="rank-list">
-      {% for uni in universities[:5] %}
-      <div class="rank-item">
-        <span class="rank-num {% if loop.index == 1 %}gold{% endif %}">{{ loop.index }}</span>
-        <div class="rank-info">
-          <div class="rank-name">{{ uni.name }}</div>
-          <div class="rank-sub">{{ uni.city }}</div>
+      {% if top_ranked %}
+        {% for uni in top_ranked %}
+        <div class="rank-item">
+          <span class="rank-num {% if loop.index == 1 %}gold{% endif %}">{{ loop.index }}</span>
+          <div class="rank-info">
+            <div class="rank-name">{{ uni.name }}</div>
+            <div class="rank-sub">{{ uni.city }}</div>
+          </div>
+          <span class="rank-score">{{ uni.avg }}★</span>
         </div>
-        <span class="rank-score">4.{{ 9 - loop.index }}★</span>
-      </div>
-      {% endfor %}
+        {% endfor %}
+      {% else %}
+        <div style="padding:1.5rem 0;color:#999;font-size:13px;text-align:center;">No reviews yet — be the first to review!</div>
+      {% endif %}
     </div>
   </div>
 
@@ -134,14 +138,18 @@
       <h2 class="sec-title"><span>Compare</span> Ratings</h2>
     </div>
     <div class="cmp-grid">
-      {% for uni in universities[:3] %}
-      <div class="cmp-card">
-        <div class="cmp-emoji">🏛️</div>
-        <div class="cmp-name">{{ uni.name.split()[0] }}</div>
-        <div class="cmp-val">4.{{ 5 - loop.index }}★</div>
-        <div class="cmp-bar"><div class="cmp-fill" style="width:{{ 95 - loop.index * 8 }}%"></div></div>
-      </div>
-      {% endfor %}
+      {% if compare_unis %}
+        {% for uni in compare_unis %}
+        <div class="cmp-card">
+          <div class="cmp-emoji">🏛️</div>
+          <div class="cmp-name">{{ uni.name.split()[0] }}</div>
+          <div class="cmp-val">{{ uni.avg }}★</div>
+          <div class="cmp-bar"><div class="cmp-fill" style="width:{{ (uni.avg / 5 * 100)|int }}%"></div></div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div style="color:#999;font-size:13px;grid-column:1/-1;text-align:center;padding:1rem;">No data yet</div>
+      {% endif %}
     </div>
   </div>
 
