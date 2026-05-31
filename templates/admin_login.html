@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login — MessReview</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'DM Sans', sans-serif; background: #F5F4F0; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+    .login-wrap { width: 100%; max-width: 400px; padding: 1.5rem; }
+    .login-card { background: #fff; border: 1px solid #EEE; border-radius: 16px; padding: 2.5rem; box-shadow: 0 8px 30px rgba(0,0,0,0.08); }
+    .login-logo { font-family: 'Playfair Display', serif; font-size: 24px; color: #1a1a1a; margin-bottom: 0.3rem; }
+    .login-logo span { color: #B03A2E; }
+    .login-sub { font-size: 13px; color: #999; margin-bottom: 2rem; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 1rem; }
+    .form-group label { font-size: 11px; font-weight: 600; color: #666; text-transform: uppercase; letter-spacing: 0.04em; }
+    .form-group input { padding: 11px 14px; border: 1px solid #DDD; border-radius: 10px; font-size: 14px; font-family: 'DM Sans', sans-serif; color: #1a1a1a; outline: none; transition: border-color 0.15s; }
+    .form-group input:focus { border-color: #B03A2E; }
+    .login-btn { width: 100%; padding: 12px; background: #B03A2E; color: #fff; border: none; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; margin-top: 0.5rem; transition: background 0.15s; }
+    .login-btn:hover { background: #922e23; }
+    .error { background: #FDF0EC; border: 1px solid #e8b4a8; border-radius: 8px; padding: 10px 14px; font-size: 13px; color: #B03A2E; margin-bottom: 1rem; }
+    .back-link { display: block; text-align: center; margin-top: 1.2rem; font-size: 12px; color: #999; text-decoration: none; }
+    .back-link:hover { color: #B03A2E; }
+  </style>
+</head>
+<body>
+  <div class="login-wrap">
+    <div class="login-card">
+      <div class="login-logo">Mess<span>Review</span></div>
+      <div class="login-sub">Admin Panel — Sign in to continue</div>
+
+      {% if error %}
+      <div class="error">{{ error }}</div>
+      {% endif %}
+
+      <form method="POST">
+        <div class="form-group">
+          <label>Username</label>
+          <input type="text" name="username" placeholder="Enter username" required autofocus>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" name="password" placeholder="Enter password" required>
+        </div>
+        <button type="submit" class="login-btn">Login to Admin Panel</button>
+      </form>
+
+      <a href="/" class="back-link">← Back to Website</a>
+    </div>
+  </div>
+</body>
+</html>

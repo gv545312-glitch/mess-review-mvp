@@ -3,6 +3,7 @@ import sqlite3
 from datetime import datetime
 
 app = Flask(__name__)
+app.secret_key = "messreview_secret_key_2026"
 
 
 # DATABASE
@@ -281,6 +282,114 @@ def university(name):
 @app.route("/universities")
 def universities_page():
     return render_template("universities.html", universities=universities)
+
+
+
+
+# ─── ADMIN ───────────────────────────────────────────────
+
+ADMIN_USERNAME = "admin"
+ADMIN_PASSWORD = "messreview2026"
+
+def admin_required(f):
+    from functools import wraps
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        from flask import session, redirect
+        if not session.get("admin_logged_in"):
+            return redirect("/admin/login")
+        return f(*args, **kwargs)
+    return decorated
+
+@app.route("/admin/login", methods=["GET", "POST"])
+def admin_login():
+    from flask import session, request
+    error = None
+    if request.method == "POST":
+        if request.form["username"] == ADMIN_USERNAME and request.form["password"] == ADMIN_PASSWORD:
+            session["admin_logged_in"] = True
+            return redirect("/admin")
+        else:
+            error = "Invalid username or password"
+    return render_template("admin_login.html", error=error)
+
+@app.route("/admin/logout")
+def admin_logout():
+    from flask import session
+    session.pop("admin_logged_in", None)
+    return redirect("/admin/login")
+
+@app.route("/admin")
+@admin_required
+def admin_dashboard():
+    conn = get_db_connection()
+    total_reviews = conn.execute("SELECT COUNT(*) FROM reviews").fetchone()[0]
+    avg_rating = conn.execute("SELECT AVG(rating) FROM reviews").fetchone()[0]
+    avg_rating = round(avg_rating, 1) if avg_rating else 0
+    recent_reviews = conn.execute("SELECT * FROM reviews ORDER BY id DESC LIMIT 5").fetchall()
+    conn.close()
+    total_unis = len(universities)
+    return render_template("admin.html", 
+        page="dashboard",
+        total_reviews=total_reviews,
+        total_unis=total_unis,
+        avg_rating=avg_rating,
+        recent_reviews=recent_reviews,
+        universities=universities
+    )
+
+@app.route("/admin/reviews")
+@admin_required
+def admin_reviews():
+    conn = get_db_connection()
+    uni_filter = request.args.get("uni", "")
+    if uni_filter:
+        reviews = conn.execute("SELECT * FROM reviews WHERE university_name = ? ORDER BY id DESC", (uni_filter,)).fetchall()
+    else:
+        reviews = conn.execute("SELECT * FROM reviews ORDER BY id DESC").fetchall()
+    conn.close()
+    return render_template("admin.html",
+        page="reviews",
+        reviews=reviews,
+        universities=universities,
+        uni_filter=uni_filter
+    )
+
+@app.route("/admin/reviews/delete/<int:review_id>")
+@admin_required
+def admin_delete_review(review_id):
+    conn = get_db_connection()
+    conn.execute("DELETE FROM reviews WHERE id = ?", (review_id,))
+    conn.commit()
+    conn.close()
+    return redirect("/admin/reviews")
+
+@app.route("/admin/universities")
+@admin_required
+def admin_universities():
+    return render_template("admin.html",
+        page="universities",
+        universities=universities
+    )
+
+@app.route("/admin/universities/add", methods=["POST"])
+@admin_required
+def admin_add_university():
+    name = request.form["name"].strip()
+    city = request.form["city"].strip()
+    image = request.form["image"].strip()
+    if name and city:
+        if not image:
+            image = "https://images.unsplash.com/photo-1562774053-701939374585?w=800"
+        universities.append({"name": name, "city": city, "image": image})
+    return redirect("/admin/universities")
+
+@app.route("/admin/universities/delete/<name>")
+@admin_required
+def admin_delete_university(name):
+    global universities
+    universities = [u for u in universities if u["name"] != name]
+    return redirect("/admin/universities")
 
 
 # RUN
