@@ -73,19 +73,11 @@
 <section class="section" id="universities">
   <div class="sec-head">
     <h2 class="sec-title">Explore <span>Universities</span></h2>
-    <span class="see-all" onclick="document.getElementById('searchInput').value='';filterCards()">View All →</span>
-  </div>
-
-  <div class="filter-bar">
-    <button class="fchip active" onclick="setFilter('All',this)">All</button>
-    <button class="fchip" onclick="setFilter('Top Rated',this)">Top Rated ⭐</button>
-    <button class="fchip" onclick="setFilter('Veg',this)">Veg Friendly</button>
-    <button class="fchip" onclick="setFilter('North',this)">North India</button>
-    <button class="fchip" onclick="setFilter('South',this)">South India</button>
+    <a href="/universities" class="see-all">View All ({{ universities|length }}) →</a>
   </div>
 
   <div class="uni-grid" id="universityGrid">
-    {% for uni in universities %}
+    {% for uni in universities[:16] %}
     <div class="uni-card" data-name="{{ uni.name|lower }}">
       <div class="uni-banner">
         <img src="{{ uni.image }}" alt="{{ uni.name }}">
@@ -113,11 +105,10 @@
     </div>
     {% endfor %}
   </div>
+  <div style="text-align:center;margin-top:1.5rem;">
+    <a href="/universities" style="display:inline-flex;align-items:center;gap:6px;padding:11px 28px;background:#B03A2E;color:#fff;border-radius:10px;font-size:13px;font-weight:600;text-decoration:none;">View All {{ universities|length }} Universities →</a>
+  </div>
 </section>
-
-<div class="divider"></div>
-
-<!-- ───── RANKINGS + COMPARE ───── -->
 <section class="two-col-section">
 
   <div class="section half-sec" id="rankings">

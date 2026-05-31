@@ -281,7 +281,20 @@ def university(name):
 
 @app.route("/universities")
 def universities_page():
-    return render_template("universities.html", universities=universities)
+    page = request.args.get("page", 1, type=int)
+    per_page = 24
+    total = len(universities)
+    total_pages = (total + per_page - 1) // per_page
+    start = (page - 1) * per_page
+    end = start + per_page
+    paginated = universities[start:end]
+    return render_template("universities.html",
+        universities=paginated,
+        all_universities=universities,
+        page=page,
+        total_pages=total_pages,
+        total=total
+    )
 
 
 
