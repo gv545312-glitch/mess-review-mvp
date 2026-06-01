@@ -435,6 +435,22 @@ def admin_delete_university(name):
     return redirect("/admin/universities")
 
 
+
+# SEARCH API
+
+@app.route("/search")
+def search():
+    from flask import jsonify
+    q = request.args.get("q", "").lower().strip()
+    if not q or len(q) < 2:
+        return jsonify([])
+    results = [
+        {"name": u["name"], "city": u["city"], "image": u["image"]}
+        for u in universities
+        if q in u["name"].lower() or q in u["city"].lower()
+    ][:10]
+    return jsonify(results)
+
 # RUN
 
 if __name__ == "__main__":

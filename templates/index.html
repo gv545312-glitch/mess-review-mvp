@@ -29,20 +29,14 @@
     <h1>Find & Review<br><span>University Mess</span> Facilities</h1>
     <p>Honest student reviews on campus dining across India</p>
 
-    <div class="search-wrap">
-      <div class="search-box">
+    <div class="search-wrap" style="position:relative;">
+      <div class="search-box" style="position:relative;">
         <span class="s-icon">🔍</span>
-        <input type="text" id="searchInput" placeholder="Search university by name or city...">
-        <select id="stateFilter" onchange="filterCards()">
-          <option value="">All States</option>
-          <option value="uttar pradesh">Uttar Pradesh</option>
-          <option value="delhi">Delhi</option>
-          <option value="maharashtra">Maharashtra</option>
-          <option value="rajasthan">Rajasthan</option>
-          <option value="tamil nadu">Tamil Nadu</option>
-        </select>
-        <button class="s-btn" onclick="filterCards()">Search</button>
+        <input type="text" id="searchInput" placeholder="Search university by name or city..." autocomplete="off" oninput="liveSearch(this.value)">
+        <button class="s-btn" onclick="goSearch()">Search</button>
       </div>
+      <!-- LIVE DROPDOWN -->
+      <div id="searchDropdown" style="display:none;position:absolute;left:0;right:0;background:#fff;border-radius:0 0 12px 12px;box-shadow:0 8px 24px rgba(0,0,0,0.15);z-index:999;max-height:320px;overflow-y:auto;margin-top:2px;"></div>
       <div id="noResults" class="no-results" style="display:none;">
         <span>No university found for "<strong id="searchedTerm"></strong>" — is it missing?</span>
         <button class="req-btn" onclick="sendRequest()">+ Request to Add</button>
@@ -245,16 +239,64 @@ function filterCards() {
     if (matchQ && matchS) { card.style.display = ""; visible++; }
     else card.style.display = "none";
   });
-  const nr = document.getElementById("noResults");
-  if (q && visible === 0) {
-    nr.style.display = "flex";
-    document.getElementById("searchedTerm").textContent = q;
-    document.getElementById("reqSent").style.display = "none";
-    document.querySelector(".req-btn").style.display = "inline-block";
-  } else {
-    nr.style.display = "none";
+let searchTimer = null;
+
+function liveSearch(q) {
+  const dropdown = document.getElementById("searchDropdown");
+  const noResults = document.getElementById("noResults");
+  
+  clearTimeout(searchTimer);
+  
+  if (!q || q.length < 2) {
+    dropdown.style.display = "none";
+    noResults.style.display = "none";
+    return;
   }
+
+  searchTimer = setTimeout(() => {
+    fetch("/search?q=" + encodeURIComponent(q))
+      .then(r => r.json())
+      .then(results => {
+        if (results.length === 0) {
+          dropdown.style.display = "none";
+          noResults.style.display = "flex";
+          document.getElementById("searchedTerm").textContent = q;
+          document.getElementById("reqSent").style.display = "none";
+          document.querySelector(".req-btn").style.display = "inline-block";
+        } else {
+          noResults.style.display = "none";
+          dropdown.style.display = "block";
+          dropdown.innerHTML = results.map(u => `
+            <a href="/university/${encodeURIComponent(u.name)}" style="display:flex;align-items:center;gap:12px;padding:10px 16px;text-decoration:none;border-bottom:1px solid #f5f5f5;transition:background 0.1s;" onmouseover="this.style.background='#FAF9F6'" onmouseout="this.style.background='#fff'">
+              <img src="${u.image}" style="width:40px;height:40px;border-radius:8px;object-fit:cover;flex-shrink:0;">
+              <div>
+                <div style="font-size:13px;font-weight:500;color:#1a1a1a;">${u.name}</div>
+                <div style="font-size:11px;color:#999;">📍 ${u.city}</div>
+              </div>
+              <span style="margin-left:auto;font-size:11px;color:#B03A2E;font-weight:500;">View →</span>
+            </a>
+          `).join('') + `<a href="/universities" style="display:block;text-align:center;padding:10px;font-size:12px;color:#B03A2E;font-weight:500;text-decoration:none;background:#FAF9F6;">View All Universities →</a>`;
+        }
+      });
+  }, 300);
 }
+
+function goSearch() {
+  const q = document.getElementById("searchInput").value.trim();
+  if (q) window.location.href = "/universities?q=" + encodeURIComponent(q);
+}
+
+// Close dropdown on outside click
+document.addEventListener("click", function(e) {
+  if (!e.target.closest(".search-wrap")) {
+    document.getElementById("searchDropdown").style.display = "none";
+  }
+});
+
+// Enter key search
+document.getElementById("searchInput").addEventListener("keydown", function(e) {
+  if (e.key === "Enter") goSearch();
+});
 
 function sendRequest() {
   document.querySelector(".req-btn").style.display = "none";
@@ -266,13 +308,10 @@ function setFilter(type, el) {
     document.querySelectorAll(".fchip").forEach(c => c.classList.remove("active"));
     el.classList.add("active");
   }
-  const cards = document.querySelectorAll(".uni-card");
-  cards.forEach(card => { card.style.display = ""; });
-  searchInput.value = "";
   document.getElementById("noResults").style.display = "none";
 }
 
-// Smooth scroll for nav
+// Smooth scroll
 document.querySelectorAll('a[href^="#"]').forEach(a => {
   a.addEventListener("click", e => {
     const target = document.querySelector(a.getAttribute("href"));
