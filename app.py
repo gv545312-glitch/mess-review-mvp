@@ -1,6 +1,10 @@
 from flask import Flask, render_template, request, redirect
 import sqlite3
 from datetime import datetime
+from urllib.parse import quote_plus, quote
+from urllib.request import Request, urlopen
+from urllib.error import URLError, HTTPError
+import json
 
 app = Flask(__name__)
 app.secret_key = "messreview_secret_key_2026"
@@ -202,6 +206,141 @@ universities = [
     {"name": "Annamalai University", "city": "Chidambaram, Tamil Nadu", "image": "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=800"},
 ]
 
+# REAL UNIVERSITY IMAGE RESOLVER
+# Uses Wikipedia/Wikimedia thumbnails first. If no real image is found,
+# it shows a unique name placeholder instead of duplicate stock images.
+
+image_cache = {}
+
+UNIVERSITY_IMAGE_ALIASES = {
+    "IIT Delhi": "Indian Institute of Technology Delhi",
+    "IIT Bombay": "Indian Institute of Technology Bombay",
+    "IIT Madras": "Indian Institute of Technology Madras",
+    "IIT Kanpur": "Indian Institute of Technology Kanpur",
+    "IIT Kharagpur": "Indian Institute of Technology Kharagpur",
+    "IIT Roorkee": "Indian Institute of Technology Roorkee",
+    "IIT Guwahati": "Indian Institute of Technology Guwahati",
+    "IIT Hyderabad": "Indian Institute of Technology Hyderabad",
+    "IIT Bhubaneswar": "Indian Institute of Technology Bhubaneswar",
+    "IIT Gandhinagar": "Indian Institute of Technology Gandhinagar",
+    "IIT Jodhpur": "Indian Institute of Technology Jodhpur",
+    "IIT Mandi": "Indian Institute of Technology Mandi",
+    "IIT Patna": "Indian Institute of Technology Patna",
+    "IIT Ropar": "Indian Institute of Technology Ropar",
+    "IIT Tirupati": "Indian Institute of Technology Tirupati",
+    "IIT Palakkad": "Indian Institute of Technology Palakkad",
+    "IIT Dharwad": "Indian Institute of Technology Dharwad",
+    "IIT Jammu": "Indian Institute of Technology Jammu",
+    "IIT Bhilai": "Indian Institute of Technology Bhilai",
+    "NIT Trichy": "National Institute of Technology Tiruchirappalli",
+    "NIT Warangal": "National Institute of Technology Warangal",
+    "NIT Surathkal": "National Institute of Technology Karnataka Surathkal",
+    "NIT Calicut": "National Institute of Technology Calicut",
+    "NIT Rourkela": "National Institute of Technology Rourkela",
+    "NIT Allahabad": "Motilal Nehru National Institute of Technology Allahabad",
+    "NIT Jaipur": "Malaviya National Institute of Technology Jaipur",
+    "NIT Kurukshetra": "National Institute of Technology Kurukshetra",
+    "NIT Durgapur": "National Institute of Technology Durgapur",
+    "NIT Surat": "Sardar Vallabhbhai National Institute of Technology Surat",
+    "BITS Pilani": "Birla Institute of Technology and Science Pilani",
+    "BITS Goa": "BITS Pilani Goa Campus",
+    "BITS Hyderabad": "BITS Pilani Hyderabad Campus",
+    "VIT Vellore": "Vellore Institute of Technology",
+    "VIT Chennai": "VIT Chennai",
+    "VIT Bhopal": "VIT Bhopal University",
+    "VIT AP": "VIT-AP University",
+    "Delhi University": "University of Delhi",
+    "Hyderabad University": "University of Hyderabad",
+    "Mumbai University": "University of Mumbai",
+    "Calcutta University": "University of Calcutta",
+    "Panjab University": "Panjab University Chandigarh",
+    "Lucknow University": "University of Lucknow",
+    "Allahabad University": "University of Allahabad",
+    "Patna University": "Patna University",
+    "Gauhati University": "Gauhati University",
+    "Jammu University": "University of Jammu",
+    "Kashmir University": "University of Kashmir",
+    "Banaras Hindu University": "Banaras Hindu University",
+    "Jawaharlal Nehru University": "Jawaharlal Nehru University",
+    "Aligarh Muslim University": "Aligarh Muslim University",
+    "Jamia Millia Islamia": "Jamia Millia Islamia",
+    "Savitribai Phule Pune University": "Savitribai Phule Pune University",
+    "IGNOU": "Indira Gandhi National Open University",
+    "IP University Delhi": "Guru Gobind Singh Indraprastha University",
+    "AKTU Lucknow": "Dr. A.P.J. Abdul Kalam Technical University",
+}
+
+
+def _fetch_json(url):
+    req = Request(
+        url,
+        headers={
+            "Accept": "application/json",
+            "User-Agent": "MessReview/1.0 (https://mess-review-mvp.onrender.com)"
+        }
+    )
+    with urlopen(req, timeout=4) as response:
+        return json.loads(response.read().decode("utf-8"))
+
+
+def _wikipedia_search_thumbnail(query):
+    api = "https://en.wikipedia.org/w/api.php"
+    search = quote_plus(query)
+    url = (
+        f"{api}?action=query&format=json&generator=search"
+        f"&gsrsearch={search}"
+        f"&gsrlimit=5"
+        f"&prop=pageimages"
+        f"&piprop=thumbnail"
+        f"&pithumbsize=1000"
+        f"&redirects=1"
+    )
+
+    try:
+        payload = _fetch_json(url)
+        pages = payload.get("query", {}).get("pages", {})
+        for page in pages.values():
+            thumbnail = page.get("thumbnail", {})
+            source = thumbnail.get("source")
+            if source:
+                return source
+    except (URLError, HTTPError, TimeoutError, ValueError):
+        return None
+
+    return None
+
+
+def resolve_university_image(uni, index=1):
+    name = uni["name"]
+    city = uni["city"]
+
+    if name in image_cache:
+        return image_cache[name]
+
+    official_name = UNIVERSITY_IMAGE_ALIASES.get(name, name)
+    search_queries = [
+        official_name,
+        f"{official_name} campus",
+        f"{official_name} {city}",
+        f"{name} campus India",
+        f"{name} university India",
+    ]
+
+    for query in search_queries:
+        image = _wikipedia_search_thumbnail(query)
+        if image:
+            image_cache[name] = image
+            return image
+
+    fallback = f"https://placehold.co/1200x800/B03A2E/FFFFFF?text={quote_plus(name)}"
+    image_cache[name] = fallback
+    return fallback
+
+
+def ensure_real_images(unis):
+    for i, uni in enumerate(unis, start=1):
+        uni["image"] = resolve_university_image(uni, i)
+
 
 # HOME PAGE
 
@@ -209,6 +348,7 @@ universities = [
 def home():
     conn = get_db_connection()
     reviews = conn.execute("SELECT * FROM reviews ORDER BY id DESC").fetchall()
+    ensure_real_images(universities)
 
     # Real rating + review count per university
     uni_stats = {}
@@ -270,6 +410,8 @@ def university(name):
     conn.close()
 
     uni = next((u for u in universities if u["name"] == name), None)
+    if uni:
+        ensure_real_images([uni])
     city = uni["city"] if uni else "India"
 
     if reviews:
@@ -314,6 +456,7 @@ def universities_page():
     start = (page - 1) * per_page
     end = start + per_page
     paginated = filtered[start:end]
+    ensure_real_images(paginated)
 
     conn = get_db_connection()
     uni_stats = {}
@@ -433,7 +576,7 @@ def admin_add_university():
     image = request.form["image"].strip()
     if name and city:
         if not image:
-            image = "https://images.unsplash.com/photo-1562774053-701939374585?w=800"
+            image = f"https://source.unsplash.com/1200x800/?{quote_plus(name + ' ' + city + ' university campus')}"
         universities.append({"name": name, "city": city, "image": image})
     return redirect("/admin/universities")
 
@@ -459,6 +602,9 @@ def search():
         for u in universities
         if q in u["name"].lower() or q in u["city"].lower()
     ][:10]
+    for i, r in enumerate(results, start=1):
+        uni_obj = {"name": r["name"], "city": r["city"]}
+        r["image"] = resolve_university_image(uni_obj, i)
     return jsonify(results)
 
 # RUN
