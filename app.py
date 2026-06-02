@@ -1,10 +1,6 @@
 from flask import Flask, render_template, request, redirect
 import sqlite3
 from datetime import datetime
-from urllib.parse import quote_plus, quote
-from urllib.request import Request, urlopen
-from urllib.error import URLError, HTTPError
-import json
 
 app = Flask(__name__)
 app.secret_key = "messreview_secret_key_2026"
@@ -62,284 +58,149 @@ universities = [
     {"name": "Galgotias University", "city": "Greater Noida, UP", "image": "https://images.unsplash.com/photo-1607237138185-eedd9c632b0b?w=800"},
     {"name": "SRM University", "city": "Chennai, Tamil Nadu", "image": "https://images.unsplash.com/photo-1571260899304-425eee4c7efc?w=800"},
     {"name": "Bennett University", "city": "Greater Noida, UP", "image": "https://images.unsplash.com/photo-1564981797816-1043664bf78d?w=800"},
-    {"name": "IIT Delhi", "city": "New Delhi", "image": "https://images.unsplash.com/photo-1592280771190-3e2e4d571952?w=800"},
-    {"name": "IIT Bombay", "city": "Mumbai, Maharashtra", "image": "https://images.unsplash.com/photo-1562774053-701939374585?w=800"},
-    {"name": "IIT Madras", "city": "Chennai, Tamil Nadu", "image": "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=800"},
-    {"name": "IIT Kanpur", "city": "Kanpur, UP", "image": "https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?w=800"},
-    {"name": "IIT Kharagpur", "city": "Kharagpur, West Bengal", "image": "https://images.unsplash.com/photo-1607237138185-eedd9c632b0b?w=800"},
-    {"name": "IIT Roorkee", "city": "Roorkee, Uttarakhand", "image": "https://images.unsplash.com/photo-1571260899304-425eee4c7efc?w=800"},
-    {"name": "IIT Guwahati", "city": "Guwahati, Assam", "image": "https://images.unsplash.com/photo-1564981797816-1043664bf78d?w=800"},
-    {"name": "IIT Hyderabad", "city": "Hyderabad, Telangana", "image": "https://images.unsplash.com/photo-1562774053-701939374585?w=800"},
-    {"name": "IIT Bhubaneswar", "city": "Bhubaneswar, Odisha", "image": "https://images.unsplash.com/photo-1562774053-701939374585?w=800"},
-    {"name": "IIT Gandhinagar", "city": "Gandhinagar, Gujarat", "image": "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=800"},
-    {"name": "IIT Jodhpur", "city": "Jodhpur, Rajasthan", "image": "https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?w=800"},
-    {"name": "IIT Mandi", "city": "Mandi, Himachal Pradesh", "image": "https://images.unsplash.com/photo-1607237138185-eedd9c632b0b?w=800"},
-    {"name": "IIT Patna", "city": "Patna, Bihar", "image": "https://images.unsplash.com/photo-1571260899304-425eee4c7efc?w=800"},
-    {"name": "IIT Ropar", "city": "Rupnagar, Punjab", "image": "https://images.unsplash.com/photo-1564981797816-1043664bf78d?w=800"},
-    {"name": "IIT Tirupati", "city": "Tirupati, Andhra Pradesh", "image": "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=800"},
-    {"name": "IIT Palakkad", "city": "Palakkad, Kerala", "image": "https://images.unsplash.com/photo-1562774053-701939374585?w=800"},
-    {"name": "IIT Dharwad", "city": "Dharwad, Karnataka", "image": "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=800"},
-    {"name": "IIT Jammu", "city": "Jammu, J&K", "image": "https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?w=800"},
-    {"name": "IIT Bhilai", "city": "Bhilai, Chhattisgarh", "image": "https://images.unsplash.com/photo-1607237138185-eedd9c632b0b?w=800"},
-    {"name": "NIT Trichy", "city": "Tiruchirappalli, Tamil Nadu", "image": "https://images.unsplash.com/photo-1571260899304-425eee4c7efc?w=800"},
-    {"name": "NIT Warangal", "city": "Warangal, Telangana", "image": "https://images.unsplash.com/photo-1564981797816-1043664bf78d?w=800"},
-    {"name": "NIT Surathkal", "city": "Mangalore, Karnataka", "image": "https://images.unsplash.com/photo-1607237138185-eedd9c632b0b?w=800"},
-    {"name": "NIT Calicut", "city": "Kozhikode, Kerala", "image": "https://images.unsplash.com/photo-1562774053-701939374585?w=800"},
-    {"name": "NIT Rourkela", "city": "Rourkela, Odisha", "image": "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=800"},
-    {"name": "NIT Allahabad", "city": "Prayagraj, UP", "image": "https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?w=800"},
-    {"name": "NIT Jaipur", "city": "Jaipur, Rajasthan", "image": "https://images.unsplash.com/photo-1607237138185-eedd9c632b0b?w=800"},
-    {"name": "NIT Kurukshetra", "city": "Kurukshetra, Haryana", "image": "https://images.unsplash.com/photo-1571260899304-425eee4c7efc?w=800"},
-    {"name": "NIT Durgapur", "city": "Durgapur, West Bengal", "image": "https://images.unsplash.com/photo-1564981797816-1043664bf78d?w=800"},
-    {"name": "NIT Surat", "city": "Surat, Gujarat", "image": "https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?w=800"},
-    {"name": "NIT Hamirpur", "city": "Hamirpur, Himachal Pradesh", "image": "https://images.unsplash.com/photo-1562774053-701939374585?w=800"},
-    {"name": "NIT Jalandhar", "city": "Jalandhar, Punjab", "image": "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=800"},
-    {"name": "NIT Nagpur", "city": "Nagpur, Maharashtra", "image": "https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?w=800"},
-    {"name": "NIT Patna", "city": "Patna, Bihar", "image": "https://images.unsplash.com/photo-1607237138185-eedd9c632b0b?w=800"},
-    {"name": "NIT Silchar", "city": "Silchar, Assam", "image": "https://images.unsplash.com/photo-1571260899304-425eee4c7efc?w=800"},
-    {"name": "NIT Agartala", "city": "Agartala, Tripura", "image": "https://images.unsplash.com/photo-1564981797816-1043664bf78d?w=800"},
-    {"name": "NIT Manipur", "city": "Imphal, Manipur", "image": "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800"},
-    {"name": "NIT Meghalaya", "city": "Shillong, Meghalaya", "image": "https://images.unsplash.com/photo-1562774053-701939374585?w=800"},
-    {"name": "NIT Mizoram", "city": "Aizawl, Mizoram", "image": "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=800"},
-    {"name": "NIT Goa", "city": "Goa", "image": "https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?w=800"},
-    {"name": "NIT Puducherry", "city": "Puducherry", "image": "https://images.unsplash.com/photo-1607237138185-eedd9c632b0b?w=800"},
-    {"name": "NIT Sikkim", "city": "Gangtok, Sikkim", "image": "https://images.unsplash.com/photo-1571260899304-425eee4c7efc?w=800"},
-    {"name": "NIT Uttarakhand", "city": "Srinagar, Uttarakhand", "image": "https://images.unsplash.com/photo-1564981797816-1043664bf78d?w=800"},
-    {"name": "BITS Pilani", "city": "Pilani, Rajasthan", "image": "https://images.unsplash.com/photo-1607237138185-eedd9c632b0b?w=800"},
-    {"name": "BITS Goa", "city": "Goa", "image": "https://images.unsplash.com/photo-1571260899304-425eee4c7efc?w=800"},
-    {"name": "BITS Hyderabad", "city": "Hyderabad, Telangana", "image": "https://images.unsplash.com/photo-1564981797816-1043664bf78d?w=800"},
-    {"name": "VIT Vellore", "city": "Vellore, Tamil Nadu", "image": "https://images.unsplash.com/photo-1564981797816-1043664bf78d?w=800"},
-    {"name": "VIT Chennai", "city": "Chennai, Tamil Nadu", "image": "https://images.unsplash.com/photo-1562774053-701939374585?w=800"},
-    {"name": "VIT Bhopal", "city": "Bhopal, MP", "image": "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=800"},
-    {"name": "VIT AP", "city": "Amaravati, Andhra Pradesh", "image": "https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?w=800"},
-    {"name": "Manipal University", "city": "Manipal, Karnataka", "image": "https://images.unsplash.com/photo-1607237138185-eedd9c632b0b?w=800"},
-    {"name": "Manipal University Jaipur", "city": "Jaipur, Rajasthan", "image": "https://images.unsplash.com/photo-1571260899304-425eee4c7efc?w=800"},
-    {"name": "Symbiosis International University", "city": "Pune, Maharashtra", "image": "https://images.unsplash.com/photo-1607237138185-eedd9c632b0b?w=800"},
-    {"name": "Christ University", "city": "Bangalore, Karnataka", "image": "https://images.unsplash.com/photo-1562774053-701939374585?w=800"},
-    {"name": "Thapar University", "city": "Patiala, Punjab", "image": "https://images.unsplash.com/photo-1607237138185-eedd9c632b0b?w=800"},
-    {"name": "Chitkara University", "city": "Rajpura, Punjab", "image": "https://images.unsplash.com/photo-1571260899304-425eee4c7efc?w=800"},
-    {"name": "Graphic Era University", "city": "Dehradun, Uttarakhand", "image": "https://images.unsplash.com/photo-1564981797816-1043664bf78d?w=800"},
-    {"name": "UPES Dehradun", "city": "Dehradun, Uttarakhand", "image": "https://images.unsplash.com/photo-1562774053-701939374585?w=800"},
-    {"name": "Nirma University", "city": "Ahmedabad, Gujarat", "image": "https://images.unsplash.com/photo-1562774053-701939374585?w=800"},
-    {"name": "Kalinga Institute of Industrial Technology", "city": "Bhubaneswar, Odisha", "image": "https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?w=800"},
-    {"name": "Delhi University", "city": "New Delhi", "image": "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=800"},
-    {"name": "Jawaharlal Nehru University", "city": "New Delhi", "image": "https://images.unsplash.com/photo-1607237138185-eedd9c632b0b?w=800"},
-    {"name": "Banaras Hindu University", "city": "Varanasi, UP", "image": "https://images.unsplash.com/photo-1571260899304-425eee4c7efc?w=800"},
-    {"name": "Aligarh Muslim University", "city": "Aligarh, UP", "image": "https://images.unsplash.com/photo-1564981797816-1043664bf78d?w=800"},
-    {"name": "Hyderabad University", "city": "Hyderabad, Telangana", "image": "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=800"},
-    {"name": "Jadavpur University", "city": "Kolkata, West Bengal", "image": "https://images.unsplash.com/photo-1562774053-701939374585?w=800"},
-    {"name": "Anna University", "city": "Chennai, Tamil Nadu", "image": "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=800"},
-    {"name": "Mumbai University", "city": "Mumbai, Maharashtra", "image": "https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?w=800"},
-    {"name": "Calcutta University", "city": "Kolkata, West Bengal", "image": "https://images.unsplash.com/photo-1607237138185-eedd9c632b0b?w=800"},
-    {"name": "Panjab University", "city": "Chandigarh", "image": "https://images.unsplash.com/photo-1571260899304-425eee4c7efc?w=800"},
-    {"name": "Lucknow University", "city": "Lucknow, UP", "image": "https://images.unsplash.com/photo-1564981797816-1043664bf78d?w=800"},
-    {"name": "Allahabad University", "city": "Prayagraj, UP", "image": "https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?w=800"},
-    {"name": "Patna University", "city": "Patna, Bihar", "image": "https://images.unsplash.com/photo-1562774053-701939374585?w=800"},
-    {"name": "Gauhati University", "city": "Guwahati, Assam", "image": "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=800"},
-    {"name": "Jammu University", "city": "Jammu, J&K", "image": "https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?w=800"},
-    {"name": "Kashmir University", "city": "Srinagar, J&K", "image": "https://images.unsplash.com/photo-1607237138185-eedd9c632b0b?w=800"},
-    {"name": "Manipur University", "city": "Imphal, Manipur", "image": "https://images.unsplash.com/photo-1571260899304-425eee4c7efc?w=800"},
-    {"name": "Sikkim University", "city": "Gangtok, Sikkim", "image": "https://images.unsplash.com/photo-1564981797816-1043664bf78d?w=800"},
-    {"name": "Tripura University", "city": "Agartala, Tripura", "image": "https://images.unsplash.com/photo-1607237138185-eedd9c632b0b?w=800"},
-    {"name": "Mizoram University", "city": "Aizawl, Mizoram", "image": "https://images.unsplash.com/photo-1562774053-701939374585?w=800"},
-    {"name": "Assam University", "city": "Silchar, Assam", "image": "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=800"},
-    {"name": "Tezpur University", "city": "Tezpur, Assam", "image": "https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?w=800"},
-    {"name": "IIM Ahmedabad", "city": "Ahmedabad, Gujarat", "image": "https://images.unsplash.com/photo-1607237138185-eedd9c632b0b?w=800"},
-    {"name": "IIM Bangalore", "city": "Bangalore, Karnataka", "image": "https://images.unsplash.com/photo-1571260899304-425eee4c7efc?w=800"},
-    {"name": "IIM Calcutta", "city": "Kolkata, West Bengal", "image": "https://images.unsplash.com/photo-1564981797816-1043664bf78d?w=800"},
-    {"name": "IIM Lucknow", "city": "Lucknow, UP", "image": "https://images.unsplash.com/photo-1571260899304-425eee4c7efc?w=800"},
-    {"name": "IIM Kozhikode", "city": "Kozhikode, Kerala", "image": "https://images.unsplash.com/photo-1562774053-701939374585?w=800"},
-    {"name": "IIM Indore", "city": "Indore, MP", "image": "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=800"},
-    {"name": "IIM Shillong", "city": "Shillong, Meghalaya", "image": "https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?w=800"},
-    {"name": "IIM Rohtak", "city": "Rohtak, Haryana", "image": "https://images.unsplash.com/photo-1607237138185-eedd9c632b0b?w=800"},
-    {"name": "IIM Ranchi", "city": "Ranchi, Jharkhand", "image": "https://images.unsplash.com/photo-1571260899304-425eee4c7efc?w=800"},
-    {"name": "IIM Raipur", "city": "Raipur, Chhattisgarh", "image": "https://images.unsplash.com/photo-1564981797816-1043664bf78d?w=800"},
-    {"name": "IIM Trichy", "city": "Tiruchirappalli, Tamil Nadu", "image": "https://images.unsplash.com/photo-1564981797816-1043664bf78d?w=800"},
-    {"name": "IIM Udaipur", "city": "Udaipur, Rajasthan", "image": "https://images.unsplash.com/photo-1562774053-701939374585?w=800"},
-    {"name": "IIM Nagpur", "city": "Nagpur, Maharashtra", "image": "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=800"},
-    {"name": "IIM Jammu", "city": "Jammu, J&K", "image": "https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?w=800"},
-    {"name": "IIIT Hyderabad", "city": "Hyderabad, Telangana", "image": "https://images.unsplash.com/photo-1607237138185-eedd9c632b0b?w=800"},
-    {"name": "IIIT Delhi", "city": "New Delhi", "image": "https://images.unsplash.com/photo-1571260899304-425eee4c7efc?w=800"},
-    {"name": "IIIT Bangalore", "city": "Bangalore, Karnataka", "image": "https://images.unsplash.com/photo-1564981797816-1043664bf78d?w=800"},
-    {"name": "IIIT Allahabad", "city": "Prayagraj, UP", "image": "https://images.unsplash.com/photo-1562774053-701939374585?w=800"},
-    {"name": "IIIT Gwalior", "city": "Gwalior, MP", "image": "https://images.unsplash.com/photo-1562774053-701939374585?w=800"},
-    {"name": "IIIT Lucknow", "city": "Lucknow, UP", "image": "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=800"},
-    {"name": "IIIT Pune", "city": "Pune, Maharashtra", "image": "https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?w=800"},
-    {"name": "IIIT Nagpur", "city": "Nagpur, Maharashtra", "image": "https://images.unsplash.com/photo-1607237138185-eedd9c632b0b?w=800"},
-    {"name": "Amrita Vishwa Vidyapeetham", "city": "Coimbatore, Tamil Nadu", "image": "https://images.unsplash.com/photo-1571260899304-425eee4c7efc?w=800"},
-    {"name": "KL University", "city": "Guntur, Andhra Pradesh", "image": "https://images.unsplash.com/photo-1564981797816-1043664bf78d?w=800"},
-    {"name": "Gitam University", "city": "Visakhapatnam, AP", "image": "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=800"},
-    {"name": "Andhra University", "city": "Visakhapatnam, AP", "image": "https://images.unsplash.com/photo-1562774053-701939374585?w=800"},
-    {"name": "JNTU Hyderabad", "city": "Hyderabad, Telangana", "image": "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=800"},
-    {"name": "Bangalore University", "city": "Bangalore, Karnataka", "image": "https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?w=800"},
-    {"name": "Visvesvaraya Technological University", "city": "Belagavi, Karnataka", "image": "https://images.unsplash.com/photo-1607237138185-eedd9c632b0b?w=800"},
-    {"name": "Kerala University", "city": "Thiruvananthapuram, Kerala", "image": "https://images.unsplash.com/photo-1571260899304-425eee4c7efc?w=800"},
-    {"name": "Calicut University", "city": "Malappuram, Kerala", "image": "https://images.unsplash.com/photo-1564981797816-1043664bf78d?w=800"},
-    {"name": "Cochin University of Science and Technology", "city": "Kochi, Kerala", "image": "https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?w=800"},
-    {"name": "APJ Abdul Kalam Technological University", "city": "Thiruvananthapuram, Kerala", "image": "https://images.unsplash.com/photo-1562774053-701939374585?w=800"},
-    {"name": "Savitribai Phule Pune University", "city": "Pune, Maharashtra", "image": "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=800"},
-    {"name": "Shivaji University", "city": "Kolhapur, Maharashtra", "image": "https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?w=800"},
-    {"name": "Nagpur University", "city": "Nagpur, Maharashtra", "image": "https://images.unsplash.com/photo-1607237138185-eedd9c632b0b?w=800"},
-    {"name": "Devi Ahilya Vishwavidyalaya", "city": "Indore, MP", "image": "https://images.unsplash.com/photo-1571260899304-425eee4c7efc?w=800"},
-    {"name": "Barkatullah University", "city": "Bhopal, MP", "image": "https://images.unsplash.com/photo-1564981797816-1043664bf78d?w=800"},
-    {"name": "Jiwaji University", "city": "Gwalior, MP", "image": "https://images.unsplash.com/photo-1607237138185-eedd9c632b0b?w=800"},
-    {"name": "Mohanlal Sukhadia University", "city": "Udaipur, Rajasthan", "image": "https://images.unsplash.com/photo-1562774053-701939374585?w=800"},
-    {"name": "Rajasthan University", "city": "Jaipur, Rajasthan", "image": "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=800"},
-    {"name": "Guru Nanak Dev University", "city": "Amritsar, Punjab", "image": "https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?w=800"},
-    {"name": "Punjabi University Patiala", "city": "Patiala, Punjab", "image": "https://images.unsplash.com/photo-1607237138185-eedd9c632b0b?w=800"},
-    {"name": "MDU Rohtak", "city": "Rohtak, Haryana", "image": "https://images.unsplash.com/photo-1571260899304-425eee4c7efc?w=800"},
-    {"name": "Kurukshetra University", "city": "Kurukshetra, Haryana", "image": "https://images.unsplash.com/photo-1564981797816-1043664bf78d?w=800"},
-    {"name": "AKTU Lucknow", "city": "Lucknow, UP", "image": "https://images.unsplash.com/photo-1571260899304-425eee4c7efc?w=800"},
-    {"name": "Ranchi University", "city": "Ranchi, Jharkhand", "image": "https://images.unsplash.com/photo-1562774053-701939374585?w=800"},
-    {"name": "Utkal University", "city": "Bhubaneswar, Odisha", "image": "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=800"},
-    {"name": "Goa University", "city": "Goa", "image": "https://images.unsplash.com/photo-1607237138185-eedd9c632b0b?w=800"},
-    {"name": "Pondicherry University", "city": "Puducherry", "image": "https://images.unsplash.com/photo-1571260899304-425eee4c7efc?w=800"},
-    {"name": "IGNOU", "city": "New Delhi", "image": "https://images.unsplash.com/photo-1564981797816-1043664bf78d?w=800"},
-    {"name": "Jamia Millia Islamia", "city": "New Delhi", "image": "https://images.unsplash.com/photo-1564981797816-1043664bf78d?w=800"},
-    {"name": "IP University Delhi", "city": "New Delhi", "image": "https://images.unsplash.com/photo-1562774053-701939374585?w=800"},
-    {"name": "Sharda University", "city": "Greater Noida, UP", "image": "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=800"},
-    {"name": "GLA University", "city": "Mathura, UP", "image": "https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?w=800"},
-    {"name": "BIT Mesra", "city": "Ranchi, Jharkhand", "image": "https://images.unsplash.com/photo-1607237138185-eedd9c632b0b?w=800"},
-    {"name": "SASTRA University", "city": "Thanjavur, Tamil Nadu", "image": "https://images.unsplash.com/photo-1571260899304-425eee4c7efc?w=800"},
-    {"name": "Bharathidasan University", "city": "Tiruchirappalli, Tamil Nadu", "image": "https://images.unsplash.com/photo-1564981797816-1043664bf78d?w=800"},
-    {"name": "Bharathiar University", "city": "Coimbatore, Tamil Nadu", "image": "https://images.unsplash.com/photo-1562774053-701939374585?w=800"},
-    {"name": "Alagappa University", "city": "Karaikudi, Tamil Nadu", "image": "https://images.unsplash.com/photo-1562774053-701939374585?w=800"},
-    {"name": "Annamalai University", "city": "Chidambaram, Tamil Nadu", "image": "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=800"},
+    {"name": "IIT Delhi", "city": "New Delhi", "image": "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800"},
+    {"name": "IIT Bombay", "city": "Mumbai, Maharashtra", "image": "https://images.unsplash.com/photo-1592280771190-3e2e4d571952?w=800"},
+    {"name": "IIT Madras", "city": "Chennai, Tamil Nadu", "image": "https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=800"},
+    {"name": "IIT Kanpur", "city": "Kanpur, UP", "image": "https://images.unsplash.com/photo-1509062522246-3755977927d7?w=800"},
+    {"name": "IIT Kharagpur", "city": "Kharagpur, West Bengal", "image": "https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?w=800"},
+    {"name": "IIT Roorkee", "city": "Roorkee, Uttarakhand", "image": "https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e?w=800"},
+    {"name": "IIT Guwahati", "city": "Guwahati, Assam", "image": "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800"},
+    {"name": "IIT Hyderabad", "city": "Hyderabad, Telangana", "image": "https://images.unsplash.com/photo-1519452575417-564c1401ecc0?w=800"},
+    {"name": "IIT Bhubaneswar", "city": "Bhubaneswar, Odisha", "image": "https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=800"},
+    {"name": "IIT Gandhinagar", "city": "Gandhinagar, Gujarat", "image": "https://images.unsplash.com/photo-1529390079861-591de354faf5?w=800"},
+    {"name": "IIT Jodhpur", "city": "Jodhpur, Rajasthan", "image": "https://images.unsplash.com/photo-1544531585-9847b68c8c86?w=800"},
+    {"name": "IIT Mandi", "city": "Mandi, Himachal Pradesh", "image": "https://images.unsplash.com/photo-1508193638397-1c4234db14d8?w=800"},
+    {"name": "IIT Patna", "city": "Patna, Bihar", "image": "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=800"},
+    {"name": "IIT Ropar", "city": "Rupnagar, Punjab", "image": "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=800"},
+    {"name": "IIT Tirupati", "city": "Tirupati, Andhra Pradesh", "image": "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=800"},
+    {"name": "IIT Palakkad", "city": "Palakkad, Kerala", "image": "https://images.unsplash.com/photo-1543269865-cbf427effbad?w=800"},
+    {"name": "IIT Dharwad", "city": "Dharwad, Karnataka", "image": "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800"},
+    {"name": "IIT Jammu", "city": "Jammu, J&K", "image": "https://images.unsplash.com/photo-1513258496099-48168024aec0?w=800"},
+    {"name": "IIT Bhilai", "city": "Bhilai, Chhattisgarh", "image": "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=800"},
+    {"name": "NIT Trichy", "city": "Tiruchirappalli, Tamil Nadu", "image": "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?w=800"},
+    {"name": "NIT Warangal", "city": "Warangal, Telangana", "image": "https://images.unsplash.com/photo-1523580494863-6f3031224c94?w=800"},
+    {"name": "NIT Surathkal", "city": "Mangalore, Karnataka", "image": "https://images.unsplash.com/photo-1491975474562-1f4e30bc9468?w=800"},
+    {"name": "NIT Calicut", "city": "Kozhikode, Kerala", "image": "https://images.unsplash.com/photo-1581362072978-14998d01fdaa?w=800"},
+    {"name": "NIT Rourkela", "city": "Rourkela, Odisha", "image": "https://images.unsplash.com/photo-1584697964358-3e14ca57658b?w=800"},
+    {"name": "NIT Allahabad", "city": "Prayagraj, UP", "image": "https://images.unsplash.com/photo-1606761568499-6d2451b23c66?w=800"},
+    {"name": "NIT Jaipur", "city": "Jaipur, Rajasthan", "image": "https://images.unsplash.com/photo-1596495578065-6e0763fa1178?w=800"},
+    {"name": "NIT Kurukshetra", "city": "Kurukshetra, Haryana", "image": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800"},
+    {"name": "NIT Durgapur", "city": "Durgapur, West Bengal", "image": "https://images.unsplash.com/photo-1532619187608-e5375cab36aa?w=800"},
+    {"name": "NIT Surat", "city": "Surat, Gujarat", "image": "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=800"},
+    {"name": "NIT Hamirpur", "city": "Hamirpur, Himachal Pradesh", "image": "https://images.unsplash.com/photo-1560785496-3c9d20fa7ca7?w=800"},
+    {"name": "NIT Jalandhar", "city": "Jalandhar, Punjab", "image": "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=800"},
+    {"name": "NIT Nagpur", "city": "Nagpur, Maharashtra", "image": "https://images.unsplash.com/photo-1551190822-a9333d879b1f?w=800"},
+    {"name": "NIT Patna", "city": "Patna, Bihar", "image": "https://images.unsplash.com/photo-1532619675605-1ede6c2ed2b0?w=800"},
+    {"name": "NIT Silchar", "city": "Silchar, Assam", "image": "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=800"},
+    {"name": "NIT Agartala", "city": "Agartala, Tripura", "image": "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800"},
+    {"name": "NIT Manipur", "city": "Imphal, Manipur", "image": "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800"},
+    {"name": "NIT Meghalaya", "city": "Shillong, Meghalaya", "image": "https://images.unsplash.com/photo-1501504905252-473c47e087f8?w=800"},
+    {"name": "NIT Mizoram", "city": "Aizawl, Mizoram", "image": "https://images.unsplash.com/photo-1518770660439-4636190af475?w=800"},
+    {"name": "NIT Goa", "city": "Goa", "image": "https://images.unsplash.com/photo-1532012197267-da84d127e765?w=800"},
+    {"name": "NIT Puducherry", "city": "Puducherry", "image": "https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=800"},
+    {"name": "NIT Sikkim", "city": "Gangtok, Sikkim", "image": "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=800"},
+    {"name": "NIT Uttarakhand", "city": "Srinagar, Uttarakhand", "image": "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=800"},
+    {"name": "BITS Pilani", "city": "Pilani, Rajasthan", "image": "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=800"},
+    {"name": "BITS Goa", "city": "Goa", "image": "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800"},
+    {"name": "BITS Hyderabad", "city": "Hyderabad, Telangana", "image": "https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=800"},
+    {"name": "VIT Vellore", "city": "Vellore, Tamil Nadu", "image": "https://images.unsplash.com/photo-1573164713988-8665fc963095?w=800"},
+    {"name": "VIT Chennai", "city": "Chennai, Tamil Nadu", "image": "https://images.unsplash.com/photo-1582719471384-894fbb16e074?w=800"},
+    {"name": "VIT Bhopal", "city": "Bhopal, MP", "image": "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800"},
+    {"name": "VIT AP", "city": "Amaravati, Andhra Pradesh", "image": "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800"},
+    {"name": "Manipal University", "city": "Manipal, Karnataka", "image": "https://images.unsplash.com/photo-1467226632440-65f0b4957563?w=800"},
+    {"name": "Manipal University Jaipur", "city": "Jaipur, Rajasthan", "image": "https://images.unsplash.com/photo-1575503802870-45de6a6217c8?w=800"},
+    {"name": "Symbiosis International University", "city": "Pune, Maharashtra", "image": "https://images.unsplash.com/photo-1574362848149-11496d93a7c7?w=800"},
+    {"name": "Christ University", "city": "Bangalore, Karnataka", "image": "https://images.unsplash.com/photo-1494522855154-9297ac14b55f?w=800"},
+    {"name": "Thapar University", "city": "Patiala, Punjab", "image": "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=800"},
+    {"name": "Chitkara University", "city": "Rajpura, Punjab", "image": "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=800"},
+    {"name": "Graphic Era University", "city": "Dehradun, Uttarakhand", "image": "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=800"},
+    {"name": "UPES Dehradun", "city": "Dehradun, Uttarakhand", "image": "https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=800"},
+    {"name": "Nirma University", "city": "Ahmedabad, Gujarat", "image": "https://images.unsplash.com/photo-1523978591478-c753949ff840?w=800"},
+    {"name": "Kalinga Institute of Industrial Technology", "city": "Bhubaneswar, Odisha", "image": "https://images.unsplash.com/photo-1434494878577-86c23bcb06b9?w=800"},
+    {"name": "Delhi University", "city": "New Delhi", "image": "https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?w=800"},
+    {"name": "Jawaharlal Nehru University", "city": "New Delhi", "image": "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=800"},
+    {"name": "Banaras Hindu University", "city": "Varanasi, UP", "image": "https://images.unsplash.com/photo-1535982330050-f1c2fb79ff84?w=800"},
+    {"name": "Aligarh Muslim University", "city": "Aligarh, UP", "image": "https://images.unsplash.com/photo-1517649763962-0c623066013b?w=800"},
+    {"name": "Hyderabad University", "city": "Hyderabad, Telangana", "image": "https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?w=800"},
+    {"name": "Jadavpur University", "city": "Kolkata, West Bengal", "image": "https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?w=800"},
+    {"name": "Anna University", "city": "Chennai, Tamil Nadu", "image": "https://images.unsplash.com/photo-1513694203232-719a280e022f?w=800"},
+    {"name": "Mumbai University", "city": "Mumbai, Maharashtra", "image": "https://images.unsplash.com/photo-1530099486328-e021101a494a?w=800"},
+    {"name": "Calcutta University", "city": "Kolkata, West Bengal", "image": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=800"},
+    {"name": "Panjab University", "city": "Chandigarh", "image": "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=800"},
+    {"name": "Lucknow University", "city": "Lucknow, UP", "image": "https://images.unsplash.com/photo-1607746882042-944635dfe10e?w=800"},
+    {"name": "Allahabad University", "city": "Prayagraj, UP", "image": "https://images.unsplash.com/photo-1509005084666-3cbc75184cbb?w=800"},
+    {"name": "Patna University", "city": "Patna, Bihar", "image": "https://images.unsplash.com/photo-1524592094714-0f0654e20314?w=800"},
+    {"name": "Gauhati University", "city": "Guwahati, Assam", "image": "https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?w=800"},
+    {"name": "Jammu University", "city": "Jammu, J&K", "image": "https://images.unsplash.com/photo-1548449112-96a38a643324?w=800"},
+    {"name": "Kashmir University", "city": "Srinagar, J&K", "image": "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=800"},
+    {"name": "Manipur University", "city": "Imphal, Manipur", "image": "https://images.unsplash.com/photo-1531482615713-2afd69097998?w=800"},
+    {"name": "Sikkim University", "city": "Gangtok, Sikkim", "image": "https://images.unsplash.com/photo-1556761175-b413da4baf72?w=800"},
+    {"name": "Tripura University", "city": "Agartala, Tripura", "image": "https://images.unsplash.com/photo-1574607383476-f517f260d30b?w=800"},
+    {"name": "Mizoram University", "city": "Aizawl, Mizoram", "image": "https://images.unsplash.com/photo-1606761568499-6d2451b23c66?w=800"},
+    {"name": "Assam University", "city": "Silchar, Assam", "image": "https://images.unsplash.com/photo-1541178735493-479c1a27ed24?w=800"},
+    {"name": "Tezpur University", "city": "Tezpur, Assam", "image": "https://images.unsplash.com/photo-1513530534585-c7b1394c6d51?w=800"},
+    {"name": "IIM Ahmedabad", "city": "Ahmedabad, Gujarat", "image": "https://images.unsplash.com/photo-1606761568499-6d2451b23c66?w=800"},
+    {"name": "IIM Bangalore", "city": "Bangalore, Karnataka", "image": "https://images.unsplash.com/photo-1588072432836-e10032774350?w=800"},
+    {"name": "IIM Calcutta", "city": "Kolkata, West Bengal", "image": "https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=800"},
+    {"name": "IIM Lucknow", "city": "Lucknow, UP", "image": "https://images.unsplash.com/photo-1581362072978-14998d01fdaa?w=800"},
+    {"name": "IIM Kozhikode", "city": "Kozhikode, Kerala", "image": "https://images.unsplash.com/photo-1604872440371-a1a45d2c7ce4?w=800"},
+    {"name": "IIM Indore", "city": "Indore, MP", "image": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800"},
+    {"name": "IIM Shillong", "city": "Shillong, Meghalaya", "image": "https://images.unsplash.com/photo-1509062522246-3755977927d7?w=800"},
+    {"name": "IIM Rohtak", "city": "Rohtak, Haryana", "image": "https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e?w=800"},
+    {"name": "IIM Ranchi", "city": "Ranchi, Jharkhand", "image": "https://images.unsplash.com/photo-1576495199011-eb94736d05d6?w=800"},
+    {"name": "IIM Raipur", "city": "Raipur, Chhattisgarh", "image": "https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=800"},
+    {"name": "IIM Trichy", "city": "Tiruchirappalli, Tamil Nadu", "image": "https://images.unsplash.com/photo-1517048676732-d65bc937f952?w=800"},
+    {"name": "IIM Udaipur", "city": "Udaipur, Rajasthan", "image": "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800"},
+    {"name": "IIM Nagpur", "city": "Nagpur, Maharashtra", "image": "https://images.unsplash.com/photo-1577896851231-70ef18881754?w=800"},
+    {"name": "IIM Jammu", "city": "Jammu, J&K", "image": "https://images.unsplash.com/photo-1562774053-701939374585?w=800"},
+    {"name": "IIIT Hyderabad", "city": "Hyderabad, Telangana", "image": "https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?w=800"},
+    {"name": "IIIT Delhi", "city": "New Delhi", "image": "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=800"},
+    {"name": "IIIT Bangalore", "city": "Bangalore, Karnataka", "image": "https://images.unsplash.com/photo-1607237138185-eedd9c632b0b?w=800"},
+    {"name": "IIIT Allahabad", "city": "Prayagraj, UP", "image": "https://images.unsplash.com/photo-1571260899304-425eee4c7efc?w=800"},
+    {"name": "IIIT Gwalior", "city": "Gwalior, MP", "image": "https://images.unsplash.com/photo-1564981797816-1043664bf78d?w=800"},
+    {"name": "IIIT Lucknow", "city": "Lucknow, UP", "image": "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800"},
+    {"name": "IIIT Pune", "city": "Pune, Maharashtra", "image": "https://images.unsplash.com/photo-1592280771190-3e2e4d571952?w=800"},
+    {"name": "IIIT Nagpur", "city": "Nagpur, Maharashtra", "image": "https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=800"},
+    {"name": "Amrita Vishwa Vidyapeetham", "city": "Coimbatore, Tamil Nadu", "image": "https://images.unsplash.com/photo-1509062522246-3755977927d7?w=800"},
+    {"name": "KL University", "city": "Guntur, Andhra Pradesh", "image": "https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?w=800"},
+    {"name": "Gitam University", "city": "Visakhapatnam, AP", "image": "https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e?w=800"},
+    {"name": "Andhra University", "city": "Visakhapatnam, AP", "image": "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800"},
+    {"name": "JNTU Hyderabad", "city": "Hyderabad, Telangana", "image": "https://images.unsplash.com/photo-1519452575417-564c1401ecc0?w=800"},
+    {"name": "Bangalore University", "city": "Bangalore, Karnataka", "image": "https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=800"},
+    {"name": "Visvesvaraya Technological University", "city": "Belagavi, Karnataka", "image": "https://images.unsplash.com/photo-1529390079861-591de354faf5?w=800"},
+    {"name": "Kerala University", "city": "Thiruvananthapuram, Kerala", "image": "https://images.unsplash.com/photo-1544531585-9847b68c8c86?w=800"},
+    {"name": "Calicut University", "city": "Malappuram, Kerala", "image": "https://images.unsplash.com/photo-1508193638397-1c4234db14d8?w=800"},
+    {"name": "Cochin University of Science and Technology", "city": "Kochi, Kerala", "image": "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=800"},
+    {"name": "APJ Abdul Kalam Technological University", "city": "Thiruvananthapuram, Kerala", "image": "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=800"},
+    {"name": "Savitribai Phule Pune University", "city": "Pune, Maharashtra", "image": "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=800"},
+    {"name": "Shivaji University", "city": "Kolhapur, Maharashtra", "image": "https://images.unsplash.com/photo-1543269865-cbf427effbad?w=800"},
+    {"name": "Nagpur University", "city": "Nagpur, Maharashtra", "image": "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800"},
+    {"name": "Devi Ahilya Vishwavidyalaya", "city": "Indore, MP", "image": "https://images.unsplash.com/photo-1513258496099-48168024aec0?w=800"},
+    {"name": "Barkatullah University", "city": "Bhopal, MP", "image": "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=800"},
+    {"name": "Jiwaji University", "city": "Gwalior, MP", "image": "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?w=800"},
+    {"name": "Mohanlal Sukhadia University", "city": "Udaipur, Rajasthan", "image": "https://images.unsplash.com/photo-1523580494863-6f3031224c94?w=800"},
+    {"name": "Rajasthan University", "city": "Jaipur, Rajasthan", "image": "https://images.unsplash.com/photo-1491975474562-1f4e30bc9468?w=800"},
+    {"name": "Guru Nanak Dev University", "city": "Amritsar, Punjab", "image": "https://images.unsplash.com/photo-1581362072978-14998d01fdaa?w=800"},
+    {"name": "Punjabi University Patiala", "city": "Patiala, Punjab", "image": "https://images.unsplash.com/photo-1584697964358-3e14ca57658b?w=800"},
+    {"name": "MDU Rohtak", "city": "Rohtak, Haryana", "image": "https://images.unsplash.com/photo-1606761568499-6d2451b23c66?w=800"},
+    {"name": "Kurukshetra University", "city": "Kurukshetra, Haryana", "image": "https://images.unsplash.com/photo-1596495578065-6e0763fa1178?w=800"},
+    {"name": "AKTU Lucknow", "city": "Lucknow, UP", "image": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800"},
+    {"name": "Ranchi University", "city": "Ranchi, Jharkhand", "image": "https://images.unsplash.com/photo-1532619187608-e5375cab36aa?w=800"},
+    {"name": "Utkal University", "city": "Bhubaneswar, Odisha", "image": "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=800"},
+    {"name": "Goa University", "city": "Goa", "image": "https://images.unsplash.com/photo-1560785496-3c9d20fa7ca7?w=800"},
+    {"name": "Pondicherry University", "city": "Puducherry", "image": "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=800"},
+    {"name": "IGNOU", "city": "New Delhi", "image": "https://images.unsplash.com/photo-1551190822-a9333d879b1f?w=800"},
+    {"name": "Jamia Millia Islamia", "city": "New Delhi", "image": "https://images.unsplash.com/photo-1532619675605-1ede6c2ed2b0?w=800"},
+    {"name": "IP University Delhi", "city": "New Delhi", "image": "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=800"},
+    {"name": "Sharda University", "city": "Greater Noida, UP", "image": "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800"},
+    {"name": "GLA University", "city": "Mathura, UP", "image": "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800"},
+    {"name": "BIT Mesra", "city": "Ranchi, Jharkhand", "image": "https://images.unsplash.com/photo-1501504905252-473c47e087f8?w=800"},
+    {"name": "SASTRA University", "city": "Thanjavur, Tamil Nadu", "image": "https://images.unsplash.com/photo-1518770660439-4636190af475?w=800"},
+    {"name": "Bharathidasan University", "city": "Tiruchirappalli, Tamil Nadu", "image": "https://images.unsplash.com/photo-1532012197267-da84d127e765?w=800"},
+    {"name": "Bharathiar University", "city": "Coimbatore, Tamil Nadu", "image": "https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=800"},
+    {"name": "Alagappa University", "city": "Karaikudi, Tamil Nadu", "image": "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=800"},
+    {"name": "Annamalai University", "city": "Chidambaram, Tamil Nadu", "image": "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=800"},
 ]
-
-# REAL UNIVERSITY IMAGE RESOLVER
-# Uses Wikipedia/Wikimedia thumbnails first. If no real image is found,
-# it shows a unique name placeholder instead of duplicate stock images.
-
-image_cache = {}
-
-UNIVERSITY_IMAGE_ALIASES = {
-    "IIT Delhi": "Indian Institute of Technology Delhi",
-    "IIT Bombay": "Indian Institute of Technology Bombay",
-    "IIT Madras": "Indian Institute of Technology Madras",
-    "IIT Kanpur": "Indian Institute of Technology Kanpur",
-    "IIT Kharagpur": "Indian Institute of Technology Kharagpur",
-    "IIT Roorkee": "Indian Institute of Technology Roorkee",
-    "IIT Guwahati": "Indian Institute of Technology Guwahati",
-    "IIT Hyderabad": "Indian Institute of Technology Hyderabad",
-    "IIT Bhubaneswar": "Indian Institute of Technology Bhubaneswar",
-    "IIT Gandhinagar": "Indian Institute of Technology Gandhinagar",
-    "IIT Jodhpur": "Indian Institute of Technology Jodhpur",
-    "IIT Mandi": "Indian Institute of Technology Mandi",
-    "IIT Patna": "Indian Institute of Technology Patna",
-    "IIT Ropar": "Indian Institute of Technology Ropar",
-    "IIT Tirupati": "Indian Institute of Technology Tirupati",
-    "IIT Palakkad": "Indian Institute of Technology Palakkad",
-    "IIT Dharwad": "Indian Institute of Technology Dharwad",
-    "IIT Jammu": "Indian Institute of Technology Jammu",
-    "IIT Bhilai": "Indian Institute of Technology Bhilai",
-    "NIT Trichy": "National Institute of Technology Tiruchirappalli",
-    "NIT Warangal": "National Institute of Technology Warangal",
-    "NIT Surathkal": "National Institute of Technology Karnataka Surathkal",
-    "NIT Calicut": "National Institute of Technology Calicut",
-    "NIT Rourkela": "National Institute of Technology Rourkela",
-    "NIT Allahabad": "Motilal Nehru National Institute of Technology Allahabad",
-    "NIT Jaipur": "Malaviya National Institute of Technology Jaipur",
-    "NIT Kurukshetra": "National Institute of Technology Kurukshetra",
-    "NIT Durgapur": "National Institute of Technology Durgapur",
-    "NIT Surat": "Sardar Vallabhbhai National Institute of Technology Surat",
-    "BITS Pilani": "Birla Institute of Technology and Science Pilani",
-    "BITS Goa": "BITS Pilani Goa Campus",
-    "BITS Hyderabad": "BITS Pilani Hyderabad Campus",
-    "VIT Vellore": "Vellore Institute of Technology",
-    "VIT Chennai": "VIT Chennai",
-    "VIT Bhopal": "VIT Bhopal University",
-    "VIT AP": "VIT-AP University",
-    "Delhi University": "University of Delhi",
-    "Hyderabad University": "University of Hyderabad",
-    "Mumbai University": "University of Mumbai",
-    "Calcutta University": "University of Calcutta",
-    "Panjab University": "Panjab University Chandigarh",
-    "Lucknow University": "University of Lucknow",
-    "Allahabad University": "University of Allahabad",
-    "Patna University": "Patna University",
-    "Gauhati University": "Gauhati University",
-    "Jammu University": "University of Jammu",
-    "Kashmir University": "University of Kashmir",
-    "Banaras Hindu University": "Banaras Hindu University",
-    "Jawaharlal Nehru University": "Jawaharlal Nehru University",
-    "Aligarh Muslim University": "Aligarh Muslim University",
-    "Jamia Millia Islamia": "Jamia Millia Islamia",
-    "Savitribai Phule Pune University": "Savitribai Phule Pune University",
-    "IGNOU": "Indira Gandhi National Open University",
-    "IP University Delhi": "Guru Gobind Singh Indraprastha University",
-    "AKTU Lucknow": "Dr. A.P.J. Abdul Kalam Technical University",
-}
-
-
-def _fetch_json(url):
-    req = Request(
-        url,
-        headers={
-            "Accept": "application/json",
-            "User-Agent": "MessReview/1.0 (https://mess-review-mvp.onrender.com)"
-        }
-    )
-    with urlopen(req, timeout=4) as response:
-        return json.loads(response.read().decode("utf-8"))
-
-
-def _wikipedia_search_thumbnail(query):
-    api = "https://en.wikipedia.org/w/api.php"
-    search = quote_plus(query)
-    url = (
-        f"{api}?action=query&format=json&generator=search"
-        f"&gsrsearch={search}"
-        f"&gsrlimit=5"
-        f"&prop=pageimages"
-        f"&piprop=thumbnail"
-        f"&pithumbsize=1000"
-        f"&redirects=1"
-    )
-
-    try:
-        payload = _fetch_json(url)
-        pages = payload.get("query", {}).get("pages", {})
-        for page in pages.values():
-            thumbnail = page.get("thumbnail", {})
-            source = thumbnail.get("source")
-            if source:
-                return source
-    except (URLError, HTTPError, TimeoutError, ValueError):
-        return None
-
-    return None
-
-
-def resolve_university_image(uni, index=1):
-    name = uni["name"]
-    city = uni["city"]
-
-    if name in image_cache:
-        return image_cache[name]
-
-    official_name = UNIVERSITY_IMAGE_ALIASES.get(name, name)
-    search_queries = [
-        official_name,
-        f"{official_name} campus",
-        f"{official_name} {city}",
-        f"{name} campus India",
-        f"{name} university India",
-    ]
-
-    for query in search_queries:
-        image = _wikipedia_search_thumbnail(query)
-        if image:
-            image_cache[name] = image
-            return image
-
-    fallback = f"https://placehold.co/1200x800/B03A2E/FFFFFF?text={quote_plus(name)}"
-    image_cache[name] = fallback
-    return fallback
-
-
-def ensure_real_images(unis):
-    for i, uni in enumerate(unis, start=1):
-        uni["image"] = resolve_university_image(uni, i)
 
 
 # HOME PAGE
@@ -348,7 +209,6 @@ def ensure_real_images(unis):
 def home():
     conn = get_db_connection()
     reviews = conn.execute("SELECT * FROM reviews ORDER BY id DESC").fetchall()
-    ensure_real_images(universities)
 
     # Real rating + review count per university
     uni_stats = {}
@@ -410,8 +270,6 @@ def university(name):
     conn.close()
 
     uni = next((u for u in universities if u["name"] == name), None)
-    if uni:
-        ensure_real_images([uni])
     city = uni["city"] if uni else "India"
 
     if reviews:
@@ -456,7 +314,6 @@ def universities_page():
     start = (page - 1) * per_page
     end = start + per_page
     paginated = filtered[start:end]
-    ensure_real_images(paginated)
 
     conn = get_db_connection()
     uni_stats = {}
@@ -576,7 +433,7 @@ def admin_add_university():
     image = request.form["image"].strip()
     if name and city:
         if not image:
-            image = f"https://source.unsplash.com/1200x800/?{quote_plus(name + ' ' + city + ' university campus')}"
+            image = "https://images.unsplash.com/photo-1562774053-701939374585?w=800"
         universities.append({"name": name, "city": city, "image": image})
     return redirect("/admin/universities")
 
@@ -602,9 +459,6 @@ def search():
         for u in universities
         if q in u["name"].lower() or q in u["city"].lower()
     ][:10]
-    for i, r in enumerate(results, start=1):
-        uni_obj = {"name": r["name"], "city": r["city"]}
-        r["image"] = resolve_university_image(uni_obj, i)
     return jsonify(results)
 
 # RUN
