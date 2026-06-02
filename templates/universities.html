@@ -29,9 +29,10 @@
     <div class="breadcrumb"><a href="/">Home</a> → All Universities</div>
     <h1>All <span>Universities</span></h1>
     <p>{{ total }} universities listed · Find your university and review the mess</p>
-    <div class="page-search-box">
-      <span>🔍</span>
-      <input type="text" id="searchInput" placeholder="Search by university name or city..." oninput="searchUnis()">
+    <div class="page-search-box" style="display:flex;align-items:center;gap:0;background:#fff;border-radius:10px;overflow:hidden;max-width:500px;padding:0;">
+      <span style="padding:0 12px;font-size:16px;">🔍</span>
+      <input type="text" id="searchInput" placeholder="Search by university name or city..." style="flex:1;border:none;outline:none;padding:12px 8px;font-size:14px;font-family:'DM Sans',sans-serif;" onkeydown="if(event.key==='Enter')doSearch()">
+      <button onclick="doSearch()" style="background:#B03A2E;color:#fff;border:none;padding:12px 20px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">Search</button>
     </div>
   </div>
 </section>
@@ -139,9 +140,22 @@
 <script>
 let searchTimer = null;
 
+function doSearch() {
+  const q = document.getElementById('searchInput').value.trim();
+  if (q) window.location.href = '/universities?q=' + encodeURIComponent(q);
+}
+
 function searchUnis() {
   const q = document.getElementById('searchInput').value.trim();
   clearTimeout(searchTimer);
+  if (!q || q.length < 2) {
+    document.querySelectorAll('.uni-list-card').forEach(c => c.style.display = '');
+    document.getElementById('noResults').style.display = 'none';
+    document.getElementById('resultCount').textContent = 'Showing {{ universities|length }} of {{ total }} universities';
+    return;
+  }
+  searchTimer = setTimeout(() => doSearch(), 800);
+}
   
   if (!q || q.length < 2) {
     document.querySelectorAll('.uni-card').forEach(c => c.style.display = '');
