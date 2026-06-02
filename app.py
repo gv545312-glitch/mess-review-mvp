@@ -299,12 +299,21 @@ def university(name):
 @app.route("/universities")
 def universities_page():
     page = request.args.get("page", 1, type=int)
+    q = request.args.get("q", "").lower().strip()
     per_page = 24
-    total = len(universities)
-    total_pages = (total + per_page - 1) // per_page
+
+    # Filter by search query across ALL universities
+    if q:
+        filtered = [u for u in universities if q in u["name"].lower() or q in u["city"].lower()]
+    else:
+        filtered = universities
+
+    total = len(filtered)
+    total_pages = max(1, (total + per_page - 1) // per_page)
+    page = min(page, total_pages)
     start = (page - 1) * per_page
     end = start + per_page
-    paginated = universities[start:end]
+    paginated = filtered[start:end]
 
     conn = get_db_connection()
     uni_stats = {}
@@ -323,7 +332,8 @@ def universities_page():
         uni_stats=uni_stats,
         page=page,
         total_pages=total_pages,
-        total=total
+        total=total,
+        q=q
     )
 
 

@@ -8,6 +8,8 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
 </head>
 <body>
+
+<!-- TOPBAR -->
 <header class="topbar">
   <a href="/" class="logo">Mess<span>Review</span></a>
   <nav class="topnav">
@@ -20,6 +22,8 @@
     <a href="/" class="btn-review">← Back to Home</a>
   </div>
 </header>
+
+<!-- PAGE HERO -->
 <section class="page-hero">
   <div class="page-hero-inner">
     <div class="breadcrumb"><a href="/">Home</a> → All Universities</div>
@@ -31,6 +35,8 @@
     </div>
   </div>
 </section>
+
+<!-- FILTER + COUNT BAR -->
 <div class="page-filter-wrap">
   <div class="filter-bar">
     <button class="fchip active" onclick="setFilter('all',this)">All</button>
@@ -43,15 +49,16 @@
   </div>
   <div class="result-count" id="resultCount">Showing {{ universities|length }} of {{ total }} universities — Page {{ page }} of {{ total_pages }}</div>
 </div>
+
+<!-- UNIVERSITIES GRID -->
 <main class="page-main">
-  <div class="uni-grid" id="universityGrid">
+  <div id="universityGrid">
     {% for uni in universities %}
-    <div class="uni-card" data-name="{{ uni.name|lower }}">
-      <div class="uni-banner">
+    <div class="uni-list-card" data-name="{{ uni.name|lower }}">
+      <div class="uni-list-img">
         <img src="{{ uni.image }}" alt="{{ uni.name }}">
-        <div class="uni-banner-overlay"></div>
       </div>
-      <div class="uni-body">
+      <div class="uni-list-body">
         <h3 class="uni-name">{{ uni.name }}</h3>
         <p class="uni-loc">📍 {{ uni.city }}</p>
         <div class="uni-rating">
@@ -63,21 +70,26 @@
           <span class="rcnt" style="color:#999;font-size:11px;">No reviews yet</span>
           {% endif %}
         </div>
-        <a href="/university/{{ uni.name }}" class="view-btn">View Details →</a>
       </div>
+      <a href="/university/{{ uni.name }}" class="uni-list-btn">View Details →</a>
     </div>
     {% endfor %}
   </div>
+
+  <!-- NO RESULTS -->
   <div id="noResults" style="display:none;text-align:center;padding:3rem;color:#999;">
     <div style="font-size:2rem;margin-bottom:1rem;">🔍</div>
     <div style="font-size:15px;font-weight:500;color:#444;margin-bottom:0.5rem;">No university found</div>
     <div style="font-size:13px;">Try different keywords or <a href="/" style="color:#B03A2E;">request to add it</a></div>
   </div>
+
+  <!-- PAGINATION -->
   {% if total_pages > 1 %}
   <div style="display:flex;justify-content:center;align-items:center;gap:8px;margin-top:2rem;flex-wrap:wrap;">
     {% if page > 1 %}
     <a href="/universities?page={{ page - 1 }}" style="padding:8px 16px;border:1px solid #DDD;border-radius:8px;font-size:13px;color:#333;font-family:'DM Sans',sans-serif;font-weight:500;">← Prev</a>
     {% endif %}
+
     {% for p in range(1, total_pages + 1) %}
       {% if p == page %}
       <span style="padding:8px 14px;background:#B03A2E;color:#fff;border-radius:8px;font-size:13px;font-weight:600;">{{ p }}</span>
@@ -87,13 +99,19 @@
       <span style="padding:8px 6px;font-size:13px;color:#999;">...</span>
       {% endif %}
     {% endfor %}
+
     {% if page < total_pages %}
     <a href="/universities?page={{ page + 1 }}" style="padding:8px 16px;border:1px solid #DDD;border-radius:8px;font-size:13px;color:#333;font-family:'DM Sans',sans-serif;font-weight:500;">Next →</a>
     {% endif %}
   </div>
-  <div style="text-align:center;margin-top:0.8rem;font-size:12px;color:#999;">Page {{ page }} of {{ total_pages }} · {{ total }} total universities</div>
+  <div style="text-align:center;margin-top:0.8rem;font-size:12px;color:#999;">
+    Page {{ page }} of {{ total_pages }} · {{ total }} total universities
+  </div>
   {% endif %}
+
 </main>
+
+<!-- FOOTER -->
 <footer class="footer">
   <div class="footer-grid">
     <div>
@@ -117,19 +135,65 @@
     <span>© 2026 MessReview · Made with 💜 by Garima Verma</span>
   </div>
 </footer>
+
 <script>
+let searchTimer = null;
+
 function searchUnis() {
-  const q = document.getElementById('searchInput').value.toLowerCase().trim();
-  const cards = document.querySelectorAll('.uni-card');
-  let visible = 0;
-  cards.forEach(card => {
-    const name = card.dataset.name || '';
-    if (!q || name.includes(q)) { card.style.display = ''; visible++; }
-    else card.style.display = 'none';
-  });
-  document.getElementById('resultCount').textContent = 'Showing ' + visible + ' universities';
-  document.getElementById('noResults').style.display = visible === 0 ? 'block' : 'none';
+  const q = document.getElementById('searchInput').value.trim();
+  clearTimeout(searchTimer);
+  
+  if (!q || q.length < 2) {
+    document.querySelectorAll('.uni-card').forEach(c => c.style.display = '');
+    document.getElementById('noResults').style.display = 'none';
+    document.getElementById('resultCount').textContent = 'Showing {{ universities|length }} of {{ total }} universities';
+    return;
+  }
+
+  searchTimer = setTimeout(() => {
+    fetch('/search?q=' + encodeURIComponent(q))
+      .then(r => r.json())
+      .then(results => {
+        const names = results.map(r => r.name.toLowerCase());
+        const cards = document.querySelectorAll('.uni-card');
+        let visible = 0;
+        
+        if (results.length === 0) {
+          // Search across all - redirect to search page
+          window.location.href = '/universities?q=' + encodeURIComponent(q);
+          return;
+        }
+
+        // Show matching cards, hide others
+        cards.forEach(card => {
+          const name = card.dataset.name || '';
+          if (names.some(n => n.includes(q.toLowerCase()) || name.includes(q.toLowerCase()))) {
+            card.style.display = '';
+            visible++;
+          } else {
+            card.style.display = 'none';
+          }
+        });
+
+        if (visible === 0) {
+          // No results on this page - redirect to search all
+          window.location.href = '/universities?q=' + encodeURIComponent(q);
+        } else {
+          document.getElementById('noResults').style.display = 'none';
+          document.getElementById('resultCount').textContent = 'Found ' + results.length + ' universities for "' + q + '"';
+        }
+      });
+  }, 300);
 }
+
+// Enter key
+document.getElementById('searchInput').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') {
+    const q = this.value.trim();
+    if (q) window.location.href = '/universities?q=' + encodeURIComponent(q);
+  }
+});
+
 function setFilter(type, el) {
   document.querySelectorAll('.fchip').forEach(c => c.classList.remove('active'));
   el.classList.add('active');
@@ -138,12 +202,19 @@ function setFilter(type, el) {
   let visible = 0;
   cards.forEach(card => {
     const name = card.dataset.name || '';
-    const show = type === 'all' || name.startsWith(type);
+    const show = type === 'all' || name.includes(type);
     card.style.display = show ? '' : 'none';
     if (show) visible++;
   });
   document.getElementById('resultCount').textContent = 'Showing ' + visible + ' universities';
   document.getElementById('noResults').style.display = visible === 0 ? 'block' : 'none';
+}
+
+// Pre-fill search if q param in URL
+const urlQ = new URLSearchParams(window.location.search).get('q');
+if (urlQ) {
+  document.getElementById('searchInput').value = urlQ;
+  searchUnis();
 }
 </script>
 </body>
