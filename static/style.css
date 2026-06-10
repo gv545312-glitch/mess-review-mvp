@@ -434,3 +434,23 @@ img { display: block; width: 100%; object-fit: cover; }
   .uni-list-card { flex-wrap: wrap; }
   .uni-list-btn { width: 100%; text-align: center; }
 }
+
+/* ── EQUAL HEIGHT UNI CARDS ── */
+.uni-grid {
+  align-items: stretch;
+}
+.uni-card {
+  display: flex;
+  flex-direction: column;
+}
+.uni-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.uni-name {
+  min-height: 40px;
+}
+.uni-body .view-btn {
+  margin-top: auto;
+}
