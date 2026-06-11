@@ -1,6 +1,14 @@
 from flask import Flask, render_template, request, redirect
 import sqlite3
 from datetime import datetime
+import os
+from supabase import create_client, Client
+
+SUPABASE_URL = "https://qhjbnoarsylibmqyrswm.supabase.co"
+SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFoamJub2Fyc3lsaWJtcXlyc3dtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODExNjk2MTUsImV4cCI6MjA5Njc0NTYxNX0.GWjjewyDjjDJLFzmN7s30E4cY0wdecVXYSesoPs63qE"
+supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+
+USE_SUPABASE = True
 
 app = Flask(__name__)
 app.secret_key = "messreview_secret_key_2026"
@@ -222,35 +230,31 @@ universities = [
 
 @app.route("/")
 def home():
-    conn = get_db_connection()
-    reviews = conn.execute("SELECT * FROM reviews ORDER BY id DESC").fetchall()
+    try:
+        all_reviews = supabase.table("reviews").select("*").order("id", desc=True).execute().data or []
+    except:
+        all_reviews = []
 
     # Real rating + review count per university
     uni_stats = {}
     for uni in universities:
         name = uni["name"]
-        uni_reviews = conn.execute(
-            "SELECT rating FROM reviews WHERE university_name = ?", (name,)
-        ).fetchall()
+        uni_reviews = [r for r in all_reviews if r.get("university_name") == name]
         count = len(uni_reviews)
         avg = round(sum(r["rating"] for r in uni_reviews) / count, 1) if count > 0 else None
         uni_stats[name] = {"count": count, "avg": avg}
 
-    # Top ranked — universities with reviews, sorted by avg rating
     ranked = [
         {"name": u["name"], "city": u["city"], "avg": uni_stats[u["name"]]["avg"], "count": uni_stats[u["name"]]["count"]}
         for u in universities if uni_stats[u["name"]]["avg"] is not None
     ]
     ranked.sort(key=lambda x: x["avg"], reverse=True)
     top_ranked = ranked[:5]
-
-    # Compare top 3
     compare_unis = ranked[:3]
 
-    conn.close()
     return render_template("index.html",
         universities=universities,
-        reviews=reviews,
+        reviews=all_reviews,
         uni_stats=uni_stats,
         top_ranked=top_ranked,
         compare_unis=compare_unis
@@ -261,8 +265,6 @@ def home():
 
 @app.route("/university/<name>", methods=["GET", "POST"])
 def university(name):
-    conn = get_db_connection()
-
     if request.method == "POST":
         rating = int(request.form["rating"])
         food_quality = int(request.form.get("food_quality", rating))
@@ -275,18 +277,26 @@ def university(name):
         reviewer_phone = request.form.get("reviewer_phone", "")
         is_student = request.form.get("is_student", "")
 
-        conn.execute("""
-            INSERT INTO reviews
-            (university_name, rating, food_quality, hygiene, value_for_money, menu_variety, feedback, reviewer_name, reviewer_email, reviewer_phone, is_student, created_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """, (name, rating, food_quality, hygiene, value_for_money, menu_variety, feedback, reviewer_name, reviewer_email, reviewer_phone, is_student, datetime.now().strftime("%d %b %Y")))
-        conn.commit()
+        supabase.table("reviews").insert({
+            "university_name": name,
+            "rating": rating,
+            "food_quality": food_quality,
+            "hygiene": hygiene,
+            "value_for_money": value_for_money,
+            "menu_variety": menu_variety,
+            "feedback": feedback,
+            "reviewer_name": reviewer_name,
+            "reviewer_email": reviewer_email,
+            "reviewer_phone": reviewer_phone,
+            "is_student": is_student,
+            "created_at": datetime.now().strftime("%d %b %Y")
+        }).execute()
         return redirect(f"/university/{name}")
 
-    reviews = conn.execute("""
-        SELECT * FROM reviews WHERE university_name = ? ORDER BY id DESC
-    """, (name,)).fetchall()
-    conn.close()
+    try:
+        reviews = supabase.table("reviews").select("*").eq("university_name", name).order("id", desc=True).execute().data or []
+    except:
+        reviews = []
 
     uni = next((u for u in universities if u["name"] == name), None)
     city = uni["city"] if uni else "India"
@@ -294,10 +304,10 @@ def university(name):
 
     if reviews:
         avg_rating = round(sum(r["rating"] for r in reviews) / len(reviews), 1)
-        avg_food = round(sum((r["food_quality"] or r["rating"]) for r in reviews) / len(reviews), 1)
-        avg_hygiene = round(sum((r["hygiene"] or r["rating"]) for r in reviews) / len(reviews), 1)
-        avg_value = round(sum((r["value_for_money"] or r["rating"]) for r in reviews) / len(reviews), 1)
-        avg_variety = round(sum((r["menu_variety"] or r["rating"]) for r in reviews) / len(reviews), 1)
+        avg_food = round(sum((r.get("food_quality") or r["rating"]) for r in reviews) / len(reviews), 1)
+        avg_hygiene = round(sum((r.get("hygiene") or r["rating"]) for r in reviews) / len(reviews), 1)
+        avg_value = round(sum((r.get("value_for_money") or r["rating"]) for r in reviews) / len(reviews), 1)
+        avg_variety = round(sum((r.get("menu_variety") or r["rating"]) for r in reviews) / len(reviews), 1)
     else:
         avg_rating = avg_food = avg_hygiene = avg_value = avg_variety = 0
 
@@ -336,17 +346,17 @@ def universities_page():
     end = start + per_page
     paginated = filtered[start:end]
 
-    conn = get_db_connection()
+    try:
+        all_reviews = supabase.table("reviews").select("university_name,rating").execute().data or []
+    except:
+        all_reviews = []
     uni_stats = {}
     for uni in paginated:
         name = uni["name"]
-        uni_reviews = conn.execute(
-            "SELECT rating FROM reviews WHERE university_name = ?", (name,)
-        ).fetchall()
+        uni_reviews = [r for r in all_reviews if r.get("university_name") == name]
         count = len(uni_reviews)
         avg = round(sum(r["rating"] for r in uni_reviews) / count, 1) if count > 0 else None
         uni_stats[name] = {"count": count, "avg": avg}
-    conn.close()
 
     return render_template("universities.html",
         universities=paginated,
@@ -396,12 +406,13 @@ def admin_logout():
 @app.route("/admin")
 @admin_required
 def admin_dashboard():
-    conn = get_db_connection()
-    total_reviews = conn.execute("SELECT COUNT(*) FROM reviews").fetchone()[0]
-    avg_rating = conn.execute("SELECT AVG(rating) FROM reviews").fetchone()[0]
-    avg_rating = round(avg_rating, 1) if avg_rating else 0
-    recent_reviews = conn.execute("SELECT * FROM reviews ORDER BY id DESC LIMIT 5").fetchall()
-    conn.close()
+    try:
+        all_reviews = supabase.table("reviews").select("*").order("id", desc=True).execute().data or []
+    except:
+        all_reviews = []
+    total_reviews = len(all_reviews)
+    avg_rating = round(sum(r["rating"] for r in all_reviews) / total_reviews, 1) if total_reviews else 0
+    recent_reviews = all_reviews[:5]
     total_unis = len(universities)
     return render_template("admin.html", 
         page="dashboard",
@@ -415,13 +426,14 @@ def admin_dashboard():
 @app.route("/admin/reviews")
 @admin_required
 def admin_reviews():
-    conn = get_db_connection()
     uni_filter = request.args.get("uni", "")
-    if uni_filter:
-        reviews = conn.execute("SELECT * FROM reviews WHERE university_name = ? ORDER BY id DESC", (uni_filter,)).fetchall()
-    else:
-        reviews = conn.execute("SELECT * FROM reviews ORDER BY id DESC").fetchall()
-    conn.close()
+    try:
+        if uni_filter:
+            reviews = supabase.table("reviews").select("*").eq("university_name", uni_filter).order("id", desc=True).execute().data or []
+        else:
+            reviews = supabase.table("reviews").select("*").order("id", desc=True).execute().data or []
+    except:
+        reviews = []
     return render_template("admin.html",
         page="reviews",
         reviews=reviews,
@@ -432,10 +444,7 @@ def admin_reviews():
 @app.route("/admin/reviews/delete/<int:review_id>")
 @admin_required
 def admin_delete_review(review_id):
-    conn = get_db_connection()
-    conn.execute("DELETE FROM reviews WHERE id = ?", (review_id,))
-    conn.commit()
-    conn.close()
+    supabase.table("reviews").delete().eq("id", review_id).execute()
     return redirect("/admin/reviews")
 
 @app.route("/admin/universities")
@@ -481,6 +490,8 @@ def search():
         if q in u["name"].lower() or q in u["city"].lower()
     ][:10]
     return jsonify(results)
+
+# REMOVE OLD SQLITE CODE
 
 # RUN
 
