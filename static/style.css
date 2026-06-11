@@ -454,3 +454,115 @@ img { display: block; width: 100%; object-fit: cover; }
 .uni-body .view-btn {
   margin-top: auto;
 }
+
+/* ── UNIVERSITY PAGE FIXES ── */
+.upage-hero {
+  background: linear-gradient(135deg, #B03A2E 0%, #4A1409 100%);
+  padding: 2.5rem 2rem 2rem;
+}
+.upage-hero h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.2rem !important;
+  color: #fff;
+  margin-bottom: 0.5rem;
+}
+.upage-hero .breadcrumb {
+  font-size: 13px;
+  color: rgba(255,255,255,0.6);
+  margin-bottom: 0.8rem;
+}
+.upage-hero .meta {
+  font-size: 14px;
+  color: rgba(255,255,255,0.8);
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-top: 0.5rem;
+}
+.info-strip {
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+  gap: 12px;
+  padding: 1.5rem 2rem;
+  background: #fff;
+  border-bottom: 1px solid #eee;
+}
+.istrip-card {
+  text-align: center;
+  padding: 16px 10px;
+  background: #FAF9F6;
+  border-radius: 12px;
+  border: 1px solid #eee;
+}
+.isc-icon { font-size: 1.8rem !important; margin-bottom: 6px; }
+.isc-label { font-size: 11px !important; color: #999; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 4px; }
+.isc-val { font-size: 15px !important; font-weight: 600; color: #1a1a1a; }
+
+.upage-content {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem;
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  gap: 1.5rem;
+}
+.form-card {
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 14px;
+  padding: 2rem;
+  position: sticky;
+  top: 70px;
+}
+.form-card h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.4rem !important;
+  color: #1a1a1a;
+  margin-bottom: 0.4rem;
+}
+.fgroup { margin-bottom: 16px; }
+.fgroup label {
+  display: block;
+  font-size: 13px !important;
+  font-weight: 600;
+  color: #444;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 7px;
+}
+.fgroup input, .fgroup select, .fgroup textarea {
+  width: 100%;
+  padding: 13px 16px !important;
+  border: 1.5px solid #DDD;
+  border-radius: 10px;
+  font-size: 15px !important;
+  font-family: 'DM Sans', sans-serif;
+  color: #1a1a1a;
+  outline: none;
+  background: #fff;
+}
+.fgroup input:focus, .fgroup select:focus, .fgroup textarea:focus {
+  border-color: #B03A2E;
+}
+.fgroup textarea { min-height: 110px; resize: vertical; }
+.submit-btn {
+  width: 100%;
+  padding: 15px !important;
+  background: #B03A2E;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px !important;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+}
+.submit-btn:hover { background: #922e23; }
+.divider-line { height: 1px; background: #eee; margin: 1.4rem 0; }
+
+@media (max-width: 768px) {
+  .upage-content { grid-template-columns: 1fr; }
+  .info-strip { grid-template-columns: repeat(2,1fr); }
+  .upage-hero h1 { font-size: 1.6rem !important; }
+}
