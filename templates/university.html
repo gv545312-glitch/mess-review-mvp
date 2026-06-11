@@ -245,7 +245,11 @@
         <div class="rv-head">
           <div class="rv-avatar">{{ (review.reviewer_name or 'AN')[:2]|upper }}</div>
           <div>
-            <div class="rv-name">{{ review.reviewer_name or 'Anonymous' }}</div>
+            <div class="rv-name">{{ review.reviewer_name or 'Anonymous' }}
+              {% if review.is_student == 'yes_current' %}<span style="font-size:11px;background:#E8F8F0;color:#0F6E56;padding:2px 8px;border-radius:4px;margin-left:6px;font-weight:600;">✅ Current Student</span>
+              {% elif review.is_student == 'yes_alumni' %}<span style="font-size:11px;background:#E6F1FB;color:#185FA5;padding:2px 8px;border-radius:4px;margin-left:6px;font-weight:600;">🎓 Alumni</span>
+              {% endif %}
+            </div>
             <div class="rv-date">{{ review.created_at }}</div>
           </div>
           <div class="rv-stars">{% for i in range(review.rating|int) %}⭐{% endfor %}</div>
@@ -279,6 +283,16 @@
         <div class="fgroup">
           <label>Phone Number (Optional)</label>
           <input type="tel" name="reviewer_phone" placeholder="+91 XXXXX XXXXX">
+        </div>
+
+        <div class="fgroup">
+          <label>Are you a student of this university? *</label>
+          <select name="is_student" required>
+            <option value="">— Select —</option>
+            <option value="yes_current">✅ Yes, I am a current student</option>
+            <option value="yes_alumni">🎓 Yes, I am an alumni</option>
+            <option value="no">❌ No, I am not a student here</option>
+          </select>
         </div>
 
         <div class="divider"></div>

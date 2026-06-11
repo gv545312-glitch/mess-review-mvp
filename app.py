@@ -42,6 +42,9 @@ try:
     conn.execute("ALTER TABLE reviews ADD COLUMN reviewer_name TEXT DEFAULT ''")
 except: pass
 try:
+    conn.execute("ALTER TABLE reviews ADD COLUMN is_student TEXT DEFAULT ''")
+except: pass
+try:
     conn.execute("ALTER TABLE reviews ADD COLUMN reviewer_email TEXT DEFAULT ''")
 except: pass
 try:
@@ -270,12 +273,13 @@ def university(name):
         reviewer_name = request.form.get("reviewer_name", "Anonymous")
         reviewer_email = request.form.get("reviewer_email", "")
         reviewer_phone = request.form.get("reviewer_phone", "")
+        is_student = request.form.get("is_student", "")
 
         conn.execute("""
             INSERT INTO reviews
-            (university_name, rating, food_quality, hygiene, value_for_money, menu_variety, feedback, reviewer_name, reviewer_email, reviewer_phone, created_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """, (name, rating, food_quality, hygiene, value_for_money, menu_variety, feedback, reviewer_name, reviewer_email, reviewer_phone, datetime.now().strftime("%d %b %Y")))
+            (university_name, rating, food_quality, hygiene, value_for_money, menu_variety, feedback, reviewer_name, reviewer_email, reviewer_phone, is_student, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (name, rating, food_quality, hygiene, value_for_money, menu_variety, feedback, reviewer_name, reviewer_email, reviewer_phone, is_student, datetime.now().strftime("%d %b %Y")))
         conn.commit()
         return redirect(f"/university/{name}")
 
