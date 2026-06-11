@@ -7,74 +7,134 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
   <style>
-    .upage-hero {
-      background: linear-gradient(135deg, #B03A2E 0%, #4A1409 100%);
-      padding: 2rem;
-    }
-    .upage-hero .breadcrumb { font-size: 12px; color: rgba(255,255,255,0.6); margin-bottom: 0.8rem; }
-    .upage-hero .breadcrumb a { color: rgba(255,255,255,0.6); }
-    .upage-hero h1 { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: #fff; margin-bottom: 0.4rem; }
-    .upage-hero .meta { font-size: 13px; color: rgba(255,255,255,0.75); display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
-    .upage-hero .dot { color: rgba(255,255,255,0.4); }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'DM Sans', sans-serif; background: #F5F4F0; color: #1a1a1a; }
+    a { text-decoration: none; color: inherit; }
 
-    .info-strip { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; padding: 1.2rem 2rem; background: #fff; border-bottom: 1px solid #eee; }
-    .istrip-card { text-align: center; padding: 12px 8px; background: #FAF9F6; border-radius: 10px; border: 1px solid #eee; }
-    .isc-icon { font-size: 1.4rem; margin-bottom: 4px; }
-    .isc-label { font-size: 10px; color: #999; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 3px; }
-    .isc-val { font-size: 13px; font-weight: 600; color: #1a1a1a; }
+    .topbar { position: sticky; top: 0; z-index: 1000; background: #B03A2E; height: 56px; display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; box-shadow: 0 2px 12px rgba(0,0,0,0.15); }
+    .logo { font-family: 'Playfair Display', serif; font-size: 22px; color: #fff; }
+    .logo span { color: #FFD580; }
+    .topnav { display: flex; gap: 4px; }
+    .tnav-link { color: rgba(255,255,255,0.88); font-size: 13px; font-weight: 500; padding: 6px 13px; border-radius: 8px; }
+    .tnav-link:hover { background: rgba(255,255,255,0.15); }
+    .btn-back { background: #fff; color: #B03A2E; font-size: 13px; font-weight: 600; padding: 8px 18px; border-radius: 8px; }
 
-    .upage-content { max-width: 1100px; margin: 0 auto; padding: 1.5rem 2rem; display: grid; grid-template-columns: 1fr 420px; gap: 1.5rem; }
+    /* HERO */
+    .uni-hero { background: linear-gradient(135deg, #B03A2E 0%, #4A1409 100%); padding: 3rem 2rem 2.5rem; }
+    .breadcrumb { font-size: 13px; color: rgba(255,255,255,0.6); margin-bottom: 1rem; }
+    .breadcrumb a { color: rgba(255,255,255,0.6); }
+    .breadcrumb a:hover { color: #FFD580; }
+    .uni-hero h1 { font-family: 'Playfair Display', serif; font-size: 2.8rem; color: #fff; margin-bottom: 0.8rem; line-height: 1.2; }
+    .uni-meta { display: flex; align-items: center; gap: 12px; font-size: 16px; color: rgba(255,255,255,0.8); flex-wrap: wrap; }
+    .uni-meta .dot { color: rgba(255,255,255,0.4); }
 
-    /* LEFT */
-    .det-card { background: #fff; border: 1px solid #eee; border-radius: 14px; padding: 1.4rem; margin-bottom: 1rem; }
-    .det-card-title { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 600; color: #1a1a1a; margin-bottom: 1rem; }
-    .rating-bars { display: flex; flex-direction: column; gap: 14px; }
-    .rbar-row { display: flex; align-items: center; gap: 12px; }
-    .rbar-label { font-size: 13px; color: #555; width: 130px; flex-shrink: 0; }
-    .rbar-track { flex: 1; height: 8px; background: #f0f0f0; border-radius: 4px; overflow: hidden; }
-    .rbar-fill { height: 8px; background: #B03A2E; border-radius: 4px; }
-    .rbar-val { font-size: 13px; font-weight: 600; color: #1a1a1a; width: 30px; text-align: right; }
+    /* INFO STRIP */
+    .info-strip { display: grid; grid-template-columns: repeat(4,1fr); background: #fff; border-bottom: 2px solid #eee; }
+    .icard { text-align: center; padding: 24px 16px; border-right: 1px solid #eee; }
+    .icard:last-child { border-right: none; }
+    .icard .ic { font-size: 2rem; margin-bottom: 8px; }
+    .icard .ilabel { font-size: 12px; color: #999; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; }
+    .icard .ival { font-size: 18px; font-weight: 600; color: #1a1a1a; }
 
-    .review-item { padding: 14px 0; border-bottom: 1px solid #f0f0f0; }
+    /* CONTENT */
+    .page-content { max-width: 1200px; margin: 2rem auto; padding: 0 2rem; display: grid; grid-template-columns: 1fr 460px; gap: 2rem; }
+
+    /* CARDS */
+    .card { background: #fff; border: 1px solid #eee; border-radius: 16px; padding: 2rem; margin-bottom: 1.5rem; }
+    .card-title { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 600; color: #1a1a1a; margin-bottom: 1.5rem; }
+
+    /* RATING BARS */
+    .rbar { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+    .rbar-label { font-size: 15px; color: #555; width: 150px; flex-shrink: 0; }
+    .rbar-track { flex: 1; height: 10px; background: #f0f0f0; border-radius: 5px; overflow: hidden; }
+    .rbar-fill { height: 10px; background: #B03A2E; border-radius: 5px; }
+    .rbar-val { font-size: 15px; font-weight: 600; color: #1a1a1a; width: 35px; text-align: right; }
+
+    /* REVIEWS */
+    .review-item { padding: 18px 0; border-bottom: 1px solid #f0f0f0; }
     .review-item:last-child { border-bottom: none; }
-    .rv-head { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
-    .rv-avatar { width: 38px; height: 38px; border-radius: 50%; background: #FDF0EC; color: #B03A2E; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; flex-shrink: 0; }
-    .rv-uname { font-size: 13px; font-weight: 600; color: #1a1a1a; }
-    .rv-date { font-size: 11px; color: #999; }
-    .rv-stars { margin-left: auto; font-size: 13px; }
-    .rv-text { font-size: 13px; color: #555; line-height: 1.7; }
+    .rv-head { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+    .rv-avatar { width: 44px; height: 44px; border-radius: 50%; background: #FDF0EC; color: #B03A2E; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 600; flex-shrink: 0; }
+    .rv-name { font-size: 15px; font-weight: 600; color: #1a1a1a; }
+    .rv-date { font-size: 12px; color: #999; }
+    .rv-stars { margin-left: auto; font-size: 14px; }
+    .rv-text { font-size: 14px; color: #555; line-height: 1.8; }
 
-    /* RIGHT - FORM */
-    .form-card { background: #fff; border: 1px solid #eee; border-radius: 14px; padding: 1.6rem; position: sticky; top: 70px; }
-    .form-card h2 { font-family: 'Playfair Display', serif; font-size: 1.2rem; color: #1a1a1a; margin-bottom: 0.4rem; }
-    .form-card .sub { font-size: 12px; color: #999; margin-bottom: 1.2rem; }
-    .divider-line { height: 1px; background: #eee; margin: 1.2rem 0; }
+    /* FORM */
+    .form-card { background: #fff; border: 1px solid #eee; border-radius: 16px; padding: 2rem; position: sticky; top: 74px; }
+    .form-title { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 600; color: #1a1a1a; margin-bottom: 0.4rem; }
+    .form-sub { font-size: 14px; color: #999; margin-bottom: 1.5rem; }
+    .divider { height: 1px; background: #eee; margin: 1.5rem 0; }
 
-    .fgroup { margin-bottom: 14px; }
-    .fgroup label { display: block; font-size: 12px; font-weight: 600; color: #555; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 6px; }
-    .fgroup input, .fgroup select, .fgroup textarea {
-      width: 100%; padding: 12px 14px;
-      border: 1.5px solid #DDD; border-radius: 10px;
-      font-size: 14px; font-family: 'DM Sans', sans-serif;
-      color: #1a1a1a; outline: none; background: #fff;
-      transition: border-color 0.15s;
+    .fgroup { margin-bottom: 18px; }
+    .fgroup label { display: block; font-size: 13px; font-weight: 600; color: #444; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+    .fgroup input,
+    .fgroup select,
+    .fgroup textarea {
+      width: 100%;
+      padding: 14px 16px;
+      border: 2px solid #E0E0E0;
+      border-radius: 10px;
+      font-size: 15px;
+      font-family: 'DM Sans', sans-serif;
+      color: #1a1a1a;
+      outline: none;
+      background: #FAFAFA;
+      transition: border-color 0.2s, background 0.2s;
     }
-    .fgroup input:focus, .fgroup select:focus, .fgroup textarea:focus { border-color: #B03A2E; }
-    .fgroup select { cursor: pointer; appearance: auto; }
-    .fgroup textarea { min-height: 100px; resize: vertical; }
+    .fgroup input:focus,
+    .fgroup select:focus,
+    .fgroup textarea:focus {
+      border-color: #B03A2E;
+      background: #fff;
+    }
+    .fgroup select { cursor: pointer; }
+    .fgroup textarea { min-height: 120px; resize: vertical; }
+
     .submit-btn {
-      width: 100%; padding: 14px; background: #B03A2E; color: #fff;
-      border: none; border-radius: 10px; font-size: 15px; font-weight: 600;
-      cursor: pointer; font-family: 'DM Sans', sans-serif;
-      transition: background 0.15s; margin-top: 4px;
+      width: 100%;
+      padding: 16px;
+      background: #B03A2E;
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-size: 17px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      transition: background 0.15s;
+      margin-top: 6px;
     }
     .submit-btn:hover { background: #922e23; }
 
-    @media (max-width: 768px) {
-      .upage-content { grid-template-columns: 1fr; }
+    /* QUICK INFO */
+    .qinfo-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f5f5f5; font-size: 15px; }
+    .qinfo-row:last-child { border-bottom: none; }
+    .qinfo-row .qlabel { color: #999; }
+    .qinfo-row .qval { font-weight: 600; }
+
+    /* FOOTER */
+    .footer { background: #1a1a1a; padding: 2.5rem 2rem 1rem; margin-top: 3rem; }
+    .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 2rem; margin-bottom: 2rem; }
+    .foot-logo { font-family: 'Playfair Display', serif; font-size: 22px; color: #fff; margin-bottom: 8px; }
+    .foot-logo span { color: #FFD580; }
+    .foot-sub { font-size: 13px; color: #777; line-height: 1.7; }
+    .foot-title { font-size: 12px; font-weight: 600; color: #fff; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px; }
+    .foot-link { display: block; font-size: 13px; color: #777; margin-bottom: 8px; cursor: pointer; }
+    .foot-link:hover { color: #FFD580; }
+    .foot-bottom { border-top: 1px solid #2a2a2a; padding-top: 1rem; text-align: center; font-size: 13px; color: #555; }
+
+    @media (max-width: 900px) {
+      .page-content { grid-template-columns: 1fr; }
       .info-strip { grid-template-columns: repeat(2,1fr); }
       .form-card { position: static; }
-      .upage-hero h1 { font-size: 1.4rem; }
+      .uni-hero h1 { font-size: 2rem; }
+      .footer-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 480px) {
+      .topnav { display: none; }
+      .uni-hero h1 { font-size: 1.6rem; }
+      .page-content { padding: 0 1rem; }
     }
   </style>
 </head>
@@ -89,16 +149,18 @@
     <a href="/#reviews-section" class="tnav-link">Reviews</a>
     <a href="/#rankings" class="tnav-link">Rankings</a>
   </nav>
-  <div class="topbar-right">
-    <a href="/universities" class="btn-review">← All Universities</a>
+  <div>
+    <a href="/universities" class="btn-back">← All Universities</a>
   </div>
 </header>
 
 <!-- HERO -->
-<section class="upage-hero">
-  <div class="breadcrumb"><a href="/">Home</a> → <a href="/universities">Universities</a> → {{ university_name }}</div>
+<section class="uni-hero">
+  <div class="breadcrumb">
+    <a href="/">Home</a> → <a href="/universities">Universities</a> → {{ university_name }}
+  </div>
   <h1>{{ university_name }}</h1>
-  <div class="meta">
+  <div class="uni-meta">
     <span>📍 {{ city }}</span>
     <span class="dot">·</span>
     <span>⭐ {{ avg_rating }} Rating</span>
@@ -109,73 +171,71 @@
 
 <!-- INFO STRIP -->
 <div class="info-strip">
-  <div class="istrip-card">
-    <div class="isc-icon">🍽️</div>
-    <div class="isc-label">Mess Type</div>
-    <div class="isc-val">Veg & Non-Veg</div>
+  <div class="icard">
+    <div class="ic">🍽️</div>
+    <div class="ilabel">Mess Type</div>
+    <div class="ival">Veg & Non-Veg</div>
   </div>
-  <div class="istrip-card">
-    <div class="isc-icon">💰</div>
-    <div class="isc-label">Meal Cost</div>
-    <div class="isc-val">₹80–120/meal</div>
+  <div class="icard">
+    <div class="ic">💰</div>
+    <div class="ilabel">Meal Cost</div>
+    <div class="ival">₹80–120/meal</div>
   </div>
-  <div class="istrip-card">
-    <div class="isc-icon">🕐</div>
-    <div class="isc-label">Timings</div>
-    <div class="isc-val">7am – 10pm</div>
+  <div class="icard">
+    <div class="ic">🕐</div>
+    <div class="ilabel">Timings</div>
+    <div class="ival">7am – 10pm</div>
   </div>
-  <div class="istrip-card">
-    <div class="isc-icon">👥</div>
-    <div class="isc-label">Capacity</div>
-    <div class="isc-val">2,000+ students</div>
+  <div class="icard">
+    <div class="ic">👥</div>
+    <div class="ilabel">Capacity</div>
+    <div class="ival">2,000+ students</div>
   </div>
 </div>
 
-<!-- MAIN -->
-<div class="upage-content">
+<!-- CONTENT -->
+<div class="page-content">
 
   <!-- LEFT -->
   <div>
     <!-- RATING BREAKDOWN -->
-    <div class="det-card">
-      <h2 class="det-card-title">Rating Breakdown</h2>
+    <div class="card">
+      <div class="card-title">Rating Breakdown</div>
       {% if reviews %}
-      <div class="rating-bars">
-        <div class="rbar-row">
-          <span class="rbar-label">Food Quality</span>
-          <div class="rbar-track"><div class="rbar-fill" style="width:{{ (avg_food/5*100)|int }}%"></div></div>
-          <span class="rbar-val">{{ avg_food }}</span>
-        </div>
-        <div class="rbar-row">
-          <span class="rbar-label">Hygiene</span>
-          <div class="rbar-track"><div class="rbar-fill" style="width:{{ (avg_hygiene/5*100)|int }}%;background:#27AE60"></div></div>
-          <span class="rbar-val">{{ avg_hygiene }}</span>
-        </div>
-        <div class="rbar-row">
-          <span class="rbar-label">Value for Money</span>
-          <div class="rbar-track"><div class="rbar-fill" style="width:{{ (avg_value/5*100)|int }}%;background:#E67E22"></div></div>
-          <span class="rbar-val">{{ avg_value }}</span>
-        </div>
-        <div class="rbar-row">
-          <span class="rbar-label">Menu Variety</span>
-          <div class="rbar-track"><div class="rbar-fill" style="width:{{ (avg_variety/5*100)|int }}%"></div></div>
-          <span class="rbar-val">{{ avg_variety }}</span>
-        </div>
+      <div class="rbar">
+        <span class="rbar-label">Food Quality</span>
+        <div class="rbar-track"><div class="rbar-fill" style="width:{{ (avg_food/5*100)|int }}%"></div></div>
+        <span class="rbar-val">{{ avg_food }}</span>
+      </div>
+      <div class="rbar">
+        <span class="rbar-label">Hygiene</span>
+        <div class="rbar-track"><div class="rbar-fill" style="width:{{ (avg_hygiene/5*100)|int }}%;background:#27AE60"></div></div>
+        <span class="rbar-val">{{ avg_hygiene }}</span>
+      </div>
+      <div class="rbar">
+        <span class="rbar-label">Value for Money</span>
+        <div class="rbar-track"><div class="rbar-fill" style="width:{{ (avg_value/5*100)|int }}%;background:#E67E22"></div></div>
+        <span class="rbar-val">{{ avg_value }}</span>
+      </div>
+      <div class="rbar">
+        <span class="rbar-label">Menu Variety</span>
+        <div class="rbar-track"><div class="rbar-fill" style="width:{{ (avg_variety/5*100)|int }}%"></div></div>
+        <span class="rbar-val">{{ avg_variety }}</span>
       </div>
       {% else %}
-      <div style="text-align:center;padding:1.5rem;color:#999;font-size:14px;">No ratings yet — be the first to review!</div>
+      <div style="text-align:center;padding:2rem;color:#999;font-size:15px;">No ratings yet — be the first to review!</div>
       {% endif %}
     </div>
 
     <!-- REVIEWS -->
-    <div class="det-card">
-      <h2 class="det-card-title">Student Reviews <span style="font-size:14px;color:#999;font-weight:400;">({{ reviews|length }})</span></h2>
+    <div class="card">
+      <div class="card-title">Student Reviews <span style="font-size:15px;color:#999;font-weight:400;">({{ reviews|length }})</span></div>
       {% for review in reviews %}
       <div class="review-item">
         <div class="rv-head">
           <div class="rv-avatar">{{ (review.reviewer_name or 'AN')[:2]|upper }}</div>
           <div>
-            <div class="rv-uname">{{ review.reviewer_name or 'Anonymous' }}</div>
+            <div class="rv-name">{{ review.reviewer_name or 'Anonymous' }}</div>
             <div class="rv-date">{{ review.created_at }}</div>
           </div>
           <div class="rv-stars">{% for i in range(review.rating|int) %}⭐{% endfor %}</div>
@@ -183,38 +243,35 @@
         <p class="rv-text">{{ review.feedback }}</p>
       </div>
       {% else %}
-      <div style="text-align:center;padding:2rem;color:#999;">
-        <div style="font-size:2.5rem;margin-bottom:0.5rem;">💬</div>
-        <div style="font-size:14px;">No reviews yet — be the first to review!</div>
+      <div style="text-align:center;padding:2.5rem;color:#999;">
+        <div style="font-size:3rem;margin-bottom:0.8rem;">💬</div>
+        <div style="font-size:15px;">No reviews yet — be the first to review!</div>
       </div>
       {% endfor %}
     </div>
   </div>
 
-  <!-- RIGHT - FORM -->
+  <!-- RIGHT -->
   <div>
     <div class="form-card">
-      <h2>Write a Review</h2>
-      <p class="sub">Share your mess experience at {{ university_name }}</p>
+      <div class="form-title">Write a Review</div>
+      <div class="form-sub">Share your mess experience at {{ university_name }}</div>
 
       <form method="POST">
-
         <div class="fgroup">
           <label>Your Name *</label>
           <input type="text" name="reviewer_name" placeholder="Enter your full name" required>
         </div>
-
         <div class="fgroup">
           <label>Email Address *</label>
           <input type="email" name="reviewer_email" placeholder="your@email.com" required>
         </div>
-
         <div class="fgroup">
           <label>Phone Number (Optional)</label>
           <input type="tel" name="reviewer_phone" placeholder="+91 XXXXX XXXXX">
         </div>
 
-        <div class="divider-line"></div>
+        <div class="divider"></div>
 
         <div class="fgroup">
           <label>Overall Rating *</label>
@@ -227,7 +284,6 @@
             <option value="1">⭐ Very Bad (1)</option>
           </select>
         </div>
-
         <div class="fgroup">
           <label>Food Quality *</label>
           <select name="food_quality" required>
@@ -239,7 +295,6 @@
             <option value="1">⭐ Very Bad</option>
           </select>
         </div>
-
         <div class="fgroup">
           <label>Hygiene *</label>
           <select name="hygiene" required>
@@ -251,7 +306,6 @@
             <option value="1">⭐ Very Bad</option>
           </select>
         </div>
-
         <div class="fgroup">
           <label>Value for Money *</label>
           <select name="value_for_money" required>
@@ -263,7 +317,6 @@
             <option value="1">⭐ Very Bad</option>
           </select>
         </div>
-
         <div class="fgroup">
           <label>Menu Variety *</label>
           <select name="menu_variety" required>
@@ -275,37 +328,21 @@
             <option value="1">⭐ Very Bad</option>
           </select>
         </div>
-
         <div class="fgroup">
           <label>Your Review *</label>
-          <textarea name="feedback" placeholder="Describe the food quality, hygiene, variety, value for money..." required></textarea>
+          <textarea name="feedback" placeholder="Describe food quality, hygiene, variety, value for money..." required></textarea>
         </div>
-
         <button type="submit" class="submit-btn">Submit Review →</button>
       </form>
     </div>
 
     <!-- QUICK INFO -->
-    <div class="det-card" style="margin-top:1rem;">
-      <h3 style="font-size:14px;font-weight:600;margin-bottom:12px;color:#1a1a1a;">Quick Info</h3>
-      <div style="display:flex;flex-direction:column;gap:10px;">
-        <div style="display:flex;justify-content:space-between;font-size:13px;border-bottom:1px solid #f5f5f5;padding-bottom:8px;">
-          <span style="color:#999;">University</span>
-          <span style="font-weight:500;">{{ university_name }}</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;font-size:13px;border-bottom:1px solid #f5f5f5;padding-bottom:8px;">
-          <span style="color:#999;">Location</span>
-          <span style="font-weight:500;">{{ city }}</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;font-size:13px;border-bottom:1px solid #f5f5f5;padding-bottom:8px;">
-          <span style="color:#999;">Overall Rating</span>
-          <span style="font-weight:500;color:#B03A2E;">{{ avg_rating }} ★</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;font-size:13px;">
-          <span style="color:#999;">Total Reviews</span>
-          <span style="font-weight:500;">{{ reviews|length }}</span>
-        </div>
-      </div>
+    <div class="card" style="margin-top:1.5rem;">
+      <div class="card-title" style="margin-bottom:1rem;">Quick Info</div>
+      <div class="qinfo-row"><span class="qlabel">University</span><span class="qval">{{ university_name }}</span></div>
+      <div class="qinfo-row"><span class="qlabel">Location</span><span class="qval">{{ city }}</span></div>
+      <div class="qinfo-row"><span class="qlabel">Overall Rating</span><span class="qval" style="color:#B03A2E;">{{ avg_rating }} ★</span></div>
+      <div class="qinfo-row"><span class="qlabel">Total Reviews</span><span class="qval">{{ reviews|length }}</span></div>
     </div>
   </div>
 
@@ -331,9 +368,7 @@
       <a class="foot-link">Privacy Policy</a>
     </div>
   </div>
-  <div class="foot-bottom">
-    <span>© 2026 MessReview · Made with 💜 by Garima Verma</span>
-  </div>
+  <div class="foot-bottom">© 2026 MessReview · Made with 💜 by Garima Verma</div>
 </footer>
 
 </body>
