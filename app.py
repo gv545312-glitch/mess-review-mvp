@@ -28,12 +28,24 @@ CREATE TABLE IF NOT EXISTS reviews (
     value_for_money INTEGER,
     menu_variety INTEGER,
     feedback TEXT,
+    reviewer_name TEXT,
+    reviewer_email TEXT,
+    reviewer_phone TEXT,
     created_at TEXT
 )
 """)
 
 try:
     conn.execute("ALTER TABLE reviews ADD COLUMN food_quality INTEGER DEFAULT 0")
+except: pass
+try:
+    conn.execute("ALTER TABLE reviews ADD COLUMN reviewer_name TEXT DEFAULT ''")
+except: pass
+try:
+    conn.execute("ALTER TABLE reviews ADD COLUMN reviewer_email TEXT DEFAULT ''")
+except: pass
+try:
+    conn.execute("ALTER TABLE reviews ADD COLUMN reviewer_phone TEXT DEFAULT ''")
 except: pass
 try:
     conn.execute("ALTER TABLE reviews ADD COLUMN hygiene INTEGER DEFAULT 0")
@@ -255,12 +267,15 @@ def university(name):
         value_for_money = int(request.form.get("value_for_money", rating))
         menu_variety = int(request.form.get("menu_variety", rating))
         feedback = request.form["feedback"]
+        reviewer_name = request.form.get("reviewer_name", "Anonymous")
+        reviewer_email = request.form.get("reviewer_email", "")
+        reviewer_phone = request.form.get("reviewer_phone", "")
 
         conn.execute("""
             INSERT INTO reviews
-            (university_name, rating, food_quality, hygiene, value_for_money, menu_variety, feedback, created_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        """, (name, rating, food_quality, hygiene, value_for_money, menu_variety, feedback, datetime.now().strftime("%d %b %Y")))
+            (university_name, rating, food_quality, hygiene, value_for_money, menu_variety, feedback, reviewer_name, reviewer_email, reviewer_phone, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (name, rating, food_quality, hygiene, value_for_money, menu_variety, feedback, reviewer_name, reviewer_email, reviewer_phone, datetime.now().strftime("%d %b %Y")))
         conn.commit()
         return redirect(f"/university/{name}")
 

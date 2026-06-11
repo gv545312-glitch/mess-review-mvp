@@ -3,77 +3,118 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{ university_name }} — MessReview</title>
+  <title>{{ university_name }} Mess Review — MessReview</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
 </head>
 <body>
+
+<!-- TOPBAR -->
 <header class="topbar">
   <a href="/" class="logo">Mess<span>Review</span></a>
   <nav class="topnav">
     <a href="/" class="tnav-link">Home</a>
     <a href="/universities" class="tnav-link">Universities</a>
-    <a href="#write-review" class="tnav-link">Write Review</a>
+    <a href="/#reviews-section" class="tnav-link">Reviews</a>
+    <a href="/#rankings" class="tnav-link">Rankings</a>
   </nav>
   <div class="topbar-right">
-    <a href="/universities" class="btn-review">← Back</a>
+    <a href="/universities" class="btn-review">← All Universities</a>
   </div>
 </header>
 
-<section class="page-hero">
-  <div class="page-hero-inner">
+<!-- UNI HERO -->
+<section class="uni-detail-hero">
+  <div class="udh-inner">
     <div class="breadcrumb"><a href="/">Home</a> → <a href="/universities">Universities</a> → {{ university_name }}</div>
     <h1>{{ university_name }}</h1>
-    <p>📍 {{ city }} · {{ reviews|length }} reviews</p>
+    <div class="udh-meta">
+      <span>📍 {{ city }}</span>
+      <span class="dot">·</span>
+      <span>⭐ {{ avg_rating }} Rating</span>
+      <span class="dot">·</span>
+      <span>{{ reviews|length }} Reviews</span>
+    </div>
+    <div class="udh-tags">
+      <span class="utag veg">Veg Friendly</span>
+      <span class="utag top">Top Rated</span>
+    </div>
   </div>
 </section>
 
-<main class="page-main" style="max-width:980px;">
-  <section class="section" style="margin-top:0;">
-    <div class="sec-head">
-      <h2 class="sec-title">Mess <span>Overview</span></h2>
-    </div>
-    <div class="stats-strip" style="margin-top:0;">
-      <div class="sstat"><span class="snum">{{ avg_rating }}</span><span class="slbl">Overall</span></div>
-      <div class="sstat"><span class="snum">{{ avg_food }}</span><span class="slbl">Food Quality</span></div>
-      <div class="sstat"><span class="snum">{{ avg_hygiene }}</span><span class="slbl">Hygiene</span></div>
-      <div class="sstat"><span class="snum">{{ avg_value }}</span><span class="slbl">Value</span></div>
-      <div class="sstat"><span class="snum">{{ avg_variety }}</span><span class="slbl">Variety</span></div>
-    </div>
-  </section>
+<!-- MAIN CONTENT -->
+<main class="udet-main">
 
-  <section class="section" id="write-review">
-    <div class="sec-head">
-      <h2 class="sec-title">Write a <span>Review</span></h2>
-    </div>
-    <form method="POST" style="display:grid;gap:10px;">
-      <label>Overall Rating (1-5)</label>
-      <input type="number" name="rating" min="1" max="5" required>
-      <label>Food Quality (1-5)</label>
-      <input type="number" name="food_quality" min="1" max="5" required>
-      <label>Hygiene (1-5)</label>
-      <input type="number" name="hygiene" min="1" max="5" required>
-      <label>Value For Money (1-5)</label>
-      <input type="number" name="value_for_money" min="1" max="5" required>
-      <label>Menu Variety (1-5)</label>
-      <input type="number" name="menu_variety" min="1" max="5" required>
-      <label>Your Feedback</label>
-      <textarea name="feedback" rows="4" required></textarea>
-      <button type="submit" class="btn-review" style="width:fit-content;">Submit Review</button>
-    </form>
-  </section>
+  <!-- LEFT: INFO + REVIEWS -->
+  <div class="udet-left">
 
-  <section class="section">
-    <div class="sec-head">
-      <h2 class="sec-title">Student <span>Reviews</span></h2>
+    <!-- MESS INFO CARDS -->
+    <div class="info-strip">
+      <div class="istrip-card">
+        <div class="isc-icon">🍽️</div>
+        <div class="isc-label">Mess Type</div>
+        <div class="isc-val">Veg & Non-Veg</div>
+      </div>
+      <div class="istrip-card">
+        <div class="isc-icon">💰</div>
+        <div class="isc-label">Meal Cost</div>
+        <div class="isc-val">₹80–120/meal</div>
+      </div>
+      <div class="istrip-card">
+        <div class="isc-icon">🕐</div>
+        <div class="isc-label">Timings</div>
+        <div class="isc-val">7am – 10pm</div>
+      </div>
+      <div class="istrip-card">
+        <div class="isc-icon">👥</div>
+        <div class="isc-label">Capacity</div>
+        <div class="isc-val">2,000+ students</div>
+      </div>
     </div>
-    <div class="reviews-grid">
+
+    <!-- RATING BREAKDOWN -->
+    <div class="det-card">
+      <h2 class="det-card-title">Rating Breakdown</h2>
+      {% if reviews %}
+      <div class="rating-bars">
+        <div class="rbar-row">
+          <span class="rbar-label">Food Quality</span>
+          <div class="rbar-track"><div class="rbar-fill" style="width:{{ (avg_food / 5 * 100)|int }}%"></div></div>
+          <span class="rbar-val">{{ avg_food }}</span>
+        </div>
+        <div class="rbar-row">
+          <span class="rbar-label">Hygiene</span>
+          <div class="rbar-track"><div class="rbar-fill" style="width:{{ (avg_hygiene / 5 * 100)|int }}%;background:#27AE60"></div></div>
+          <span class="rbar-val">{{ avg_hygiene }}</span>
+        </div>
+        <div class="rbar-row">
+          <span class="rbar-label">Value for Money</span>
+          <div class="rbar-track"><div class="rbar-fill" style="width:{{ (avg_value / 5 * 100)|int }}%;background:#E67E22"></div></div>
+          <span class="rbar-val">{{ avg_value }}</span>
+        </div>
+        <div class="rbar-row">
+          <span class="rbar-label">Menu Variety</span>
+          <div class="rbar-track"><div class="rbar-fill" style="width:{{ (avg_variety / 5 * 100)|int }}%"></div></div>
+          <span class="rbar-val">{{ avg_variety }}</span>
+        </div>
+      </div>
+      {% else %}
+      <div style="text-align:center;padding:1.5rem;color:#999;font-size:13px;">
+        No ratings yet — be the first to review!
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- REVIEWS LIST -->
+    <div class="det-card">
+      <h2 class="det-card-title">Student Reviews <span style="font-size:14px;color:#999;font-weight:400;">({{ reviews|length }})</span></h2>
+
       {% for review in reviews %}
-      <div class="review-card">
+      <div class="review-card" style="margin-bottom:12px;">
         <div class="rv-head">
-          <div class="rv-avatar">{{ university_name[:2]|upper }}</div>
+          <div class="rv-avatar">{{ (review.reviewer_name or 'AN')[:2]|upper }}</div>
           <div>
-            <div class="rv-uname">{{ university_name }}</div>
+            <div class="rv-uname">{{ review.reviewer_name or 'Anonymous' }}</div>
             <div class="rv-date">{{ review.created_at }}</div>
           </div>
           <div class="rv-stars">{% for i in range(review.rating|int) %}⭐{% endfor %}</div>
@@ -81,16 +122,161 @@
         <p class="rv-text">{{ review.feedback }}</p>
       </div>
       {% else %}
-      <div class="empty-state">No reviews yet. Be the first to review this mess.</div>
+      <div style="text-align:center; padding:2rem; color:#999;">
+        <div style="font-size:2rem; margin-bottom:0.5rem;">💬</div>
+        <div>No reviews yet — be the first to review!</div>
+      </div>
       {% endfor %}
     </div>
-  </section>
+
+  </div>
+
+  <!-- RIGHT: WRITE REVIEW -->
+  <div class="udet-right">
+    <div class="det-card write-review-card">
+      <h2 class="det-card-title">Write a Review</h2>
+      <p style="font-size:12px;color:#999;margin-bottom:1.2rem;">Share your mess experience at {{ university_name }}</p>
+
+      <form method="POST">
+
+        <!-- USER INFO -->
+        <div class="form-group" style="margin-bottom:10px;">
+          <label style="font-size:11px;font-weight:600;color:#666;text-transform:uppercase;letter-spacing:0.04em;display:block;margin-bottom:5px;">Your Name *</label>
+          <input type="text" name="reviewer_name" placeholder="Enter your full name" required style="width:100%;padding:10px 12px;border:1.5px solid #DDD;border-radius:8px;font-size:13px;font-family:'DM Sans',sans-serif;color:#1a1a1a;outline:none;transition:border-color 0.15s;" onfocus="this.style.borderColor='#B03A2E'" onblur="this.style.borderColor='#DDD'">
+        </div>
+
+        <div class="form-group" style="margin-bottom:10px;">
+          <label style="font-size:11px;font-weight:600;color:#666;text-transform:uppercase;letter-spacing:0.04em;display:block;margin-bottom:5px;">Email Address *</label>
+          <input type="email" name="reviewer_email" placeholder="your@email.com" required style="width:100%;padding:10px 12px;border:1.5px solid #DDD;border-radius:8px;font-size:13px;font-family:'DM Sans',sans-serif;color:#1a1a1a;outline:none;transition:border-color 0.15s;" onfocus="this.style.borderColor='#B03A2E'" onblur="this.style.borderColor='#DDD'">
+        </div>
+
+        <div class="form-group" style="margin-bottom:16px;">
+          <label style="font-size:11px;font-weight:600;color:#666;text-transform:uppercase;letter-spacing:0.04em;display:block;margin-bottom:5px;">Phone Number</label>
+          <input type="tel" name="reviewer_phone" placeholder="+91 XXXXX XXXXX" style="width:100%;padding:10px 12px;border:1.5px solid #DDD;border-radius:8px;font-size:13px;font-family:'DM Sans',sans-serif;color:#1a1a1a;outline:none;transition:border-color 0.15s;" onfocus="this.style.borderColor='#B03A2E'" onblur="this.style.borderColor='#DDD'">
+        </div>
+
+        <div style="height:1px;background:#eee;margin-bottom:16px;"></div>
+
+        <!-- RATINGS -->
+        <div class="form-group" style="margin-bottom:10px;">
+          <label style="font-size:11px;font-weight:600;color:#666;text-transform:uppercase;letter-spacing:0.04em;display:block;margin-bottom:5px;">Overall Rating *</label>
+          <select name="rating" required style="width:100%;padding:10px 12px;border:1.5px solid #DDD;border-radius:8px;font-size:13px;font-family:'DM Sans',sans-serif;color:#1a1a1a;outline:none;background:#fff;cursor:pointer;">
+            <option value="">— Select Rating —</option>
+            <option value="5">⭐⭐⭐⭐⭐ Excellent (5)</option>
+            <option value="4">⭐⭐⭐⭐ Good (4)</option>
+            <option value="3">⭐⭐⭐ Average (3)</option>
+            <option value="2">⭐⭐ Poor (2)</option>
+            <option value="1">⭐ Very Bad (1)</option>
+          </select>
+        </div>
+
+        <div class="form-group" style="margin-bottom:10px;">
+          <label style="font-size:11px;font-weight:600;color:#666;text-transform:uppercase;letter-spacing:0.04em;display:block;margin-bottom:5px;">Food Quality *</label>
+          <select name="food_quality" required style="width:100%;padding:10px 12px;border:1.5px solid #DDD;border-radius:8px;font-size:13px;font-family:'DM Sans',sans-serif;color:#1a1a1a;outline:none;background:#fff;cursor:pointer;">
+            <option value="">— Select —</option>
+            <option value="5">⭐⭐⭐⭐⭐ Excellent</option>
+            <option value="4">⭐⭐⭐⭐ Good</option>
+            <option value="3">⭐⭐⭐ Average</option>
+            <option value="2">⭐⭐ Poor</option>
+            <option value="1">⭐ Very Bad</option>
+          </select>
+        </div>
+
+        <div class="form-group" style="margin-bottom:10px;">
+          <label style="font-size:11px;font-weight:600;color:#666;text-transform:uppercase;letter-spacing:0.04em;display:block;margin-bottom:5px;">Hygiene *</label>
+          <select name="hygiene" required style="width:100%;padding:10px 12px;border:1.5px solid #DDD;border-radius:8px;font-size:13px;font-family:'DM Sans',sans-serif;color:#1a1a1a;outline:none;background:#fff;cursor:pointer;">
+            <option value="">— Select —</option>
+            <option value="5">⭐⭐⭐⭐⭐ Excellent</option>
+            <option value="4">⭐⭐⭐⭐ Good</option>
+            <option value="3">⭐⭐⭐ Average</option>
+            <option value="2">⭐⭐ Poor</option>
+            <option value="1">⭐ Very Bad</option>
+          </select>
+        </div>
+
+        <div class="form-group" style="margin-bottom:10px;">
+          <label style="font-size:11px;font-weight:600;color:#666;text-transform:uppercase;letter-spacing:0.04em;display:block;margin-bottom:5px;">Value for Money *</label>
+          <select name="value_for_money" required style="width:100%;padding:10px 12px;border:1.5px solid #DDD;border-radius:8px;font-size:13px;font-family:'DM Sans',sans-serif;color:#1a1a1a;outline:none;background:#fff;cursor:pointer;">
+            <option value="">— Select —</option>
+            <option value="5">⭐⭐⭐⭐⭐ Excellent</option>
+            <option value="4">⭐⭐⭐⭐ Good</option>
+            <option value="3">⭐⭐⭐ Average</option>
+            <option value="2">⭐⭐ Poor</option>
+            <option value="1">⭐ Very Bad</option>
+          </select>
+        </div>
+
+        <div class="form-group" style="margin-bottom:10px;">
+          <label style="font-size:11px;font-weight:600;color:#666;text-transform:uppercase;letter-spacing:0.04em;display:block;margin-bottom:5px;">Menu Variety *</label>
+          <select name="menu_variety" required style="width:100%;padding:10px 12px;border:1.5px solid #DDD;border-radius:8px;font-size:13px;font-family:'DM Sans',sans-serif;color:#1a1a1a;outline:none;background:#fff;cursor:pointer;">
+            <option value="">— Select —</option>
+            <option value="5">⭐⭐⭐⭐⭐ Excellent</option>
+            <option value="4">⭐⭐⭐⭐ Good</option>
+            <option value="3">⭐⭐⭐ Average</option>
+            <option value="2">⭐⭐ Poor</option>
+            <option value="1">⭐ Very Bad</option>
+          </select>
+        </div>
+
+        <div class="form-group" style="margin-bottom:16px;">
+          <label style="font-size:11px;font-weight:600;color:#666;text-transform:uppercase;letter-spacing:0.04em;display:block;margin-bottom:5px;">Your Review *</label>
+          <textarea name="feedback" placeholder="Describe the food quality, hygiene, variety, value for money..." required style="width:100%;padding:10px 12px;border:1.5px solid #DDD;border-radius:8px;font-size:13px;font-family:'DM Sans',sans-serif;color:#1a1a1a;outline:none;min-height:100px;resize:vertical;" onfocus="this.style.borderColor='#B03A2E'" onblur="this.style.borderColor='#DDD'"></textarea>
+        </div>
+
+        <button type="submit" class="submit-btn" style="width:100%;">Submit Review →</button>
+      </form>
+    </div>
+
+    <!-- QUICK INFO -->
+    <div class="det-card" style="margin-top:14px;">
+      <h3 style="font-size:14px;font-weight:600;margin-bottom:12px;color:#1a1a1a;">Quick Info</h3>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div style="display:flex;justify-content:space-between;font-size:13px;">
+          <span style="color:#999;">University</span>
+          <span style="font-weight:500;">{{ university_name }}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:13px;">
+          <span style="color:#999;">Location</span>
+          <span style="font-weight:500;">{{ city }}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:13px;">
+          <span style="color:#999;">Overall Rating</span>
+          <span style="font-weight:500;color:#B03A2E;">{{ avg_rating }} ★</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:13px;">
+          <span style="color:#999;">Total Reviews</span>
+          <span style="font-weight:500;">{{ reviews|length }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </main>
 
+<!-- FOOTER -->
 <footer class="footer">
+  <div class="footer-grid">
+    <div>
+      <div class="foot-logo">Mess<span>Review</span></div>
+      <p class="foot-sub">Honest student reviews on university mess facilities across India.</p>
+    </div>
+    <div>
+      <div class="foot-title">Quick Links</div>
+      <a href="/" class="foot-link">Home</a>
+      <a href="/universities" class="foot-link">All Universities</a>
+      <a href="/#rankings" class="foot-link">Rankings</a>
+    </div>
+    <div>
+      <div class="foot-title">About</div>
+      <a class="foot-link">About Us</a>
+      <a class="foot-link">Contact</a>
+      <a class="foot-link">Privacy Policy</a>
+    </div>
+  </div>
   <div class="foot-bottom">
     <span>© 2026 MessReview · Made with 💜 by Garima Verma</span>
   </div>
 </footer>
+
 </body>
 </html>
