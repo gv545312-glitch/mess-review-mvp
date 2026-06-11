@@ -286,6 +286,7 @@ def university(name):
 
     uni = next((u for u in universities if u["name"] == name), None)
     city = uni["city"] if uni else "India"
+    uni_image = uni["image"] if uni else ""
 
     if reviews:
         avg_rating = round(sum(r["rating"] for r in reviews) / len(reviews), 1)
@@ -300,6 +301,7 @@ def university(name):
         "university.html",
         university_name=name,
         city=city,
+        uni_image=uni_image,
         reviews=reviews,
         avg_rating=avg_rating,
         avg_food=avg_food,

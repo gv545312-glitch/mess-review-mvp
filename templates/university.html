@@ -154,18 +154,28 @@
   </div>
 </header>
 
-<!-- HERO -->
-<section class="uni-hero">
-  <div class="breadcrumb">
-    <a href="/">Home</a> → <a href="/universities">Universities</a> → {{ university_name }}
-  </div>
-  <h1>{{ university_name }}</h1>
-  <div class="uni-meta">
-    <span>📍 {{ city }}</span>
-    <span class="dot">·</span>
-    <span>⭐ {{ avg_rating }} Rating</span>
-    <span class="dot">·</span>
-    <span>{{ reviews|length }} Reviews</span>
+<!-- HERO WITH IMAGE -->
+<section style="position:relative;height:300px;overflow:hidden;">
+  {% if uni_image %}
+  <img src="{{ uni_image }}" alt="{{ university_name }}" style="width:100%;height:100%;object-fit:cover;display:block;">
+  {% else %}
+  <div style="width:100%;height:100%;background:linear-gradient(135deg,#B03A2E,#4A1409);"></div>
+  {% endif %}
+  <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.78) 0%,rgba(0,0,0,0.25) 60%,transparent 100%);"></div>
+  <div style="position:absolute;bottom:0;left:0;right:0;padding:2rem;">
+    <div style="font-size:13px;color:rgba(255,255,255,0.6);margin-bottom:0.5rem;">
+      <a href="/" style="color:rgba(255,255,255,0.6);">Home</a> →
+      <a href="/universities" style="color:rgba(255,255,255,0.6);">Universities</a> →
+      {{ university_name }}
+    </div>
+    <h1 style="font-family:'Playfair Display',serif;font-size:2.5rem;color:#fff;margin-bottom:0.5rem;line-height:1.2;">{{ university_name }}</h1>
+    <div style="display:flex;align-items:center;gap:10px;font-size:15px;color:rgba(255,255,255,0.85);flex-wrap:wrap;">
+      <span>📍 {{ city }}</span>
+      <span style="color:rgba(255,255,255,0.4);">·</span>
+      <span>⭐ {{ avg_rating }} Rating</span>
+      <span style="color:rgba(255,255,255,0.4);">·</span>
+      <span>{{ reviews|length }} Reviews</span>
+    </div>
   </div>
 </section>
 
