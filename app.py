@@ -75,6 +75,7 @@ conn.close()
 # UNIVERSITIES DATA
 
 universities = [
+    {"name": "MVN University", "city": "Palwal, Haryana", "image": "https://images.unsplash.com/photo-1562774053-701939374585?w=800"},
     {"name": "Amity University", "city": "Noida, UP", "image": "/static/images/amity.jpg"},
     {"name": "Lovely Professional University", "city": "Phagwara, Punjab", "image": "/static/images/lpu.jpg"},
     {"name": "Chandigarh University", "city": "Mohali, Punjab", "image": "/static/images/cu.jpg"},
