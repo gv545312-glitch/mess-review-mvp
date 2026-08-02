@@ -1,5 +1,4 @@
 flask
 gunicorn
-supabase
-serverless-wsgi
+psycopg2-binary
 werkzeug

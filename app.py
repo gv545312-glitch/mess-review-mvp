@@ -1,78 +1,44 @@
-from flask import Flask, render_template, request, redirect
-import sqlite3
+from flask import Flask, render_template, request, redirect, jsonify, session
+import psycopg2
+import psycopg2.extras
 from datetime import datetime
 import os
-from supabase import create_client, Client
-
-SUPABASE_URL = "https://qhjbnoarsylibmqyrswm.supabase.co"
-SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFoamJub2Fyc3lsaWJtcXlyc3dtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODExNjk2MTUsImV4cCI6MjA5Njc0NTYxNX0.GWjjewyDjjDJLFzmN7s30E4cY0wdecVXYSesoPs63qE"
-supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
-
-USE_SUPABASE = True
+from functools import wraps
 
 app = Flask(__name__)
 app.secret_key = "messreview_secret_key_2026"
 
-
-# DATABASE
+DATABASE_URL = os.environ.get("DATABASE_URL", "postgresql://messreview_db_user:hFlphsnaTeikF22jOEpKwJMfIDrFaDhH@dpg-d9npemflk1mc738jah70-a/messreview_db")
 
 def get_db_connection():
-    conn = sqlite3.connect("reviews.db")
-    conn.row_factory = sqlite3.Row
+    conn = psycopg2.connect(DATABASE_URL)
     return conn
 
+def init_db():
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS reviews (
+            id SERIAL PRIMARY KEY,
+            university_name TEXT,
+            rating INTEGER,
+            food_quality INTEGER,
+            hygiene INTEGER,
+            value_for_money INTEGER,
+            menu_variety INTEGER,
+            feedback TEXT,
+            reviewer_name TEXT,
+            reviewer_email TEXT,
+            reviewer_phone TEXT,
+            is_student TEXT DEFAULT '',
+            created_at TEXT
+        )
+    """)
+    conn.commit()
+    cur.close()
+    conn.close()
 
-# CREATE TABLE
-
-conn = get_db_connection()
-
-conn.execute("""
-CREATE TABLE IF NOT EXISTS reviews (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    university_name TEXT,
-    rating INTEGER,
-    food_quality INTEGER,
-    hygiene INTEGER,
-    value_for_money INTEGER,
-    menu_variety INTEGER,
-    feedback TEXT,
-    reviewer_name TEXT,
-    reviewer_email TEXT,
-    reviewer_phone TEXT,
-    created_at TEXT
-)
-""")
-
-try:
-    conn.execute("ALTER TABLE reviews ADD COLUMN food_quality INTEGER DEFAULT 0")
-except: pass
-try:
-    conn.execute("ALTER TABLE reviews ADD COLUMN reviewer_name TEXT DEFAULT ''")
-except: pass
-try:
-    conn.execute("ALTER TABLE reviews ADD COLUMN is_student TEXT DEFAULT ''")
-except: pass
-try:
-    conn.execute("ALTER TABLE reviews ADD COLUMN reviewer_email TEXT DEFAULT ''")
-except: pass
-try:
-    conn.execute("ALTER TABLE reviews ADD COLUMN reviewer_phone TEXT DEFAULT ''")
-except: pass
-try:
-    conn.execute("ALTER TABLE reviews ADD COLUMN hygiene INTEGER DEFAULT 0")
-except: pass
-try:
-    conn.execute("ALTER TABLE reviews ADD COLUMN value_for_money INTEGER DEFAULT 0")
-except: pass
-try:
-    conn.execute("ALTER TABLE reviews ADD COLUMN menu_variety INTEGER DEFAULT 0")
-except: pass
-
-conn.commit()
-conn.close()
-
-
-# UNIVERSITIES DATA
+init_db()
 
 universities = [
     {"name": "MVN University", "city": "Palwal, Haryana", "image": "https://images.unsplash.com/photo-1562774053-701939374585?w=800"},
@@ -227,16 +193,23 @@ universities = [
 ]
 
 
-# HOME PAGE
+def get_all_reviews():
+    conn = get_db_connection()
+    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    cur.execute("SELECT * FROM reviews ORDER BY id DESC")
+    reviews = cur.fetchall()
+    cur.close()
+    conn.close()
+    return [dict(r) for r in reviews]
+
 
 @app.route("/")
 def home():
     try:
-        all_reviews = supabase.table("reviews").select("*").order("id", desc=True).execute().data or []
+        all_reviews = get_all_reviews()
     except:
         all_reviews = []
 
-    # Real rating + review count per university
     uni_stats = {}
     for uni in universities:
         name = uni["name"]
@@ -262,8 +235,6 @@ def home():
     )
 
 
-# UNIVERSITY PAGE
-
 @app.route("/university/<name>", methods=["GET", "POST"])
 def university(name):
     if request.method == "POST":
@@ -278,26 +249,23 @@ def university(name):
         reviewer_phone = request.form.get("reviewer_phone", "")
         is_student = request.form.get("is_student", "")
 
-        supabase.table("reviews").insert({
-            "university_name": name,
-            "rating": rating,
-            "food_quality": food_quality,
-            "hygiene": hygiene,
-            "value_for_money": value_for_money,
-            "menu_variety": menu_variety,
-            "feedback": feedback,
-            "reviewer_name": reviewer_name,
-            "reviewer_email": reviewer_email,
-            "reviewer_phone": reviewer_phone,
-            "is_student": is_student,
-            "created_at": datetime.now().strftime("%d %b %Y")
-        }).execute()
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("""
+            INSERT INTO reviews (university_name, rating, food_quality, hygiene, value_for_money, menu_variety, feedback, reviewer_name, reviewer_email, reviewer_phone, is_student, created_at)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        """, (name, rating, food_quality, hygiene, value_for_money, menu_variety, feedback, reviewer_name, reviewer_email, reviewer_phone, is_student, datetime.now().strftime("%d %b %Y")))
+        conn.commit()
+        cur.close()
+        conn.close()
         return redirect(f"/university/{name}")
 
-    try:
-        reviews = supabase.table("reviews").select("*").eq("university_name", name).order("id", desc=True).execute().data or []
-    except:
-        reviews = []
+    conn = get_db_connection()
+    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    cur.execute("SELECT * FROM reviews WHERE university_name = %s ORDER BY id DESC", (name,))
+    reviews = [dict(r) for r in cur.fetchall()]
+    cur.close()
+    conn.close()
 
     uni = next((u for u in universities if u["name"] == name), None)
     city = uni["city"] if uni else "India"
@@ -312,8 +280,7 @@ def university(name):
     else:
         avg_rating = avg_food = avg_hygiene = avg_value = avg_variety = 0
 
-    return render_template(
-        "university.html",
+    return render_template("university.html",
         university_name=name,
         city=city,
         uni_image=uni_image,
@@ -326,15 +293,12 @@ def university(name):
     )
 
 
-# UNIVERSITIES PAGE
-
 @app.route("/universities")
 def universities_page():
     page = request.args.get("page", 1, type=int)
     q = request.args.get("q", "").lower().strip()
     per_page = 24
 
-    # Filter by search query across ALL universities
     if q:
         filtered = [u for u in universities if q in u["name"].lower() or q in u["city"].lower()]
     else:
@@ -348,9 +312,10 @@ def universities_page():
     paginated = filtered[start:end]
 
     try:
-        all_reviews = supabase.table("reviews").select("university_name,rating").execute().data or []
+        all_reviews = get_all_reviews()
     except:
         all_reviews = []
+
     uni_stats = {}
     for uni in paginated:
         name = uni["name"]
@@ -369,18 +334,12 @@ def universities_page():
     )
 
 
-
-
-# ─── ADMIN ───────────────────────────────────────────────
-
 ADMIN_USERNAME = "admin"
 ADMIN_PASSWORD = "messreview2026"
 
 def admin_required(f):
-    from functools import wraps
     @wraps(f)
     def decorated(*args, **kwargs):
-        from flask import session, redirect
         if not session.get("admin_logged_in"):
             return redirect("/admin/login")
         return f(*args, **kwargs)
@@ -388,7 +347,6 @@ def admin_required(f):
 
 @app.route("/admin/login", methods=["GET", "POST"])
 def admin_login():
-    from flask import session, request
     error = None
     if request.method == "POST":
         if request.form["username"] == ADMIN_USERNAME and request.form["password"] == ADMIN_PASSWORD:
@@ -400,7 +358,6 @@ def admin_login():
 
 @app.route("/admin/logout")
 def admin_logout():
-    from flask import session
     session.pop("admin_logged_in", None)
     return redirect("/admin/login")
 
@@ -408,14 +365,14 @@ def admin_logout():
 @admin_required
 def admin_dashboard():
     try:
-        all_reviews = supabase.table("reviews").select("*").order("id", desc=True).execute().data or []
+        all_reviews = get_all_reviews()
     except:
         all_reviews = []
     total_reviews = len(all_reviews)
     avg_rating = round(sum(r["rating"] for r in all_reviews) / total_reviews, 1) if total_reviews else 0
     recent_reviews = all_reviews[:5]
     total_unis = len(universities)
-    return render_template("admin.html", 
+    return render_template("admin.html",
         page="dashboard",
         total_reviews=total_reviews,
         total_unis=total_unis,
@@ -429,10 +386,15 @@ def admin_dashboard():
 def admin_reviews():
     uni_filter = request.args.get("uni", "")
     try:
+        conn = get_db_connection()
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
         if uni_filter:
-            reviews = supabase.table("reviews").select("*").eq("university_name", uni_filter).order("id", desc=True).execute().data or []
+            cur.execute("SELECT * FROM reviews WHERE university_name = %s ORDER BY id DESC", (uni_filter,))
         else:
-            reviews = supabase.table("reviews").select("*").order("id", desc=True).execute().data or []
+            cur.execute("SELECT * FROM reviews ORDER BY id DESC")
+        reviews = [dict(r) for r in cur.fetchall()]
+        cur.close()
+        conn.close()
     except:
         reviews = []
     return render_template("admin.html",
@@ -445,7 +407,12 @@ def admin_reviews():
 @app.route("/admin/reviews/delete/<int:review_id>")
 @admin_required
 def admin_delete_review(review_id):
-    supabase.table("reviews").delete().eq("id", review_id).execute()
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("DELETE FROM reviews WHERE id = %s", (review_id,))
+    conn.commit()
+    cur.close()
+    conn.close()
     return redirect("/admin/reviews")
 
 @app.route("/admin/universities")
@@ -475,13 +442,8 @@ def admin_delete_university(name):
     universities = [u for u in universities if u["name"] != name]
     return redirect("/admin/universities")
 
-
-
-# SEARCH API
-
 @app.route("/search")
 def search():
-    from flask import jsonify
     q = request.args.get("q", "").lower().strip()
     if not q or len(q) < 2:
         return jsonify([])
@@ -491,10 +453,6 @@ def search():
         if q in u["name"].lower() or q in u["city"].lower()
     ][:10]
     return jsonify(results)
-
-# REMOVE OLD SQLITE CODE
-
-# RUN
 
 if __name__ == "__main__":
     app.run(debug=True)
