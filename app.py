@@ -41,6 +41,7 @@ def init_db():
 init_db()
 
 universities = [
+    {"name": "CGC University", "city": "Mohali, Punjab", "image": "/static/images/chitkara.jpg"},
     {"name": "NSUT Delhi", "city": "New Delhi", "image": "/static/images/nsut.jpg"},
     {"name": "DTU Delhi", "city": "New Delhi", "image": "/static/images/dtu.jpg"},
     {"name": "MVN University", "city": "Palwal, Haryana", "image": "https://images.unsplash.com/photo-1562774053-701939374585?w=800"},
