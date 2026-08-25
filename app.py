@@ -41,7 +41,7 @@ def init_db():
 init_db()
 
 universities = [
-    {"name": "YMCA University of Science and Technology", "city": "Faridabad, Haryana", "image": "https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?w=800"},
+    {"name": "YMCA University of Science and Technology", "city": "Faridabad, Haryana", "image": "/static/images/ymca.jpg"},
     {"name": "K.R. Mangalam University", "city": "Gurugram, Haryana", "image": "/static/images/krmangalam.jpg"},
     {"name": "CGC University", "city": "Mohali, Punjab", "image": "/static/images/cgc.jpg"},
     {"name": "NSUT Delhi", "city": "New Delhi", "image": "/static/images/nsut.jpg"},
