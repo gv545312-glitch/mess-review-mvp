@@ -41,9 +41,9 @@ def init_db():
 init_db()
 
 universities = [
-    {"name": "YMCA University of Science and Technology", "city": "Faridabad, Haryana", "image": "/static/images/chitkara.jpg"},
-    {"name": "K.R. Mangalam University", "city": "Gurugram, Haryana", "image": "/static/images/chitkara.jpg"},
-    {"name": "CGC University", "city": "Mohali, Punjab", "image": "/static/images/chitkara.jpg"},
+    {"name": "YMCA University of Science and Technology", "city": "Faridabad, Haryana", "image": "https://images.unsplash.com/photo-1562774053-701939374585?w=800"},
+    {"name": "K.R. Mangalam University", "city": "Gurugram, Haryana", "image": "https://images.unsplash.com/photo-1562774053-701939374585?w=800"},
+    {"name": "CGC University", "city": "Mohali, Punjab", "image": "https://images.unsplash.com/photo-1562774053-701939374585?w=800"},
     {"name": "NSUT Delhi", "city": "New Delhi", "image": "/static/images/nsut.jpg"},
     {"name": "DTU Delhi", "city": "New Delhi", "image": "/static/images/dtu.jpg"},
     {"name": "MVN University", "city": "Palwal, Haryana", "image": "https://images.unsplash.com/photo-1562774053-701939374585?w=800"},
@@ -107,7 +107,7 @@ universities = [
     {"name": "Symbiosis International University", "city": "Pune, Maharashtra", "image": "/static/images/symbiosis.jpg"},
     {"name": "Christ University", "city": "Bangalore, Karnataka", "image": "/static/images/christ_university.jpg"},
     {"name": "Thapar University", "city": "Patiala, Punjab", "image": "/static/images/thapar.jpg"},
-    {"name": "Chitkara University", "city": "Rajpura, Punjab", "image": "/static/images/chitkara.jpg"},
+    {"name": "Chitkara University", "city": "Rajpura, Punjab", "image": "https://images.unsplash.com/photo-1562774053-701939374585?w=800"},
     {"name": "Graphic Era University", "city": "Dehradun, Uttarakhand", "image": "/static/images/graphic_era.jpg"},
     {"name": "UPES Dehradun", "city": "Dehradun, Uttarakhand", "image": "/static/images/upes_dehradun.jpg"},
     {"name": "Nirma University", "city": "Ahmedabad, Gujarat", "image": "/static/images/nirma.jpg"},
