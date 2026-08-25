@@ -46,7 +46,7 @@ universities = [
     {"name": "CGC University", "city": "Mohali, Punjab", "image": "/static/images/cgc.jpg"},
     {"name": "NSUT Delhi", "city": "New Delhi", "image": "/static/images/nsut.jpg"},
     {"name": "DTU Delhi", "city": "New Delhi", "image": "/static/images/dtu.jpg"},
-    {"name": "MVN University", "city": "Palwal, Haryana", "image": "https://images.unsplash.com/photo-1562774053-701939374585?w=800"},
+    {"name": "MVN University", "city": "Palwal, Haryana", "image": "/static/images/mvn.jpg"},
     {"name": "Amity University", "city": "Noida, UP", "image": "/static/images/amity.jpg"},
     {"name": "Lovely Professional University", "city": "Phagwara, Punjab", "image": "/static/images/lpu.jpg"},
     {"name": "Chandigarh University", "city": "Mohali, Punjab", "image": "/static/images/cu.jpg"},
