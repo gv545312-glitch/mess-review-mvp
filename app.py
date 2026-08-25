@@ -41,9 +41,9 @@ def init_db():
 init_db()
 
 universities = [
-    {"name": "YMCA University of Science and Technology", "city": "Faridabad, Haryana", "image": "https://images.unsplash.com/photo-1562774053-701939374585?w=800"},
-    {"name": "K.R. Mangalam University", "city": "Gurugram, Haryana", "image": "https://images.unsplash.com/photo-1562774053-701939374585?w=800"},
-    {"name": "CGC University", "city": "Mohali, Punjab", "image": "https://images.unsplash.com/photo-1562774053-701939374585?w=800"},
+    {"name": "YMCA University of Science and Technology", "city": "Faridabad, Haryana", "image": "https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?w=800"},
+    {"name": "K.R. Mangalam University", "city": "Gurugram, Haryana", "image": "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=800"},
+    {"name": "CGC University", "city": "Mohali, Punjab", "image": "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800"},
     {"name": "NSUT Delhi", "city": "New Delhi", "image": "/static/images/nsut.jpg"},
     {"name": "DTU Delhi", "city": "New Delhi", "image": "/static/images/dtu.jpg"},
     {"name": "MVN University", "city": "Palwal, Haryana", "image": "https://images.unsplash.com/photo-1562774053-701939374585?w=800"},
