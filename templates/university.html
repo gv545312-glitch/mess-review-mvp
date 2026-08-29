@@ -246,6 +246,7 @@
           <div class="rv-avatar">{{ (review.reviewer_name or 'AN')[:2]|upper }}</div>
           <div>
             <div class="rv-name">{{ review.reviewer_name or 'Anonymous' }}
+              {% if review.reviewer_id %}<span style="font-size:12px;color:#999;font-weight:400;">(ID: {{ review.reviewer_id }})</span>{% endif %}
               {% if review.is_student == 'yes_current' %}<span style="font-size:11px;background:#E8F8F0;color:#0F6E56;padding:2px 8px;border-radius:4px;margin-left:6px;font-weight:600;">✅ Current Student</span>
               {% elif review.is_student == 'yes_alumni' %}<span style="font-size:11px;background:#E6F1FB;color:#185FA5;padding:2px 8px;border-radius:4px;margin-left:6px;font-weight:600;">🎓 Alumni</span>
               {% endif %}
@@ -283,6 +284,10 @@
         <div class="fgroup">
           <label>Phone Number (Optional)</label>
           <input type="tel" name="reviewer_phone" placeholder="+91 XXXXX XXXXX">
+        </div>
+        <div class="fgroup">
+          <label>Student/Employee ID No. *</label>
+          <input type="text" name="reviewer_id_no" placeholder="Enter your ID number" required>
         </div>
 
         <div class="fgroup">

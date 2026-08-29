@@ -30,10 +30,12 @@ def init_db():
             reviewer_name TEXT,
             reviewer_email TEXT,
             reviewer_phone TEXT,
+            reviewer_id TEXT,
             is_student TEXT DEFAULT '',
             created_at TEXT
         )
     """)
+        cur.execute("ALTER TABLE reviews ADD COLUMN IF NOT EXISTS reviewer_id TEXT")
     conn.commit()
     cur.close()
     conn.close()
@@ -231,8 +233,10 @@ def home():
     top_ranked = ranked[:5]
     compare_unis = ranked[:3]
 
+    sorted_universities = sorted(universities, key=lambda u: uni_stats[u["name"]]["count"], reverse=True)
+
     return render_template("index.html",
-        universities=universities,
+        universities=sorted_universities,
         reviews=all_reviews,
         uni_stats=uni_stats,
         top_ranked=top_ranked,
@@ -252,14 +256,15 @@ def university(name):
         reviewer_name = request.form.get("reviewer_name", "Anonymous")
         reviewer_email = request.form.get("reviewer_email", "")
         reviewer_phone = request.form.get("reviewer_phone", "")
+        reviewer_id_no = request.form.get("reviewer_id_no", "")
         is_student = request.form.get("is_student", "")
 
         conn = get_db_connection()
         cur = conn.cursor()
         cur.execute("""
-            INSERT INTO reviews (university_name, rating, food_quality, hygiene, value_for_money, menu_variety, feedback, reviewer_name, reviewer_email, reviewer_phone, is_student, created_at)
+            INSERT INTO reviews (university_name, rating, food_quality, hygiene, value_for_money, menu_variety, feedback, reviewer_name, reviewer_email, reviewer_phone, reviewer_id, is_student, created_at)
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-        """, (name, rating, food_quality, hygiene, value_for_money, menu_variety, feedback, reviewer_name, reviewer_email, reviewer_phone, is_student, datetime.now().strftime("%d %b %Y")))
+        """, (name, rating, food_quality, hygiene, value_for_money, menu_variety, feedback, reviewer_name, reviewer_email, reviewer_phone, reviewer_id_no, is_student, datetime.now().strftime("%d %b %Y")))
         conn.commit()
         cur.close()
         conn.close()
@@ -309,17 +314,24 @@ def universities_page():
     else:
         filtered = universities
 
+    try:
+        all_reviews = get_all_reviews()
+    except:
+        all_reviews = []
+
+    review_counts = {}
+    for uni in filtered:
+        name = uni["name"]
+        review_counts[name] = len([r for r in all_reviews if r.get("university_name") == name])
+
+    filtered = sorted(filtered, key=lambda u: review_counts[u["name"]], reverse=True)
+
     total = len(filtered)
     total_pages = max(1, (total + per_page - 1) // per_page)
     page = min(page, total_pages)
     start = (page - 1) * per_page
     end = start + per_page
     paginated = filtered[start:end]
-
-    try:
-        all_reviews = get_all_reviews()
-    except:
-        all_reviews = []
 
     uni_stats = {}
     for uni in paginated:
