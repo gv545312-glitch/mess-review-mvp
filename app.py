@@ -35,7 +35,7 @@ def init_db():
             created_at TEXT
         )
     """)
-        cur.execute("ALTER TABLE reviews ADD COLUMN IF NOT EXISTS reviewer_id TEXT")
+    cur.execute("ALTER TABLE reviews ADD COLUMN IF NOT EXISTS reviewer_id TEXT")
     conn.commit()
     cur.close()
     conn.close()
