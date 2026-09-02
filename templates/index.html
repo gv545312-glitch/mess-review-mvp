@@ -161,9 +161,12 @@
     {% for review in reviews[:6] %}
     <div class="review-card">
       <div class="rv-head">
-        <div class="rv-avatar">{{ review.university_name[:2]|upper }}</div>
+        <div class="rv-avatar">{{ (review.reviewer_name or 'AN')[:2]|upper }}</div>
         <div>
-          <div class="rv-uname">{{ review.university_name }}</div>
+          <div class="rv-uname">{{ review.reviewer_name or 'Anonymous' }}
+            {% if review.reviewer_id %}<span style="font-size:11px;color:#999;font-weight:400;">(ID: {{ review.reviewer_id }})</span>{% endif %}
+          </div>
+          <div class="rv-uname" style="font-size:12px;color:#999;font-weight:400;">{{ review.university_name }}</div>
           <div class="rv-date">{{ review.created_at }}</div>
         </div>
         <div class="rv-stars">{% for i in range(review.rating|int) %}⭐{% endfor %}</div>
