@@ -108,6 +108,7 @@ universities = [
     {"name": "Manipal University Jaipur", "city": "Jaipur, Rajasthan", "image": "/static/images/manipal_jaipur.jpg"},
     {"name": "Symbiosis International University", "city": "Pune, Maharashtra", "image": "/static/images/symbiosis.jpg"},
     {"name": "Christ University", "city": "Bangalore, Karnataka", "image": "/static/images/christ_university.jpg"},
+    {"name": "Christ University Delhi NCR", "city": "Ghaziabad, Uttar Pradesh", "image": "/static/images/christ.jpg"},
     {"name": "Thapar University", "city": "Patiala, Punjab", "image": "/static/images/thapar.jpg"},
     {"name": "Chitkara University", "city": "Rajpura, Punjab", "image": "https://images.unsplash.com/photo-1562774053-701939374585?w=800"},
     {"name": "Graphic Era University", "city": "Dehradun, Uttarakhand", "image": "/static/images/graphic_era.jpg"},
