@@ -264,7 +264,7 @@ def university(name):
         cur = conn.cursor()
         cur.execute("""
             INSERT INTO reviews (university_name, rating, food_quality, hygiene, value_for_money, menu_variety, feedback, reviewer_name, reviewer_email, reviewer_phone, reviewer_id, is_student, created_at)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         """, (name, rating, food_quality, hygiene, value_for_money, menu_variety, feedback, reviewer_name, reviewer_email, reviewer_phone, reviewer_id_no, is_student, datetime.now().strftime("%d %b %Y")))
         conn.commit()
         cur.close()
