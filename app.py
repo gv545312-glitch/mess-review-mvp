@@ -4,11 +4,32 @@ import psycopg2.extras
 from datetime import datetime
 import os
 from functools import wraps
+import smtplib
+from email.mime.text import MIMEText
 
 app = Flask(__name__)
 app.secret_key = "messreview_secret_key_2026"
 
 DATABASE_URL = os.environ.get("DATABASE_URL", "postgresql://messreview_db_user:hFlphsnaTeikF22jOEpKwJMfIDrFaDhH@dpg-d9npemflk1mc738jah70-a/messreview_db")
+
+EMAIL_ADDRESS = os.environ.get("EMAIL_ADDRESS", "")
+EMAIL_PASSWORD = os.environ.get("EMAIL_PASSWORD", "")
+
+def send_review_notification(university_name, reviewer_name, rating, feedback):
+    if not EMAIL_ADDRESS or not EMAIL_PASSWORD:
+        return
+    try:
+        body = f"New review submitted!\n\nUniversity: {university_name}\nReviewer: {reviewer_name}\nRating: {rating}/5\nFeedback: {feedback}"
+        msg = MIMEText(body)
+        msg["Subject"] = f"New Review: {university_name}"
+        msg["From"] = EMAIL_ADDRESS
+        msg["To"] = EMAIL_ADDRESS
+        with smtplib.SMTP("smtp.gmail.com", 587) as server:
+            server.starttls()
+            server.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
+            server.send_message(msg)
+    except Exception as e:
+        print(f"Email notification failed: {e}")
 
 def get_db_connection():
     conn = psycopg2.connect(DATABASE_URL)
@@ -268,6 +289,8 @@ def university(name):
         """, (name, rating, food_quality, hygiene, value_for_money, menu_variety, feedback, reviewer_name, reviewer_email, reviewer_phone, reviewer_id_no, is_student, datetime.now().strftime("%d %b %Y")))
         conn.commit()
         cur.close()
+
+        send_review_notification(name, reviewer_name, rating, feedback)
         conn.close()
         return redirect(f"/university/{name}")
 
