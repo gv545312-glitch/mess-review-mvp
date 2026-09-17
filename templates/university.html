@@ -248,6 +248,11 @@
             <div class="rv-name">{{ review.reviewer_name or 'Anonymous' }}
               {% if review.reviewer_id %}<span style="font-size:12px;color:#999;font-weight:400;">(ID: {{ review.reviewer_id }})</span>{% endif %}
               {% if review.reviewer_phone %}<span style="font-size:12px;color:#999;font-weight:400;"> · {{ review.reviewer_phone }}</span>{% endif %}
+              {% if review.food_photo %}
+              <div style="margin-top:10px;">
+                <img src="{{ review.food_photo }}" style="max-width:200px;border-radius:8px;">
+              </div>
+              {% endif %}
               {% if review.is_student == 'yes_current' %}<span style="font-size:11px;background:#E8F8F0;color:#0F6E56;padding:2px 8px;border-radius:4px;margin-left:6px;font-weight:600;">✅ Current Student</span>
               {% elif review.is_student == 'yes_alumni' %}<span style="font-size:11px;background:#E6F1FB;color:#185FA5;padding:2px 8px;border-radius:4px;margin-left:6px;font-weight:600;">🎓 Alumni</span>
               {% endif %}
@@ -273,7 +278,7 @@
       <div class="form-title">Write a Review</div>
       <div class="form-sub">Share your mess experience at {{ university_name }}</div>
 
-      <form method="POST">
+      <form method="POST" enctype="multipart/form-data">
         <div class="fgroup">
           <label>Your Name *</label>
           <input type="text" name="reviewer_name" placeholder="Enter your full name" required>
@@ -361,6 +366,10 @@
         <div class="fgroup">
           <label>Your Review *</label>
           <textarea name="feedback" placeholder="Describe food quality, hygiene, variety, value for money..." required></textarea>
+        </div>
+        <div class="fgroup">
+          <label>Add Food Photo (Optional)</label>
+          <input type="file" name="food_photo" accept="image/*">
         </div>
         <button type="submit" class="submit-btn">Submit Review →</button>
       </form>

@@ -6,6 +6,7 @@ import os
 from functools import wraps
 import smtplib
 from email.mime.text import MIMEText
+import base64
 
 app = Flask(__name__)
 app.secret_key = "messreview_secret_key_2026"
@@ -52,11 +53,13 @@ def init_db():
             reviewer_email TEXT,
             reviewer_phone TEXT,
             reviewer_id TEXT,
+            food_photo TEXT,
             is_student TEXT DEFAULT '',
             created_at TEXT
         )
     """)
     cur.execute("ALTER TABLE reviews ADD COLUMN IF NOT EXISTS reviewer_id TEXT")
+    cur.execute("ALTER TABLE reviews ADD COLUMN IF NOT EXISTS food_photo TEXT")
     conn.commit()
     cur.close()
     conn.close()
@@ -281,12 +284,21 @@ def university(name):
         reviewer_id_no = request.form.get("reviewer_id_no", "")
         is_student = request.form.get("is_student", "")
 
+        food_photo_data = None
+        photo_file = request.files.get("food_photo")
+        if photo_file and photo_file.filename:
+            photo_bytes = photo_file.read()
+            if len(photo_bytes) <= 2 * 1024 * 1024:
+                mime_type = photo_file.mimetype or "image/jpeg"
+                encoded = base64.b64encode(photo_bytes).decode("utf-8")
+                food_photo_data = f"data:{mime_type};base64,{encoded}"
+
         conn = get_db_connection()
         cur = conn.cursor()
         cur.execute("""
-            INSERT INTO reviews (university_name, rating, food_quality, hygiene, value_for_money, menu_variety, feedback, reviewer_name, reviewer_email, reviewer_phone, reviewer_id, is_student, created_at)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-        """, (name, rating, food_quality, hygiene, value_for_money, menu_variety, feedback, reviewer_name, reviewer_email, reviewer_phone, reviewer_id_no, is_student, datetime.now().strftime("%d %b %Y")))
+            INSERT INTO reviews (university_name, rating, food_quality, hygiene, value_for_money, menu_variety, feedback, reviewer_name, reviewer_email, reviewer_phone, reviewer_id, is_student, created_at, food_photo)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        """, (name, rating, food_quality, hygiene, value_for_money, menu_variety, feedback, reviewer_name, reviewer_email, reviewer_phone, reviewer_id_no, is_student, datetime.now().strftime("%d %b %Y"), food_photo_data))
         conn.commit()
         cur.close()
 
