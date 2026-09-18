@@ -25,7 +25,7 @@ def send_review_notification(university_name, reviewer_name, rating, feedback):
         msg["Subject"] = f"New Review: {university_name}"
         msg["From"] = EMAIL_ADDRESS
         msg["To"] = EMAIL_ADDRESS
-        with smtplib.SMTP("smtp.gmail.com", 587) as server:
+        with smtplib.SMTP("smtp.gmail.com", 587, timeout=10) as server:
             server.starttls()
             server.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
             server.send_message(msg)
