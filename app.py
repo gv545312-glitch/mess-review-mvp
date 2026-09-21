@@ -67,6 +67,7 @@ def init_db():
 init_db()
 
 universities = [
+    {"name": "Ramjas College", "city": "Delhi", "image": "/static/images/ramjas.jpg"},
     {"name": "IGDTUW", "city": "Delhi", "image": "/static/images/igdtuw.jpg"},
     {"name": "YMCA University of Science and Technology", "city": "Faridabad, Haryana", "image": "/static/images/ymca.jpg"},
     {"name": "K.R. Mangalam University", "city": "Gurugram, Haryana", "image": "/static/images/krmangalam.jpg"},
