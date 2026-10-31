@@ -11,7 +11,7 @@ import base64
 app = Flask(__name__)
 app.secret_key = "messreview_secret_key_2026"
 
-DATABASE_URL = os.environ.get("DATABASE_URL", "postgresql://messreview_db_user:hFlphsnaTeikF22jOEpKwJMfIDrFaDhH@dpg-d9npemflk1mc738jah70-a/messreview_db")
+DATABASE_URL = os.environ["DATABASE_URL"]
 
 EMAIL_ADDRESS = os.environ.get("EMAIL_ADDRESS", "")
 EMAIL_PASSWORD = os.environ.get("EMAIL_PASSWORD", "")
