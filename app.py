@@ -11,7 +11,13 @@ import base64
 app = Flask(__name__)
 app.secret_key = "messreview_secret_key_2026"
 
-DATABASE_URL = os.environ["DATABASE_URL"]
+DB_PARAMS = {
+    "host": os.environ["DB_HOST"],
+    "port": int(os.environ.get("DB_PORT", "5432")),
+    "dbname": os.environ["DB_NAME"],
+    "user": os.environ["DB_USER"],
+    "password": os.environ["DB_PASSWORD"],
+}
 
 EMAIL_ADDRESS = os.environ.get("EMAIL_ADDRESS", "")
 EMAIL_PASSWORD = os.environ.get("EMAIL_PASSWORD", "")
@@ -33,7 +39,7 @@ def send_review_notification(university_name, reviewer_name, rating, feedback):
         print(f"Email notification failed: {e}")
 
 def get_db_connection():
-    conn = psycopg2.connect(DATABASE_URL)
+    conn = psycopg2.connect(**DB_PARAMS)
     return conn
 
 def init_db():
