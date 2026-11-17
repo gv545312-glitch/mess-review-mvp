@@ -9,7 +9,7 @@ from email.mime.text import MIMEText
 import base64
 
 app = Flask(__name__)
-app.secret_key = "messreview_secret_key_2026"
+app.secret_key = os.environ["SECRET_KEY"]
 
 DB_PARAMS = {
     "host": os.environ["DB_HOST"],
@@ -395,8 +395,8 @@ def universities_page():
     )
 
 
-ADMIN_USERNAME = "admin"
-ADMIN_PASSWORD = "messreview2026"
+ADMIN_USERNAME = os.environ["ADMIN_USERNAME"]
+ADMIN_PASSWORD = os.environ["ADMIN_PASSWORD"]
 
 def admin_required(f):
     @wraps(f)
